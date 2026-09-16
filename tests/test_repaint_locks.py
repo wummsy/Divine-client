@@ -56,7 +56,7 @@ def _app():
     if "_APP" in globals():
         return _APP
     import customtkinter as ctk
-    from arenclient.ui.app import DivineApp
+    from divineclient.ui.app import DivineApp
     ctk.set_appearance_mode("dark")
     _APP = DivineApp()
     _APP._reveal()
@@ -146,7 +146,7 @@ def _pin_is_idempotent():
     """
     import time
     import customtkinter as ctk
-    from arenclient.ui import theme
+    from divineclient.ui import theme
     app = _app()
     assert theme.pin_surfaces(app) >= 0            # settle it
     counted = []
@@ -210,7 +210,7 @@ def _containers_are_plain():
 
 @check("the wash is painted from geometry, with no image and no timer")
 def _wash_is_items():
-    from arenclient.ui import widgets
+    from divineclient.ui import widgets
     src = inspect.getsource(widgets.Gradient._draw)
     assert "create_polygon" in src or "create_rectangle" in src, \
         "the wash has to be canvas items"
@@ -284,7 +284,7 @@ def _hero_cover_is_an_item():
 # --------------------------------------------------------------------------- the palette
 @check("the four backgrounds are real palettes, and switching one repaints the app")
 def _backgrounds():
-    from arenclient.ui import theme
+    from divineclient.ui import theme
     names = [k for k, _l, _n in theme.background_names()]
     assert len(names) >= 3, names
     assert "cyan-purple" in names and "black-grey" in names, "the user asked for these two"
@@ -316,7 +316,7 @@ def _backgrounds():
 @check("the chosen background is what opens next time")
 def _background_is_saved():
     app = _app()
-    from arenclient.ui import theme as _t
+    from divineclient.ui import theme as _t
     allowed = [k for k, _l, _n in _t.background_names()]
     key = app.config_store.get("ui_background")
     assert key in allowed, "unknown background in the config: %r (want one of %s)" % (key, allowed)
@@ -504,13 +504,13 @@ def _grid_is_responsive():
 # ---------------------------------------------------------------------- tiles for the rest
 @check("a pack with no picture still gets a tile, and the tile is ours")
 def _letter_tiles():
-    from arenclient.ui import widgets
+    from divineclient.ui import widgets
     app = _app()
     label = __import__("customtkinter").CTkLabel(app)
     assert widgets.set_tile(label, "Sky Factory 4", size=(44, 44)) is True or not \
-        __import__("arenclient.ui.widgets", fromlist=["_HAS_PIL"])._HAS_PIL
+        __import__("divineclient.ui.widgets", fromlist=["_HAS_PIL"])._HAS_PIL
     img = widgets.letter_tile_image("Minecraft", (44, 44))
-    if __import__("arenclient.ui.widgets", fromlist=["_HAS_PIL"])._HAS_PIL:
+    if __import__("divineclient.ui.widgets", fromlist=["_HAS_PIL"])._HAS_PIL:
         assert img is not None, "Pillow is installed and the tile came back empty"
         again = widgets.letter_tile_image("Minecraft", (44, 44))
         assert again is img, "the tile is rebuilt for the same letter every time"
@@ -521,7 +521,7 @@ def _letter_tiles():
 
 @check("the modpack rows put a tile on before anything is asked of the network")
 def _modpack_row():
-    from arenclient.ui.modpack_dialog import ModpackDialog
+    from divineclient.ui.modpack_dialog import ModpackDialog
     app = _app()
     dlg = ModpackDialog(app, app)
     try:
@@ -537,7 +537,7 @@ def _modpack_row():
                  if type(w).__name__ == "CTkLabel" and int(w.cget("width") or 0) >= 40]
         assert marks, "the row has no tile at all"
         mark = marks[0]
-        has_pil = __import__("arenclient.ui.widgets", fromlist=["_HAS_PIL"])._HAS_PIL
+        has_pil = __import__("divineclient.ui.widgets", fromlist=["_HAS_PIL"])._HAS_PIL
         if has_pil:
             assert str(mark.cget("image")), "the tile is empty"
             assert not str(mark.cget("text")), "the tile still shows its fallback letter"
@@ -558,8 +558,8 @@ def _modpack_row():
 
 @check("the supplied marks are used, not just present")
 def _glyphs_wired():
-    from arenclient.ui import nav, theme, widgets
-    from arenclient import paths
+    from divineclient.ui import nav, theme, widgets
+    from divineclient import paths
     names = [n[:-4] for n in os.listdir(os.path.join(ROOT, "assets"))
              if n.startswith("ui_") and n.endswith(".png")]
     assert len(names) >= 20, "only %d ui glyphs" % len(names)
@@ -574,7 +574,7 @@ def _glyphs_wired():
     # and they are loaded, not merely listed
     imgs = [widgets.load_glyph("assets/ui_%s.png" % supplied, (20, 20))
             for supplied in ("friends", "account", "new", "discord")]
-    if __import__("arenclient.ui.widgets", fromlist=["_HAS_PIL"])._HAS_PIL:
+    if __import__("divineclient.ui.widgets", fromlist=["_HAS_PIL"])._HAS_PIL:
         assert all(i is not None for i in imgs), "a supplied mark would not load"
     src = inspect.getsource(widgets.load_glyph)
     assert "_GLYPHS" in src or "cache" in src.lower(), "every label re-decodes its glyph"
@@ -587,7 +587,7 @@ def _no_resize_image_storms():
     import glob
     import re
     bad = []
-    for path in glob.glob(os.path.join(ROOT, "arenclient", "ui", "**", "*.py"),
+    for path in glob.glob(os.path.join(ROOT, "divineclient", "ui", "**", "*.py"),
                           recursive=True):
         src = open(path, encoding="utf-8").read()
         if "<Configure>" not in src and "_on_configure" not in src:
@@ -627,7 +627,7 @@ def _restyle_keeps_state():
 def _no_animations():
     import glob
     offenders = []
-    for path in glob.glob(os.path.join(ROOT, "arenclient", "ui", "**", "*.py"),
+    for path in glob.glob(os.path.join(ROOT, "divineclient", "ui", "**", "*.py"),
                           recursive=True):
         src = open(path, encoding="utf-8").read()
         if "iconbitmap" in src:

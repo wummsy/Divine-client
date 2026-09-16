@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="arenclient/web/assets/emblem.png" width="96" height="96" alt="Divine Client Logo">
+  <img src="divineclient/web/assets/emblem.png" width="96" height="96" alt="Divine Client Logo">
   <h1>Divine Client</h1>
   <p>A fast, lightweight Minecraft client and launcher built for Fabric 1.21.11 with built-in QoL mods, custom title screen, builder tools, and dedicated server hosting.</p>
 </div>
@@ -78,7 +78,7 @@ Production service templates for systemd and reverse proxies are provided in `se
 
 ```
 Divine-client/
-├── arenclient/             # Launcher core logic, web UI backend, and desktop frames
+├── divineclient/             # Launcher core logic, web UI backend, and desktop frames
 │   ├── core/               # Launch orchestration, Java resolver, Discord RPC
 │   ├── ui/                 # Native window frames and dialogs
 │   └── web/                # HTML5, CSS, and JS launcher dashboard

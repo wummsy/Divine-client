@@ -49,7 +49,7 @@ def check(name):
 # --------------------------------------------------------------------- version gate
 @check("the servers code is a hash, not a string you can grep for")
 def _code_gate():
-    from arenclient.ui import app as appmod
+    from divineclient.ui import app as appmod
     code = "divineserverallowance112233"
     assert appmod.code_ok(code), "the real code must open the tab"
     assert appmod.code_ok("  " + code.upper() + " "), "paste-with-spaces must still work"
@@ -58,7 +58,7 @@ def _code_gate():
     assert not appmod.code_ok(None)
     assert appmod.code_ok(code + "   "), "whitespace at either end is tolerated"
     assert not appmod.code_ok(code + "x"), "a code with extra letters is not the code"
-    src = open(os.path.join(ROOT, "arenclient", "ui", "app.py"), encoding="utf-8").read()
+    src = open(os.path.join(ROOT, "divineclient", "ui", "app.py"), encoding="utf-8").read()
     assert code not in src, "the plaintext code must not be in the source"
     import hashlib
     assert appmod.SERVERS_CODE_SHA256 == hashlib.sha256(code.encode()).hexdigest()
@@ -66,7 +66,7 @@ def _code_gate():
 
 @check("a locked tab cannot be opened by any path")
 def _locked_tab_source():
-    src = open(os.path.join(ROOT, "arenclient", "ui", "app.py"), encoding="utf-8").read()
+    src = open(os.path.join(ROOT, "divineclient", "ui", "app.py"), encoding="utf-8").read()
     assert '"servers"' in src
     # every route into a page goes through show_page, which is where the gate lives
     assert src.count("def show_page") == 1
@@ -77,7 +77,7 @@ def _locked_tab_source():
 # ------------------------------------------------------------------------ updates
 @check("version comparison is numeric, not alphabetical")
 def _version_compare():
-    from arenclient.core import updater
+    from divineclient.core import updater
     assert updater.as_tuple("1.10") > updater.as_tuple("1.9")
     assert updater.is_newer("1.10", "1.9") is True
     assert updater.is_newer("1.0.1", "1.0") is True
@@ -90,7 +90,7 @@ def _version_compare():
 
 @check("status() describes every case the pill has to render")
 def _status_states():
-    from arenclient.core import updater
+    from divineclient.core import updater
 
     saved = updater.fetch_latest
 
@@ -127,7 +127,7 @@ def _status_states():
 
 @check("a staged build is found, and the site agrees it is staged")
 def _staged_roundtrip():
-    from arenclient.core import updater
+    from divineclient.core import updater
     d = updater.updates_dir()
     os.makedirs(d, exist_ok=True)
     incoming = os.path.join(d, "incoming-99.1")
@@ -163,7 +163,7 @@ def _staged_roundtrip():
 def _zip_wrapper_folder():
     """build_exe.bat's Compress-Archive puts everything under DivineClient/ inside the zip."""
     import zipfile as zf
-    from arenclient.core import updater
+    from divineclient.core import updater
     work = tempfile.mkdtemp(prefix="wrap-", dir=_TMP)
     archive = os.path.join(work, "DivineClient-1.1-windows.zip")
     with zf.ZipFile(archive, "w") as z:
@@ -197,7 +197,7 @@ def _zip_wrapper_folder():
 
 @check("--apply-update refuses a payload it did not stage")
 def _apply_refuses_stray_path():
-    from arenclient.core import updater
+    from divineclient.core import updater
     for bad in ("/etc/passwd", os.path.expanduser("~"), "relative/path", ""):
         try:
             updater.run_apply_update(bad, log=lambda m: None)
@@ -213,7 +213,7 @@ def _apply_refuses_stray_path():
 @check("a staged folder becomes file pairs, and a one-file build takes only the exe")
 def _swap_plan():
     import sys as _sys
-    from arenclient.core import updater
+    from divineclient.core import updater
     work = os.path.join(_TMP, "plan")
     staged = os.path.join(work, "incoming-9.9")
     os.makedirs(os.path.join(staged, "_internal"), exist_ok=True)
@@ -245,7 +245,7 @@ def _swap_plan():
 @check("self-replacement is only offered to a frozen Windows build")
 def _apply_supported():
     from unittest import mock
-    from arenclient.core import updater
+    from divineclient.core import updater
     with mock.patch.object(sys, "platform", "win32"), mock.patch.object(sys, "frozen", True,
                                                                         create=True):
         assert updater.apply_supported() is True
@@ -262,7 +262,7 @@ def _unzip_windows_separators():
     inside it died with NotADirectoryError: a good release looked like a broken download.
     """
     import zipfile
-    from arenclient.core import updater
+    from divineclient.core import updater
 
     bs = chr(92)
     work = os.path.join(_TMP, "winzip")
@@ -302,7 +302,7 @@ def _unzip_windows_separators():
 
 @check("a staged zip cannot write outside the folder it is unpacked into")
 def _zip_traversal():
-    from arenclient.core import updater
+    from divineclient.core import updater
     work = os.path.join(_TMP, "zips")
     os.makedirs(work, exist_ok=True)
     archive = os.path.join(work, "bad.zip")
@@ -337,10 +337,10 @@ def _main_args():
 @check("the update never reaches the launch path")
 def _launch_is_not_gated():
     """No file in the launch path may mention the updater as a precondition."""
-    launcher = open(os.path.join(ROOT, "arenclient", "core", "launcher.py"),
+    launcher = open(os.path.join(ROOT, "divineclient", "core", "launcher.py"),
                     encoding="utf-8").read()
     assert "updater" not in launcher, "launching must not depend on an update check"
-    flow = open(os.path.join(ROOT, "arenclient", "ui", "launchflow.py"),
+    flow = open(os.path.join(ROOT, "divineclient", "ui", "launchflow.py"),
                 encoding="utf-8").read()
     assert "updater" not in flow
     assert "import updater" not in flow or "if updater" not in flow
@@ -349,7 +349,7 @@ def _launch_is_not_gated():
 # ------------------------------------------------------------------- friends/presence
 @check("friend colours come from presence, with the heartbeat as fallback")
 def _friend_state():
-    from arenclient.ui.friends_panel import friend_state
+    from divineclient.ui.friends_panel import friend_state
     assert friend_state({"presence": "in_game", "online": True}) == "playing"
     assert friend_state({"presence": "in_game", "online": False}) == "playing", \
         "a running game outranks a missed heartbeat while the site still believes it"
@@ -364,7 +364,7 @@ def _friend_state():
 
 @check("presence reporting cannot raise, and stays quiet without a token")
 def _set_presence_client():
-    from arenclient.core import social
+    from divineclient.core import social
 
     class Cfg(dict):
         def get(self, k, d=None):
@@ -406,7 +406,7 @@ def _set_presence_client():
 def _relocation_must_move():
     """The functional half of the revert: 'don't move' never means 'leave the launcher's
     own files behind'."""
-    from arenclient import paths
+    from divineclient import paths
     assert paths.MUST_MOVE_SUBS == ("minecraft", "tunnel"), paths.MUST_MOVE_SUBS
     assert paths.ASK_FIRST_SUBS == ("instances", "servers"), paths.ASK_FIRST_SUBS
     assert set(paths.subs_under_game_dir()) == {"minecraft", "tunnel", "instances",
@@ -463,8 +463,8 @@ def _relocation_must_move():
 
 @check("the keys the rail UI needed are not read back from an old config")
 def _retired_keys_stay_out():
-    from arenclient import paths
-    from arenclient.core import config as cfgmod
+    from divineclient import paths
+    from divineclient.core import config as cfgmod
     for key in ("menu_rail_pinned", "friends_rail_pinned", "animations"):
         assert key not in cfgmod.DEFAULTS, key
     d = tempfile.mkdtemp(prefix="cfg-", dir=_TMP)
@@ -483,7 +483,7 @@ def _retired_keys_stay_out():
 
 @check("nothing in the interface repeats on a timer")
 def _no_animation_timers():
-    from arenclient.ui import anim
+    from divineclient.ui import anim
     assert anim.enabled() is False, "the shell must boot with animation off"
     started = []
 
@@ -509,17 +509,17 @@ def _no_animation_timers():
     for rel in ("app.py", "nav.py", "loading.py", "widgets.py",
                 os.path.join("pages", "home.py"),
                 os.path.join("pages", "instances_page.py")):
-        src = open(os.path.join(ROOT, "arenclient", "ui", rel), encoding="utf-8").read()
+        src = open(os.path.join(ROOT, "divineclient", "ui", rel), encoding="utf-8").read()
         assert "Ticker(" not in src, "%s still runs a Ticker" % rel
         assert "SlideRail" not in src and "GradientCanvas" not in src, rel
     for gone in ("rails.py", "menu_rail.py", "friends_rail.py", "gradient.py"):
-        assert not os.path.exists(os.path.join(ROOT, "arenclient", "ui", gone)), gone
+        assert not os.path.exists(os.path.join(ROOT, "divineclient", "ui", gone)), gone
 
 
 # ---------------------------------------------------------------------- loading screen
 @check("loading stages are weighted, and a stuck stage cannot read as finished")
 def _loading_weights():
-    from arenclient.ui import loading
+    from divineclient.ui import loading
     total = sum(w for _k, w, _t in loading.STAGES)
     assert abs(total - 1.0) < 1e-6, total
     keys = [k for k, _w, _t in loading.STAGES]
@@ -541,8 +541,8 @@ def _display_available():
 
 if _display_available():
     import customtkinter as ctk
-    from arenclient.ui import theme
-    from arenclient.ui.app import DivineApp
+    from divineclient.ui import theme
+    from divineclient.ui.app import DivineApp
 
     _app_box = []
 
@@ -591,14 +591,14 @@ if _display_available():
         assert "versions" not in a.pages, "the tab is Instances again"
         assert a._current == "home"
         assert a.nav.winfo_width() == a.nav.WIDTH or a.nav.grid_info().get("sticky") == "nsew"
-        src = open(os.path.join(ROOT, "arenclient", "ui", "nav.py"),
+        src = open(os.path.join(ROOT, "divineclient", "ui", "nav.py"),
                    encoding="utf-8").read()
         assert "grid_columnconfigure" not in src.split("def set_page")[1][:600], \
             "the sidebar must not resize anything"
 
     @check("the sidebar lists the pages, with settings and accounts at the bottom")
     def _nav_order():
-        from arenclient.ui import nav
+        from divineclient.ui import nav
         a = app()
         pump()
         assert [k for k, _l, _g in nav.MAIN_ITEMS] == ["home", "instances", "servers"]
@@ -672,7 +672,7 @@ if _display_available():
         a = app()
         pump()
         assert str(a.top_account.cget("text")) != ""
-        src = open(os.path.join(ROOT, "arenclient", "ui", "app.py"),
+        src = open(os.path.join(ROOT, "divineclient", "ui", "app.py"),
                    encoding="utf-8").read()
         head = src[src.index("def _build_content"):src.index("def _init_pages")]
         assert "CTkButton" not in head, "nothing in the header should be clickable"
@@ -721,8 +721,8 @@ if _display_available():
 
     @check("the friends panel lives inside Home and colours come from presence")
     def _friends_panel():
-        from arenclient.ui import theme
-        from arenclient.ui.friends_panel import FriendsPanel, friend_state
+        from divineclient.ui import theme
+        from divineclient.ui.friends_panel import FriendsPanel, friend_state
         a = app()
         home = a.pages["home"]
         assert isinstance(home.friends, FriendsPanel)
@@ -734,14 +734,14 @@ if _display_available():
         pump(8)
         assert home.friends.winfo_children(), "the panel has no widgets at all"
         # the rail-era bug: os was used without being imported, so avatars silently failed
-        import arenclient.ui.friends_panel as fp
+        import divineclient.ui.friends_panel as fp
         assert hasattr(fp, "os")
         assert fp.__dict__["os"].path.join("a", "b") == os.path.join("a", "b")
 
     @check("the friends panel links Discord from where you can see you need it")
     def _friends_link_button():
-        from arenclient.core import social
-        from arenclient.ui import friends_panel as fp
+        from divineclient.core import social
+        from divineclient.ui import friends_panel as fp
         a = app()
         panel = a.pages["home"].friends
         saved_link, saved_is = fp.social.get_link, fp.social.is_linked
@@ -794,12 +794,12 @@ if _display_available():
 
     @check("friend avatars come from the image desk, never from the UI thread")
     def _friend_avatars():
-        from arenclient.ui import friends_panel as fp
-        from arenclient.ui.widgets import Card
+        from divineclient.ui import friends_panel as fp
+        from divineclient.ui.widgets import Card
         a = app()
         panel = a.pages["home"].friends
         # a blocking fetch on the render path is the bug; the desk must own it
-        src = open(os.path.join(ROOT, "arenclient", "ui", "friends_panel.py"),
+        src = open(os.path.join(ROOT, "divineclient", "ui", "friends_panel.py"),
                    encoding="utf-8").read()
         assert "fetch_icon" not in src, "avatars must not be downloaded while painting"
         assert "requests" not in src
@@ -822,8 +822,8 @@ if _display_available():
 
     @check("the home banner crops the hero art to its box instead of stretching it")
     def _home_banner():
-        from arenclient.ui.pages.home import Banner, _cover
-        from arenclient import paths
+        from divineclient.ui.pages.home import Banner, _cover
+        from divineclient import paths
         a = app()
         home = a.pages["home"]
         assert isinstance(home.banner, Banner)
@@ -858,7 +858,7 @@ if _display_available():
         """
         import threading
         import time
-        from arenclient.ui import imagedesk as ID
+        from divineclient.ui import imagedesk as ID
         a = app()
         lbl = ctk.CTkLabel(a, text="K", width=30, height=30, corner_radius=0)
         lbl.grid(row=99, column=0)
@@ -888,8 +888,8 @@ if _display_available():
 
     @check("an avatar keeps its row slot whether or not a picture arrives")
     def _avatar_tile_size():
-        from arenclient.ui.friends_panel import FriendsPanel      # noqa: F401
-        from arenclient.ui.widgets import Card
+        from divineclient.ui.friends_panel import FriendsPanel      # noqa: F401
+        from divineclient.ui.widgets import Card
         from PIL import Image
         a = app()
         panel = a.pages["home"].friends
@@ -915,7 +915,7 @@ if _display_available():
     def _account_mark():
         import time as _t
         a = app()
-        from arenclient.ui import widgets as W
+        from divineclient.ui import widgets as W
         glyph = W.load_glyph("assets/ui_account.png", (20, 20))
         assert glyph is not None, "the account glyph must ship in assets/"
         assert str(a.nav.account_btn.cget("image")) not in ("", "None")
@@ -928,7 +928,7 @@ if _display_available():
     @check("the modpack dialog searches off-thread and paints what comes back")
     def _modpack_dialog():
         import time as _t
-        from arenclient.ui import modpack_dialog as MD
+        from divineclient.ui import modpack_dialog as MD
         a = app()
         hits = [{"slug": "fabric-faithful", "title": "Fabric Faithful", "author": "someone",
                  "downloads": 12345, "icon_url": "", "description": "a pack"}]
@@ -965,14 +965,14 @@ if _display_available():
 
     @check("the logo is the sidebar and loading head, and the assets ship")
     def _logo_assets():
-        from arenclient import paths
+        from divineclient import paths
         for rel in ("assets/logo.png", "assets/hero_bg.png", "assets/emblem.png",
                     "assets/icon.ico", "assets/icon_mono.png", "assets/icon_mono.ico"):
             assert os.path.exists(paths.resource_path(rel)), rel
         a = app()
-        nav_src = open(os.path.join(ROOT, "arenclient", "ui", "nav.py"),
+        nav_src = open(os.path.join(ROOT, "divineclient", "ui", "nav.py"),
                        encoding="utf-8").read()
-        load_src = open(os.path.join(ROOT, "arenclient", "ui", "loading.py"),
+        load_src = open(os.path.join(ROOT, "divineclient", "ui", "loading.py"),
                         encoding="utf-8").read()
         assert "assets/logo.png" in nav_src and "assets/logo.png" in load_src
         assert "logo_lbl" in nav_src and "logo_lbl" in load_src
@@ -1027,7 +1027,7 @@ if _display_available():
         pump(4)
         assert a._current == "instances"
         assert a.pages["instances"].winfo_manager() == "grid"
-        from arenclient.ui.pages import versions_page
+        from divineclient.ui.pages import versions_page
         assert versions_page.InstancesPage is a.pages["instances"].__class__
 
     @check("a worker thread's after() actually reaches the main loop")
@@ -1035,7 +1035,7 @@ if _display_available():
         import threading
         import time as _t
         import tkinter as tk
-        from arenclient.ui import post
+        from divineclient.ui import post
         post.install()
         root = tk.Tk()
         root.withdraw()
@@ -1070,8 +1070,8 @@ if _display_available():
         import time as _t
         from unittest import mock
         import tkinter as tk
-        from arenclient.core import defender
-        from arenclient.ui import defender_offer
+        from divineclient.core import defender
+        from divineclient.ui import defender_offer
         a = app()
         pump()
         cfg = a.config_store
@@ -1143,7 +1143,7 @@ if _display_available():
     def _defender_settings_card():
         a = app()
         page = a.pages["settings"]
-        from arenclient.core import defender
+        from divineclient.core import defender
         for state, want in (("declined", "not added"), ("already", "on the list"),
                             ("ready", "not added"), ("no-script", "helper missing"),
                             ("unsupported", "windows only")):
@@ -1160,10 +1160,10 @@ if _display_available():
                              "can_remove": False, "detail": ""})
         assert str(page.defender_btn.cget("state")) == "disabled", "nothing to add here"
         assert page.defender_remove.winfo_manager() != "grid"
-        assert "Defender" in open(os.path.join(ROOT, "arenclient", "ui", "pages",
+        assert "Defender" in open(os.path.join(ROOT, "divineclient", "ui", "pages",
                                                "settings_page.py"),
                                   encoding="utf-8").read(), "the card must say what it is"
-        for src in ("arenclient/ui/pages/settings_page.py", "arenclient/ui/defender_offer.py"):
+        for src in ("divineclient/ui/pages/settings_page.py", "divineclient/ui/defender_offer.py"):
             body = open(os.path.join(ROOT, *src.split("/")), encoding="utf-8").read()
             assert "winfo_selected" not in body, \
                 "%s uses a Tk method CTkCheckBox does not have - it must use .get()" % src
@@ -1181,7 +1181,7 @@ if _display_available():
         import threading
         import time as _t
         from unittest import mock
-        from arenclient.core import defender
+        from divineclient.core import defender
         a = app()
         page = a.pages["settings"]
         box = {}
@@ -1220,7 +1220,7 @@ if _display_available():
     @check("the loading screen is driven by the startup thread, not left at zero")
     def _splash_follows_the_worker():
         import time as _t
-        from arenclient.ui.loading import Loading
+        from divineclient.ui.loading import Loading
         a = app()
         ls = Loading(a)
         a._splash = ls
@@ -1242,7 +1242,7 @@ if _display_available():
 
     @check("the loading screen paints its stages, never goes backwards, and is destroyed")
     def _loading_gui():
-        from arenclient.ui.loading import Loading, STAGES
+        from divineclient.ui.loading import Loading, STAGES
         a = app()
         ls = Loading(a)
         pump()
@@ -1348,7 +1348,7 @@ if _display_available():
     def _auto_update_switch():
         import threading
         import time as _t
-        from arenclient.core import updater
+        from divineclient.core import updater
         a = app()
         saved_worker = a._update_worker
         calls = []
@@ -1397,7 +1397,7 @@ if _display_available():
 
     @check("home reads the news off-thread, because the site is allowed to be slow")
     def _news_source():
-        src = open(os.path.join(ROOT, "arenclient", "ui", "pages", "home.py"),
+        src = open(os.path.join(ROOT, "divineclient", "ui", "pages", "home.py"),
                    encoding="utf-8").read()
         assert "news.get_news" in src, "the news list must come from core.news"
         head = src[src.index("def refresh_news"):src.index("def _news_ready")]
@@ -1406,7 +1406,7 @@ if _display_available():
 
     @check("quit reports offline while the process can still ask")
     def _quit_presence():
-        src = open(os.path.join(ROOT, "arenclient", "ui", "app.py"),
+        src = open(os.path.join(ROOT, "divineclient", "ui", "app.py"),
                     encoding="utf-8").read()
         close = src[src.index("def _on_close"):src.index("def _ask_before_quit")]
         assert '"offline"' in close and "sync=True" in close
@@ -1450,7 +1450,7 @@ def _assets_shipped():
     assert prefixes, "the marks must be globbed, not listed one by one"
 
     used = set()
-    for dirpath, dirs, files in os.walk(os.path.join(ROOT, "arenclient")):
+    for dirpath, dirs, files in os.walk(os.path.join(ROOT, "divineclient")):
         dirs[:] = [d for d in dirs if d != "__pycache__"]
         for fn in files:
             if not fn.endswith(".py"):
@@ -1563,7 +1563,7 @@ def _updater_download():
     import hashlib
     import threading
     import zipfile
-    from arenclient.core import updater
+    from divineclient.core import updater
 
     server_dir = os.path.join(ROOT, "server")
     sys.path.insert(0, server_dir)
@@ -1705,7 +1705,7 @@ def _db_migration():
 @check("the tab is called Instances again, and Versions is only an alias")
 def _tab_names():
     bad = []
-    for base, _dirs, names in os.walk(os.path.join(ROOT, "arenclient")):
+    for base, _dirs, names in os.walk(os.path.join(ROOT, "divineclient")):
         if "__pycache__" in base:
             continue
         for n in names:
@@ -1723,9 +1723,9 @@ def _tab_names():
                     bad.append("%s: %s" % (os.path.relpath(path, ROOT), probe))
     assert not bad, "a Versions page came back:\n  " + "\n  ".join(bad)
     # the modules that survived the rename still import cleanly
-    from arenclient.ui.pages import versions_page, instances_page
+    from divineclient.ui.pages import versions_page, instances_page
     assert versions_page.InstancesPage is instances_page.InstancesPage
-    from arenclient.ui.instance_editor import InstanceEditor          # noqa: F401
+    from divineclient.ui.instance_editor import InstanceEditor          # noqa: F401
     assert hasattr(instances_page, "ConfirmDialog"), \
         "the editor borrows ConfirmDialog from the page module"
 
@@ -1734,8 +1734,8 @@ def _tab_names():
 @check("the four UI marks ship, and tinting keeps the shape's alpha")
 def _ui_marks():
     from PIL import Image
-    from arenclient.ui import theme
-    from arenclient.ui.widgets import _rgb, load_glyph, tint_pil
+    from divineclient.ui import theme
+    from divineclient.ui.widgets import _rgb, load_glyph, tint_pil
     for rel in ("assets/ui_friends.png", "assets/ui_account.png", "assets/ui_new.png",
                 "assets/ui_discord.png"):
         full = os.path.join(ROOT, rel)
@@ -1757,8 +1757,8 @@ def _ui_marks():
 
 @check("playtime banks one session per game, and refuses the nonsense")
 def _playtime():
-    from arenclient.core import playtime
-    from arenclient.core.instances import Instance
+    from divineclient.core import playtime
+    from divineclient.core.instances import Instance
     inst = Instance({"id": "pt-one", "name": "pt-one", "mc_version": "1.20.4"})
     assert playtime.total(inst) == 0
     assert playtime.human(0) == "never played"
@@ -1783,7 +1783,7 @@ def _playtime():
 
 @check("an instance can be imported from a folder or a zip of one")
 def _import_instance():
-    from arenclient.core.instances import InstanceManager
+    from divineclient.core.instances import InstanceManager
     work = os.path.join(_TMP, "import-src")
     src = os.path.join(work, "My World Folder")
     os.makedirs(os.path.join(src, "mods"), exist_ok=True)
@@ -1849,7 +1849,7 @@ def _import_instance():
 def _instance_picture():
     import shutil
     from PIL import Image
-    from arenclient.core.instances import InstanceManager
+    from divineclient.core.instances import InstanceManager
     mgr = InstanceManager()
     inst = mgr.create("Pictured", "1.20.4", loader="fabric",
                       extra={"modpack": {"project": "x", "pack_version": "1"}})
@@ -1878,9 +1878,9 @@ def _instance_picture():
 def _modpack_install():
     import hashlib
     import json
-    from arenclient.core import net
-    from arenclient.core import modpacks
-    from arenclient.core.instances import InstanceManager
+    from divineclient.core import net
+    from divineclient.core import modpacks
+    from divineclient.core.instances import InstanceManager
 
     work = os.path.join(_TMP, "pack")
     os.makedirs(work, exist_ok=True)
@@ -1954,8 +1954,8 @@ def _release_filter():
     sys.path.insert(0, os.path.join(ROOT, "tools"))
     import importlib
     tool = importlib.import_module("make_release_zip")
-    keep = ["arenclient/ui/pages/instances_page.py", "assets/ui_new.png",
-            "assets/hero_bg.png", "arenclient/core/playtime.py",
+    keep = ["divineclient/ui/pages/instances_page.py", "assets/ui_new.png",
+            "assets/hero_bg.png", "divineclient/core/playtime.py",
             "server/static/logo.png", "README.md"]
     drop = ["preview_9d_home.png", "shot10_home.png", "notes.log", "cache.db",
             "__pycache__/app.pyc", "build/DivineClient.exe"]

@@ -51,10 +51,10 @@ def test_safe_extract_zip_prevents_traversal():
 
     try:
         with zipfile.ZipFile(zip_path, "w") as zf:
-            zf.writestr("aren-client/main.py", "print('hello from main')")
-            zf.writestr("aren-client/assets/logo.png", "fake_png_data")
+            zf.writestr("divine-client/main.py", "print('hello from main')")
+            zf.writestr("divine-client/assets/logo.png", "fake_png_data")
             # attempt malicious traversal entry
-            zf.writestr("aren-client/../../outside.txt", "should not be extracted outside")
+            zf.writestr("divine-client/../../outside.txt", "should not be extracted outside")
 
         safe_extract_zip(zip_path, extract_dir)
 
@@ -104,8 +104,8 @@ def test_cli_installer_check_only(capsys):
 
 
 def test_updater_module_intact():
-    """Verify that auto-updater in arenclient.core.updater is present and unaffected."""
-    from arenclient.core import updater
+    """Verify that auto-updater in divineclient.core.updater is present and unaffected."""
+    from divineclient.core import updater
     assert hasattr(updater, "fetch_latest")
     assert hasattr(updater, "download")
     assert hasattr(updater, "apply_later")

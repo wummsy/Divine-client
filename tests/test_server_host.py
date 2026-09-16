@@ -28,10 +28,10 @@ sys.path.insert(0, os.path.dirname(HERE))
 _TMP = tempfile.mkdtemp(prefix="divine-test-")
 os.environ["XDG_DATA_HOME"] = os.path.join(_TMP, "data")
 
-from arenclient import paths                      # noqa: E402
-from arenclient.core import server_host            # noqa: E402
-from arenclient.core import java_runtime           # noqa: E402
-from arenclient.core.instances import Instance     # noqa: E402
+from divineclient import paths                      # noqa: E402
+from divineclient.core import server_host            # noqa: E402
+from divineclient.core import java_runtime           # noqa: E402
+from divineclient.core.instances import Instance     # noqa: E402
 
 paths.ensure_dirs()
 
@@ -356,7 +356,7 @@ def test_real_server_boots_and_takes_console_commands():
     p = server_host.ServerProcess(i, None)
     p.on_line = lambda ln: lines.append(ln)
     p.on_exit = lambda code: state.__setitem__("code", code)
-    from arenclient.core import adoptium, java_runtime
+    from divineclient.core import adoptium, java_runtime
     java_exe = adoptium.find_java_exe(21)
     if not java_exe:
         class _P:
@@ -451,7 +451,7 @@ def test_client_only_mods_are_not_copied_to_the_server():
 
 # ---------------------------------------------------------------- tunnel units
 def test_tunnel_strips_ansi_and_reads_the_address():
-    from arenclient.core import tunnel as tmod
+    from divineclient.core import tunnel as tmod
     raw = "\x1b[2m2026-09-02T09:04:22Z\x1b[0m \x1b[32m INFO\x1b[0m listening at bore.pub:60234"
     assert "\x1b" not in tmod.strip_ansi(raw)
     t = tmod.Tunnel(local_port=25565, provider="bore")
@@ -476,7 +476,7 @@ def test_tunnel_strips_ansi_and_reads_the_address():
 
 def test_the_pack_picks_the_newest_release_not_just_the_last_row():
     """Modrinth returns a project's builds in an arbitrary order and mix of channels."""
-    from arenclient.core import mods
+    from divineclient.core import mods
 
     def v(num, kind, date, fname=None):
         return {"version_number": num, "version_type": kind, "date_published": date,
@@ -506,7 +506,7 @@ def test_the_pack_picks_the_newest_release_not_just_the_last_row():
 
 def test_the_pack_notices_a_mod_the_user_already_has():
     """Duplicate mod ids stop Fabric from starting at all, so the pack must defer."""
-    from arenclient.core import mods
+    from divineclient.core import mods
     for a, b in (("sodium-fabric-0.6.13+mc1.21.4.jar", "sodium-mc1.20.1-0.4.10.jar"),
                  ("lithium-fabric-mc1.21.4-0.15.3.jar", "lithium-fabric-0.15.3+mc1.21.4.jar"),
                  ("ImmediatelyFast-Fabric-1.8.7+1.21.4.jar", "immediatelyfast-1.5.0.jar")):
@@ -523,7 +523,7 @@ def test_a_bad_download_is_rejected_and_leaves_nothing_behind(tmp=None):
     import socketserver
     import threading
     import zipfile as _z
-    from arenclient.core import mods
+    from divineclient.core import mods
 
     good = io.BytesIO()
     with _z.ZipFile(good, "w") as zf:
@@ -601,7 +601,7 @@ def test_a_bad_download_is_rejected_and_leaves_nothing_behind(tmp=None):
 
 def test_the_pack_lists_are_safe_for_their_side():
     """Nothing client-only may be installed on a server, or vice versa by accident."""
-    from arenclient.core import mods
+    from divineclient.core import mods
     for name, entries in (("client", mods.PERFORMANCE_PACK), ("server", mods.SERVER_PACK)):
         slugs = [s for s, _ in entries]
         assert len(slugs) == len(set(slugs)), (name, slugs)
@@ -620,7 +620,7 @@ def test_the_pack_lists_are_safe_for_their_side():
 
 def test_prepare_adds_server_mods_only_when_asked():
     """The server pack hangs off the same switch as the client one, and only there."""
-    from arenclient.core import mods, server_host as SH
+    from divineclient.core import mods, server_host as SH
     calls = []
     real = mods.install_server_pack
     try:
@@ -646,7 +646,7 @@ def test_prepare_adds_server_mods_only_when_asked():
 def test_the_lan_address_helper_never_lies():
     """`lan_ip()` is printed as joinable, so a wrong value is worse than None."""
     import socket as _s
-    from arenclient.core import server_host as SH
+    from divineclient.core import server_host as SH
     ip = SH.lan_ip()
     assert ip is None or (_s.inet_aton(ip) and not ip.startswith("127.")), ip
     # an isolated box with no route still gets an answer, not a crash or "0.0.0.0"
@@ -663,8 +663,8 @@ def test_a_socket_path_is_never_the_public_address():
     it, Minecraft says the address could not be resolved, and nobody can tell that was
     our bug and not their network.
     """
-    from arenclient.core import tunnel as tmod
-    sock = "/home/me/.arenclient/game/tunnel/playit.sock"
+    from divineclient.core import tunnel as tmod
+    sock = "/home/me/.divineclient/game/tunnel/playit.sock"
     for line in ("[INFO] agent: socket=" + sock,
                  "tunnel: C:\\Users\\me\\tunnel\\playit.sock",
                  "address file: playit.sock",
@@ -689,7 +689,7 @@ def test_a_socket_path_is_never_the_public_address():
 
 
 def test_tunnel_provider_order_and_none():
-    from arenclient.core import tunnel as tmod
+    from divineclient.core import tunnel as tmod
     assert tmod.Tunnel(provider="auto")._provider_order() == ["bore", "playit"]
     assert tmod.Tunnel(provider="bore")._provider_order() == ["bore"]
     assert tmod.Tunnel(provider="none")._provider_order() == []
@@ -699,7 +699,7 @@ def test_tunnel_provider_order_and_none():
 
 
 def test_bore_asset_url_resolves_or_falls_back():
-    from arenclient.core import tunnel as tmod
+    from divineclient.core import tunnel as tmod
     url = tmod._latest_bore_url("win32")
     assert url.startswith("https://github.com/ekzhang/bore/releases/download/")
     assert "windows" in url
@@ -715,7 +715,7 @@ def test_bore_asset_url_resolves_or_falls_back():
 
 # ------------------------------------------------------------- session manager
 def test_manager_refuses_a_second_server_on_one_instance():
-    from arenclient.core import server_sessions as ssm
+    from divineclient.core import server_sessions as ssm
     cfg = {"tunnel_provider": "none", "custom_java_path": ""}
     mgr = ssm.ServerSessionManager(cfg)
     i = inst("dupcase")
@@ -755,7 +755,7 @@ def test_manager_refuses_a_second_server_on_one_instance():
 
 def test_manager_lifecycle_without_a_window():
     """The session must outlive its window, and be stoppable from the panel."""
-    from arenclient.core import server_sessions as ssm
+    from divineclient.core import server_sessions as ssm
     i = inst("lifecycle")
     fake = ssm.ServerSession(None, i, ram_mb=1024, tunnel_provider="none")
     fake.status = "running"
@@ -784,7 +784,7 @@ def test_manager_lifecycle_without_a_window():
 
 
 def test_resource_formats_and_snapshot_shape():
-    from arenclient.core import resources
+    from divineclient.core import resources
     assert resources.human_bytes(None) == "\u2014"
     assert resources.human_bytes(1024) == "1.0 KB"
     assert "MB" in resources.human_bytes(50 * 1024 * 1024)
@@ -807,7 +807,7 @@ def test_resource_formats_and_snapshot_shape():
 
 
 def test_player_tracking_and_lag_counting():
-    from arenclient.core import server_sessions as ssm
+    from divineclient.core import server_sessions as ssm
     i = inst("players")
     s = ssm.ServerSession(None, i, ram_mb=1024, tunnel_provider="none")
     s._on_line("[Server thread/INFO]: Alice joined the game")
@@ -833,7 +833,7 @@ def test_ui_modules_have_no_dangling_self_method_calls():
     import ast
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     files = []
-    top = os.path.join(root, "arenclient")
+    top = os.path.join(root, "divineclient")
     for dirpath, _dirs, names in os.walk(top):
         if "__pycache__" in dirpath:
             continue
@@ -901,7 +901,7 @@ def test_agent_checksums_are_pinned_and_enforced():
     is started. Uses a fake digest so the test does not depend on GitHub.
     """
     import hashlib
-    from arenclient.core import tunnel
+    from divineclient.core import tunnel
 
     for (kind, plat), digest in tunnel.AGENT_SHA256.items():
         assert len(digest) == 64, "%s/%s digest is not a sha256" % (kind, plat)
@@ -948,7 +948,7 @@ def test_agent_checksums_are_pinned_and_enforced():
 
 def test_client_endpoint_lookup_prefers_the_domain():
     """The site moved to a domain; old installs and broken DNS must still work."""
-    from arenclient.core import endpoints, social
+    from divineclient.core import endpoints, social
     import requests
 
     assert endpoints.SITE == "https://divineclient.wispbyte.org"
@@ -1054,7 +1054,7 @@ def test_site_pages_render_and_old_hosts_redirect():
     assert site.DISCORD_INVITE_URL == "https://discord.gg/ER2haQtach", site.DISCORD_INVITE_URL
     for path in ("/", "/download", "/link"):
         body = client.get(path).get_data(as_text=True)
-        assert "discord.gg/arenclient" not in body, path + " still links the fake invite"
+        assert "discord.gg/divineclient" not in body, path + " still links the fake invite"
         assert "discord.gg/ER2haQtach" in body, path + " lost the real invite"
         # The app mark is built in Python and handed to Jinja, which autoescapes.
         # That used to print the markup as words - every page opened with a big line
@@ -1119,7 +1119,7 @@ def test_site_pages_render_and_old_hosts_redirect():
 HOLDER_SRC = """
 import os, sys, time
 sys.path.insert(0, %r)
-from arenclient.core import server_host as SH
+from divineclient.core import server_host as SH
 sdir, hold = sys.argv[1], float(sys.argv[2])
 handles = []
 for p in SH._level_lock_files(sdir):
@@ -1285,7 +1285,7 @@ def test_diagnose_names_a_locked_world_not_the_jar():
 
 def test_the_bore_program_is_picked_by_name_not_by_prefix():
     """A release's own folder must never be taken for the program inside it."""
-    from arenclient.core import tunnel as tmod
+    from divineclient.core import tunnel as tmod
     d = tempfile.mkdtemp(prefix="aren-bore-", dir=_TMP)
 
     zp = os.path.join(d, "bore-win.zip")
@@ -1338,7 +1338,7 @@ def test_ensure_bore_leaves_exactly_the_program_behind():
     not assemble to the file API, and must not leave a half-written bore behind.
     """
     import tarfile as _tf
-    from arenclient.core import tunnel as tmod
+    from divineclient.core import tunnel as tmod
     d = tempfile.mkdtemp(prefix="aren-bore-e2e-", dir=_TMP)
     os.makedirs(d, exist_ok=True)
     real = (tmod.tunnel_dir, tmod.bore_path, tmod._latest_bore_url, tmod._fetch,

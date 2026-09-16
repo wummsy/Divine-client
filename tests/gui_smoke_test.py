@@ -23,12 +23,12 @@ if DATA:
 
 import customtkinter as ctk                                     # noqa: E402
 
-from arenclient import paths                                    # noqa: E402
-from arenclient.core import server_host                          # noqa: E402
-from arenclient.core.instances import Instance, InstanceManager  # noqa: E402
-from arenclient.core.server_sessions import ServerSessionManager  # noqa: E402
-from arenclient.ui.pages import servers_page                    # noqa: E402
-from arenclient.ui.pages.servers_page import ServersPage        # noqa: E402
+from divineclient import paths                                    # noqa: E402
+from divineclient.core import server_host                          # noqa: E402
+from divineclient.core.instances import Instance, InstanceManager  # noqa: E402
+from divineclient.core.server_sessions import ServerSessionManager  # noqa: E402
+from divineclient.ui.pages import servers_page                    # noqa: E402
+from divineclient.ui.pages.servers_page import ServersPage        # noqa: E402
 
 BOOT_TIMEOUT = float(os.environ.get("AREN_GUI_TIMEOUT", "420"))
 
@@ -108,7 +108,7 @@ def main():
     servers_page_social = servers_page
     servers_page_social.tunnel_mod.Tunnel = StubTunnel
     # the page itself imports social for invites/registration
-    import arenclient.ui.pages.servers_page as sp
+    import divineclient.ui.pages.servers_page as sp
     sp.social = StubSocial()
 
     paths.ensure_dirs()

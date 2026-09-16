@@ -57,7 +57,7 @@ def app():
         return _APP["a"]
     import time
     import customtkinter as ctk
-    from arenclient.ui.app import DivineApp
+    from divineclient.ui.app import DivineApp
     ctk.set_appearance_mode("dark")
     a = DivineApp()
     a._reveal()
@@ -424,7 +424,7 @@ def _no_early_wrap():
     of the truth. ``flow_label`` now claims the cell horizontally, and this is the check that
     keeps a future ``sticky="w"`` from putting the early wrap back.
     """
-    from arenclient.ui import widgets
+    from divineclient.ui import widgets
     a = app()
     bad, measured = [], 0
     for size in WIDTHS:
@@ -466,7 +466,7 @@ def _no_early_wrap():
 def _flow_label_is_self_correcting():
     """The helper is the fix, so the helper gets tested on its own, without a window."""
     import inspect
-    from arenclient.ui import widgets
+    from divineclient.ui import widgets
     src = inspect.getsource(widgets.flow_label)
     assert "winfo_width" in src and "wraplength" in src, "flow_label does not measure and set"
     assert "winfo_reqwidth" in src, "flow_label cannot tell a fit from a clip"
@@ -485,7 +485,7 @@ def _no_hand_picked_wraplengths():
     import re
     import glob
     hits = []
-    for path in glob.glob(os.path.join(ROOT, "arenclient", "ui", "pages", "*.py")):
+    for path in glob.glob(os.path.join(ROOT, "divineclient", "ui", "pages", "*.py")):
         text = open(path, encoding="utf-8").read()
         for i, line in enumerate(text.splitlines(), 1):
             if "wraplength=" in line and "flow_label" not in line and "configure(" not in line:

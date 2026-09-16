@@ -79,7 +79,7 @@ if not exist "%OUT%" (
 
 rem Read the version out of the package so the zip is named after what is inside it.
 set "VERSION=0.0.0"
-for /f "delims=" %%l in ('findstr /b /c:"__version__" arenclient\__init__.py') do set "LINE=%%l"
+for /f "delims=" %%l in ('findstr /b /c:"__version__" divineclient\__init__.py') do set "LINE=%%l"
 set "LINE=%LINE:"=%"
 for /f "tokens=2 delims==" %%v in ("%LINE%") do set "VERSION=%%v"
 set "VERSION=%VERSION: =%"
@@ -135,7 +135,7 @@ if "%MODE%"=="onedir" (
         echo.
         echo This build is one-dir on purpose: the program runs from this folder and
         echo never unpacks itself into your Temp directory. It writes its settings to
-        echo %%APPDATA%%\.arenclient and nothing in the registry, no startup entry.
+        echo %%APPDATA%%\.divineclient and nothing in the registry, no startup entry.
         echo.
         echo This build comes from build_exe.bat in the source folder. There is no
         echo public repository and no installer: the folder you unzipped is the

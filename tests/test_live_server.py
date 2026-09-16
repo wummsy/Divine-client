@@ -19,9 +19,9 @@ import time
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 os.environ.setdefault("XDG_DATA_HOME", tempfile.mkdtemp(prefix="divine-live-"))
 
-from arenclient import paths                                   # noqa: E402
-from arenclient.core import server_host, server_sessions       # noqa: E402
-from arenclient.core.instances import Instance                 # noqa: E402
+from divineclient import paths                                   # noqa: E402
+from divineclient.core import server_host, server_sessions       # noqa: E402
+from divineclient.core.instances import Instance                 # noqa: E402
 
 _PIDS = []
 MC = os.environ.get("DIVINE_LIVE_MC", "1.16.5")

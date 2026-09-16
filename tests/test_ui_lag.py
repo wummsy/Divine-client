@@ -37,14 +37,14 @@ sys.path.insert(0, os.path.dirname(HERE))
 from PIL import Image                                   # noqa: E402
 import customtkinter as ctk                              # noqa: E402
 
-from arenclient import paths                             # noqa: E402
+from divineclient import paths                             # noqa: E402
 paths.ensure_dirs()
-from arenclient.core import content_meta, instance_content, mod_manager   # noqa: E402
-from arenclient.core import net, modrinth                # noqa: E402
-from arenclient.core.instances import Instance, InstanceManager          # noqa: E402
-from arenclient.ui import imagedesk                      # noqa: E402
-from arenclient.ui.instance_editor import InstanceEditor  # noqa: E402
-from arenclient.ui.mod_browser import ModBrowser          # noqa: E402
+from divineclient.core import content_meta, instance_content, mod_manager   # noqa: E402
+from divineclient.core import net, modrinth                # noqa: E402
+from divineclient.core.instances import Instance, InstanceManager          # noqa: E402
+from divineclient.ui import imagedesk                      # noqa: E402
+from divineclient.ui.instance_editor import InstanceEditor  # noqa: E402
+from divineclient.ui.mod_browser import ModBrowser          # noqa: E402
 
 SLOW = 0.40                     # pretend Modrinth is having a bad day
 HITS = 20
@@ -169,7 +169,7 @@ def main():
     # The launcher installs the thread-safe `after` and starts its pump at boot
     # (ui/app.py); a harness that hands widgets to the image desk from a worker thread
     # has to do the same, or nothing that arrives off-thread is ever delivered.
-    from arenclient.ui import post as _post_mod
+    from divineclient.ui import post as _post_mod
     _post_mod.install()
     _post_mod.start(app)
     app.geometry("1000x700")

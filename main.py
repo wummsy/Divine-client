@@ -36,9 +36,9 @@ def _report(exc):
 
 
 def _data_dir():
-    """The launcher's data folder, same rules as arenclient.paths."""
+    """The launcher's data folder, same rules as divineclient.paths."""
     try:
-        from arenclient import paths
+        from divineclient import paths
         return paths.DATA_DIR
     except Exception:
         pass
@@ -139,12 +139,12 @@ def main():
 
     payload, wait_pid = _update_mode_args(sys.argv[1:])
     if payload:
-        from arenclient.ui.app import apply_update_and_exit
+        from divineclient.ui.app import apply_update_and_exit
         sys.exit(apply_update_and_exit(payload, wait_pid))
 
     args = sys.argv[1:]
     if "--legacy-gui" in args:
-        from arenclient.ui.app import run
+        from divineclient.ui.app import run
         run()
         return
 
@@ -157,7 +157,7 @@ def main():
                 pass
 
     desktop = "--web" not in args and "--no-desktop" not in args
-    from arenclient.ui.web_view import launch_web_ui
+    from divineclient.ui.web_view import launch_web_ui
     launch_web_ui(port=port, host="0.0.0.0", desktop=desktop)
 
 

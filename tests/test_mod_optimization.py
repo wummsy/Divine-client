@@ -9,8 +9,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 
-from arenclient.core import mods, modrinth
-from arenclient.core.instances import InstanceManager
+from divineclient.core import mods, modrinth
+from divineclient.core.instances import InstanceManager
 
 
 def test_mod_stem_normalization():
@@ -93,10 +93,10 @@ def test_best_version_for_project_sorting():
         modrinth.get_versions = orig
 
 def test_validate_and_fix_instance_mods_api():
-    from arenclient import web_server
-    from arenclient.core.instances import InstanceManager
-    from arenclient.core.config import Config
-    import arenclient.paths as paths
+    from divineclient import web_server
+    from divineclient.core.instances import InstanceManager
+    from divineclient.core.config import Config
+    import divineclient.paths as paths
 
     td = tempfile.mkdtemp()
     try:

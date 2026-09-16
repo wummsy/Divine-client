@@ -3,8 +3,8 @@ import json
 import os
 import time
 
-from arenclient.core import ingame_bridge
-from arenclient import web_server
+from divineclient.core import ingame_bridge
+from divineclient import web_server
 
 
 class TestInGameModBridgeAndCosmetics(unittest.TestCase):

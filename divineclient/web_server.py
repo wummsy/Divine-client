@@ -2,7 +2,7 @@
 
 Serves the modern Next-Gen HTML5/CSS3/JS user interface and provides
 comprehensive REST and streaming APIs directly interfacing with
-arenclient.core modules.
+divineclient.core modules.
 """
 
 import hashlib
@@ -60,12 +60,12 @@ def _resolve_web_dir():
     cand1 = os.path.join(os.path.dirname(__file__), "web")
     if os.path.isdir(cand1):
         return cand1
-    cand2 = paths.resource_path(os.path.join("arenclient", "web"))
+    cand2 = paths.resource_path(os.path.join("divineclient", "web"))
     if os.path.isdir(cand2):
         return cand2
     if getattr(sys, "frozen", False):
         exe_dir = os.path.dirname(sys.executable)
-        for sub in ("_internal/arenclient/web", "arenclient/web", "web", "_internal/web"):
+        for sub in ("_internal/divineclient/web", "divineclient/web", "web", "_internal/web"):
             p = os.path.join(exe_dir, sub)
             if os.path.isdir(p):
                 return p
@@ -200,7 +200,7 @@ def serve_assets(filename):
         os.path.join(ASSETS_DIR, filename),
         os.path.join(WEB_DIR, "assets", filename),
         paths.resource_path(os.path.join("assets", filename)),
-        paths.resource_path(os.path.join("arenclient", "web", "assets", filename)),
+        paths.resource_path(os.path.join("divineclient", "web", "assets", filename)),
         os.path.join(os.path.dirname(os.path.abspath(__file__)), "web", "assets", filename),
         os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "assets", filename)
     ]

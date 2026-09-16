@@ -10,10 +10,10 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 
-from arenclient import paths
-from arenclient.core.config import Config
-from arenclient.core.instances import InstanceManager
-from arenclient import web_server
+from divineclient import paths
+from divineclient.core.config import Config
+from divineclient.core.instances import InstanceManager
+from divineclient import web_server
 
 
 @pytest.fixture
@@ -284,7 +284,7 @@ def test_server_sub_user_access(test_env):
 
 def test_friend_management_routes(test_env, monkeypatch):
     client = test_env["client"]
-    from arenclient.core import social
+    from divineclient.core import social
 
     # Mock social actions to simulate connected user responses
     monkeypatch.setattr(social, "add_friend", lambda cfg, u: {"success": True, "target": u})
@@ -325,7 +325,7 @@ def test_clear_servers_data_endpoint(test_env):
 
 def test_redeem_code_verification_online_and_offline(test_env, monkeypatch):
     client = test_env["client"]
-    from arenclient.core import endpoints
+    from divineclient.core import endpoints
 
     # 1. Test empty code error
     res = client.post("/api/servers/redeem", json={"code": ""})
@@ -406,7 +406,7 @@ def test_server_plugin_store_and_install(test_env, monkeypatch):
     client = test_env["client"]
     inst = test_env["inst"]
     sdir = test_env["sdir"]
-    from arenclient.core import modrinth
+    from divineclient.core import modrinth
 
     # Mock modrinth search and versions
     monkeypatch.setattr(modrinth, "search", lambda query, mc_version=None, loader="paper", category=None, project_type="plugin", limit=24, offset=0: (

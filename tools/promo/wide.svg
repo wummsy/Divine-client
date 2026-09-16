@@ -31,5 +31,5 @@
 <circle cx="60" cy="300" r="6" fill="#38e1d0"/><text x="80" y="307" fill="#f3f6fc" font-family="Segoe UI,Arial" font-size="20">An announcement in the launcher news feed, read by every install</text><circle cx="60" cy="346" r="6" fill="#38e1d0"/><text x="80" y="353" fill="#f3f6fc" font-family="Segoe UI,Arial" font-size="20">A co-branded instance preset: your mods, packs and server, one click</text><circle cx="60" cy="392" r="6" fill="#38e1d0"/><text x="80" y="399" fill="#f3f6fc" font-family="Segoe UI,Arial" font-size="20">Aren listed in your events channel graphic, our side too</text><circle cx="60" cy="438" r="6" fill="#38e1d0"/><text x="80" y="445" fill="#f3f6fc" font-family="Segoe UI,Arial" font-size="20">Early builds and a direct line to the dev team for your staff</text>
 <rect x="56" y="526" width="1488" height="1" fill="#20263a"/>
 <text x="56" y="570" fill="#6ff4e6" font-family="Segoe UI,Arial" font-size="26" font-weight="700">Apply: discord.gg/ER2haQtach</text>
-<text x="1544" y="570" fill="#5a6280" font-family="Segoe UI,Arial" font-size="18" text-anchor="end">info: arenclient.wispbyte.org</text>
+<text x="1544" y="570" fill="#5a6280" font-family="Segoe UI,Arial" font-size="18" text-anchor="end">info: divineclient.wispbyte.org</text>
 </svg>

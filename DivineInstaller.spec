@@ -8,7 +8,7 @@ PROJECT_ROOT = os.path.abspath(os.path.dirname(SPEC))
 ICON = os.path.join(PROJECT_ROOT, "assets", "icon.ico")
 
 def _app_version():
-    init = os.path.join(PROJECT_ROOT, "arenclient", "__init__.py")
+    init = os.path.join(PROJECT_ROOT, "divineclient", "__init__.py")
     try:
         with open(init, "r", encoding="utf-8") as handle:
             match = re.search(r'__version__\s*=\s*["\']([^"\']+)["\']', handle.read())

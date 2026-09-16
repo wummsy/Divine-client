@@ -23,8 +23,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, ROOT)
 
-from arenclient.core import defender                                  # noqa: E402
-from arenclient import paths                                          # noqa: E402
+from divineclient.core import defender                                  # noqa: E402
+from divineclient import paths                                          # noqa: E402
 
 paths.ensure_dirs()
 B = chr(92)             # one backslash; Windows paths below are built from this, not escaped
@@ -160,7 +160,7 @@ def _too_broad():
         (B + B + "box" + B + "share" + B + "aren", False, "one folder on a share"),
         (W("C:", "Games", "DivineClient"), False, "the app folder"),
         (W("C:", "Program Files", "DivineClient"), False, "the app folder, elsewhere"),
-        (W("C:", "Users", "me", "AppData", "Roaming", ".arenclient"), False, "the data folder"),
+        (W("C:", "Users", "me", "AppData", "Roaming", ".divineclient"), False, "the data folder"),
         (W("C:", "Users", "me", "AppData", "Local", "Temp", "x"), False, "a temp install"),
         ("/", True, "the posix root"),
         ("/home", True, "one level deep on posix"),
@@ -176,7 +176,7 @@ def _too_broad():
         assert defender.too_broad(W("C:", "Users", "me")) is True, "the profile itself"
         assert defender.too_broad(W("C:", "Users")) is True, "above the profile"
         assert defender.too_broad("C:") is True, "the drive, and so everything on it"
-        inside = W("C:", "Users", "me", "AppData", "Roaming", ".arenclient")
+        inside = W("C:", "Users", "me", "AppData", "Roaming", ".divineclient")
         assert defender.too_broad(inside) is False, "inside the profile is fine"
     finally:
         os.path.expanduser = real
@@ -375,7 +375,7 @@ def _apply_async_threads():
     import queue
     import threading
     import time as _t
-    from arenclient.ui import post as postmod
+    from divineclient.ui import post as postmod
     real = (defender.platform_ok, defender.apply)
     box = {}
 
@@ -412,7 +412,7 @@ def _apply_async_threads():
 
 @check("the config keys the flow needs are in DEFAULTS")
 def _defaults():
-    from arenclient.core import config as configmod
+    from divineclient.core import config as configmod
     for key in ("defender_asked", "defender_state", "defender_auto"):
         assert key in configmod.DEFAULTS, "%s is not a declared default" % key
     cfg = configmod.Config()
