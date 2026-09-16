@@ -1,0 +1,26 @@
+DIVINE CLIENT PROPRIETARY SOURCE LICENSE
+Copyright (c) 2026 wummsy / Divine Development Team. All rights reserved.
+
+1. PROPRIETARY RIGHTS & OWNERSHIP
+Divine Client (including all client mod source code, launcher architecture,
+dedicated server management engine, UI components, assets, Discord bot integration,
+and related documentation) is proprietary software owned exclusively by wummsy
+and the Divine Development Team.
+
+2. RESTRICTIONS
+You may NOT:
+a) Copy, redistribute, publish, sell, lease, or sublicense any portion of the source code,
+   binaries, or compiled mod packages.
+b) Reverse engineer, decompile, disassemble, or derive source code from any compiled binaries.
+c) Create derivative works, rebranded forks, or unauthorized client distributions based
+   on Divine Client.
+d) Use the Divine Client brand, logos, emblem, trademarks, or visual assets without express
+   written permission from the copyright holder.
+
+3. DISCLAIMER OF WARRANTY
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.
