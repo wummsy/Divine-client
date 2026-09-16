@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}{{ "Connected Successfully" if ok else "Connection Failed" }} — Divine Client{% endblock %}
+{% block body %}
+<div class="card" style="max-width: 520px; margin: 40px auto; text-align: center; padding: 36px 28px;">
+  <div style="width: 48px; height: 48px; border-radius: 50%; background: {{ 'rgba(16, 185, 129, 0.15)' if ok else 'rgba(239, 68, 68, 0.15)' }}; border: 1px solid {{ 'rgba(16, 185, 129, 0.4)' if ok else 'rgba(239, 68, 68, 0.4)' }}; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; color: {{ 'var(--success)' if ok else 'var(--danger)' }}; font-size: 20px; font-weight: 800;">
+    {{ "OK" if ok else "!" }}
+  </div>
+  <div class="card-title" style="font-size: 20px; color: {{ 'var(--success)' if ok else 'var(--danger)' }};">
+    {{ "Discord Connected Successfully" if ok else "Unable to Complete Authorization" }}
+  </div>
+  <div class="card-desc" style="margin: 10px 0 24px; font-size: 13.5px;">{{ message }}</div>
+  {% if ok %}
+  <div style="font-size: 12.5px; color: var(--text-faint);">You can safely close this browser window and return to Divine Client.</div>
+  {% else %}
+  <a class="btn" href="/link">Try Again</a>
+  {% endif %}
+</div>
+{% endblock %}

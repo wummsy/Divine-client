@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="600" viewBox="0 0 1600 600">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#0a0c12"/><stop offset="1" stop-color="#0d111c"/>
+  </linearGradient>
+  <radialGradient id="glow" cx="0.2" cy="0" r="0.9">
+    <stop offset="0" stop-color="#38e1d0" stop-opacity="0.30"/>
+    <stop offset="1" stop-color="#38e1d0" stop-opacity="0"/>
+  </radialGradient>
+  <radialGradient id="glow2" cx="0.95" cy="0.3" r="0.7">
+    <stop offset="0" stop-color="#9b7bff" stop-opacity="0.26"/>
+    <stop offset="1" stop-color="#9b7bff" stop-opacity="0"/>
+  </radialGradient>
+</defs>
+<rect width="1600" height="600" fill="url(#bg)"/>
+<rect width="1600" height="600" fill="url(#glow)"/>
+<rect width="1600" height="600" fill="url(#glow2)"/>
+<g opacity="0.05" stroke="#ffffff"><path d="M0 40H1600M0 80H1600M0 120H1600M0 160H1600M0 200H1600M0 240H1600M0 280H1600M0 320H1600M0 360H1600M0 400H1600M0 440H1600M0 480H1600M40 0V600M80 0V600M120 0V600M160 0V600M200 0V600M240 0V600M280 0V600M320 0V600M360 0V600M400 0V600M440 0V600M480 0V600M520 0V600M560 0V600M600 0V600M640 0V600M680 0V600M720 0V600M760 0V600M800 0V600M840 0V600M880 0V600M920 0V600M960 0V600M1000 0V600M1040 0V600M1080 0V600M1120 0V600M1160 0V600M1200 0V600M1240 0V600M1280 0V600M1320 0V600M1360 0V600M1400 0V600M1440 0V600M1480 0V600M1520 0V600M1560 0V600"/></g>
+<g transform="translate(56 44) scale(0.98)">
+  <rect width="118" height="118" rx="26" fill="#141a2b" stroke="#242c44" stroke-width="2"/>
+  <polygon points="59,26 92,44 59,62 26,44" fill="#4be6d6"/>
+  <polygon points="26,44 59,62 59,96 26,78" fill="#8f6dff"/>
+  <polygon points="92,44 92,78 59,96 59,62" fill="#22b6a8"/>
+</g>
+<text x="200" y="108" fill="#f3f6fc" font-family="Segoe UI,Arial" font-size="52" font-weight="700" letter-spacing="1">AREN</text>
+<text x="316" y="108" fill="#9098b4" font-family="Segoe UI,Arial" font-size="52" letter-spacing="1">CLIENT</text>
+<rect x="56" y="196" width="252" height="38" rx="10" fill="#9b7bff"/>
+<text x="72" y="222" fill="#0b0720" font-family="Segoe UI,Arial" font-size="17" font-weight="700" letter-spacing="2">DISCORD PARTNERSHIPS</text>
+<text x="56" y="300" fill="#f3f6fc" font-family="Segoe UI,Arial" font-size="62" font-weight="700">Partner with Aren Client</text>
+<text x="56" y="346" fill="#9098b4" font-family="Segoe UI,Arial" font-size="22">We feature your community to Minecraft players who already use the launcher.</text>
+<circle cx="60" cy="300" r="6" fill="#38e1d0"/><text x="80" y="307" fill="#f3f6fc" font-family="Segoe UI,Arial" font-size="20">An announcement in the launcher news feed, read by every install</text><circle cx="60" cy="346" r="6" fill="#38e1d0"/><text x="80" y="353" fill="#f3f6fc" font-family="Segoe UI,Arial" font-size="20">A co-branded instance preset: your mods, packs and server, one click</text><circle cx="60" cy="392" r="6" fill="#38e1d0"/><text x="80" y="399" fill="#f3f6fc" font-family="Segoe UI,Arial" font-size="20">Aren listed in your events channel graphic, our side too</text><circle cx="60" cy="438" r="6" fill="#38e1d0"/><text x="80" y="445" fill="#f3f6fc" font-family="Segoe UI,Arial" font-size="20">Early builds and a direct line to the dev team for your staff</text>
+<rect x="56" y="526" width="1488" height="1" fill="#20263a"/>
+<text x="56" y="570" fill="#6ff4e6" font-family="Segoe UI,Arial" font-size="26" font-weight="700">Apply: discord.gg/ER2haQtach</text>
+<text x="1544" y="570" fill="#5a6280" font-family="Segoe UI,Arial" font-size="18" text-anchor="end">info: arenclient.wispbyte.org</text>
+</svg>

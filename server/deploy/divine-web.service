@@ -1,0 +1,29 @@
+# Divine Client website + API (systemd unit)
+# Install: copy to /etc/systemd/system/divine-web.service, then
+#   sudo systemctl daemon-reload && sudo systemctl enable --now divine-web
+[Unit]
+Description=Divine Client web + API
+After=network.target
+
+[Service]
+Type=simple
+# adjust User and paths to your server
+User=divine
+WorkingDirectory=/opt/divine/server
+# The domain is the canonical address; old links on the bare IP:port are 301'd
+# here by the app, so keep these two in step with each other.
+Environment=PUBLIC_BASE_URL=https://divineclient.wispbyte.org
+Environment=OAUTH_REDIRECT_URI=https://divineclient.wispbyte.org/discord/callback
+Environment=DISCORD_CLIENT_ID=1544313910096560128
+Environment=DISCORD_CLIENT_SECRET=CHANGE_ME
+Environment=SECRET_KEY=CHANGE_ME_long_random_string
+Environment=DIVINE_DB=/opt/divine/server/divine.db
+# -b 0.0.0.0 is for a box that serves the port directly. Behind nginx/Caddy on the
+# same machine (deploy/nginx-divineclient.conf, deploy/Caddyfile), bind to
+# 127.0.0.1:10230 instead so only the proxy is reachable and TLS is their job.
+ExecStart=/opt/divine/server/.venv/bin/gunicorn -w 2 -b 0.0.0.0:10230 app:app
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

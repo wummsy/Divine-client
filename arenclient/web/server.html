@@ -1,0 +1,2084 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Divine Dedicated Server Control Panel</title>
+  <link rel="icon" type="image/png" href="/assets/divine_icon.png">
+  <link rel="shortcut icon" href="/assets/icon.ico">
+  <link rel="stylesheet" href="/css/theme.css">
+  <style>
+    :root {
+      --bg-base: var(--bg-app, #090a0f);
+      --bg-header: var(--bg-topbar, #0c0e14);
+      --bg-sidebar: var(--bg-sidebar, #0c0e14);
+      --bg-card: var(--bg-card, rgba(16, 18, 26, 0.78));
+      --bg-card-hover: var(--bg-card-hover, rgba(24, 27, 38, 0.9));
+      --bg-input: var(--bg-input, #11131a);
+      --bg-terminal: var(--bg-terminal, #07080c);
+      --border-subtle: var(--border-subtle, rgba(255, 255, 255, 0.08));
+      --border-card: var(--border-card, rgba(255, 255, 255, 0.1));
+      --border-focus: var(--accent-primary, #ffffff);
+      --text-main: var(--text-primary, #ffffff);
+      --text-muted: var(--text-muted, #94a3b8);
+      --text-dim: var(--text-secondary, #cbd5e1);
+      --accent-cyan: var(--accent-white, #ffffff);
+      --accent-primary: var(--accent-primary, #ffffff);
+      --status-green: var(--status-success, #22c55e);
+      --status-yellow: var(--status-warning, #f59e0b);
+      --status-red: var(--status-danger, #ef4444);
+      --radius-sm: 4px;
+      --radius-md: 6px;
+      --radius-lg: 10px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: #090a0f;
+      color: var(--text-main);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Scrollbars */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.4); }
+    ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.4); }
+
+    /* Top Navbar Header */
+    .top-navbar {
+      height: 48px;
+      background: var(--bg-header);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      flex-shrink: 0;
+      z-index: 30;
+    }
+
+    .top-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .top-brand-logo {
+      width: 22px;
+      height: 22px;
+      object-fit: contain;
+      filter: grayscale(100%) brightness(1.2);
+    }
+
+    .server-status-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--text-main);
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--text-muted);
+      display: inline-block;
+      transition: background 0.3s;
+    }
+    .live-dot.online { background: var(--status-green); box-shadow: 0 0 8px rgba(16, 185, 129, 0.6); }
+    .live-dot.booting { background: var(--status-yellow); box-shadow: 0 0 8px rgba(245, 158, 11, 0.6); }
+    .live-dot.crashed { background: var(--status-red); box-shadow: 0 0 8px rgba(239, 68, 68, 0.6); }
+
+    .top-stats-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-left: 12px;
+      border-left: 1px solid var(--border-subtle);
+      padding-left: 14px;
+      font-family: ui-monospace, monospace;
+      font-size: 11.5px;
+      color: var(--text-dim);
+    }
+
+    .top-stat-item b {
+      color: var(--text-main);
+      font-weight: 700;
+    }
+
+    .top-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .power-btn-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .p-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-dim);
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s ease;
+    }
+    .p-btn:hover { background: rgba(255, 255, 255, 0.1); color: var(--text-main); }
+    .p-btn.start:hover { background: rgba(16, 185, 129, 0.2); color: var(--status-green); border-color: rgba(16, 185, 129, 0.4); }
+    .p-btn.restart:hover { background: rgba(245, 158, 11, 0.2); color: var(--status-yellow); border-color: rgba(245, 158, 11, 0.4); }
+    .p-btn.stop:hover { background: rgba(239, 68, 68, 0.2); color: var(--status-red); border-color: rgba(239, 68, 68, 0.4); }
+
+    .user-profile-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-subtle);
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+    .user-avatar-circle {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #1e293b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    /* Main Container Split */
+    .app-main-layout {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* Left Slim Icon Sidebar */
+    .left-icon-sidebar {
+      width: 52px;
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border-subtle);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px 0;
+      gap: 4px;
+      flex-shrink: 0;
+      z-index: 20;
+    }
+
+    .icon-nav-btn {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-sm);
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      position: relative;
+    }
+    .icon-nav-btn svg {
+      width: 18px;
+      height: 18px;
+      stroke-width: 1.8;
+    }
+    .icon-nav-btn:hover {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-main);
+    }
+    .icon-nav-btn.active {
+      background: rgba(56, 225, 208, 0.1);
+      color: var(--accent-cyan);
+    }
+    .icon-nav-btn.active::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 8px;
+      bottom: 8px;
+      width: 3px;
+      background: var(--accent-cyan);
+      border-radius: 0 2px 2px 0;
+    }
+
+    .icon-sidebar-footer {
+      margin-top: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Tooltip */
+    .icon-nav-btn[data-tip]:hover::after {
+      content: attr(data-tip);
+      position: absolute;
+      left: 56px;
+      background: #0f172a;
+      border: 1px solid var(--border-card);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+      z-index: 100;
+      pointer-events: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    }
+
+    /* Workspace Content Area */
+    .workspace-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: var(--bg-base);
+    }
+
+    .tab-view {
+      display: none;
+      height: 100%;
+      width: 100%;
+      overflow-y: auto;
+    }
+    .tab-view.active {
+      display: flex;
+    }
+
+    /* CONSOLE VIEW: Split Center Terminal & Right Sidebar Widgets */
+    .console-layout {
+      display: flex;
+      flex: 1;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .terminal-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-terminal);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .terminal-output-screen {
+      flex: 1;
+      padding: 16px;
+      overflow-y: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 12.5px;
+      line-height: 1.5;
+      color: #cbd5e1;
+      user-select: text;
+    }
+
+    .log-line {
+      margin-bottom: 2px;
+      word-break: break-all;
+      white-space: pre-wrap;
+    }
+    .log-line.info { color: #94a3b8; }
+    .log-line.warn { color: #f59e0b; }
+    .log-line.error { color: #ef4444; font-weight: 700; }
+    .log-line.player { color: #10b981; font-weight: 700; }
+    .log-line.system { color: #38e1d0; font-weight: 700; }
+    .log-line.pterodactyl { color: #64748b; font-family: monospace; }
+
+    .terminal-input-bar {
+      height: 46px;
+      background: #05070c;
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      gap: 10px;
+    }
+
+    .terminal-prompt-chevron {
+      color: var(--text-muted);
+      font-family: monospace;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .terminal-input-field {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #fff;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 13px;
+      user-select: text;
+    }
+
+    .terminal-shortcut-badge {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-subtle);
+      border-radius: 4px;
+      padding: 2px 7px;
+      font-size: 11px;
+      color: var(--text-muted);
+      font-family: monospace;
+    }
+
+    /* Right Telemetry Sidebar Widgets */
+    .telemetry-sidebar {
+      width: 280px;
+      background: var(--bg-sidebar);
+      border-left: 1px solid var(--border-subtle);
+      display: flex;
+      flex-direction: column;
+      padding: 14px;
+      gap: 12px;
+      overflow-y: auto;
+      flex-shrink: 0;
+    }
+
+    .widget-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .widget-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-dim);
+    }
+
+    .widget-val-main {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--text-main);
+      font-family: ui-monospace, monospace;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .widget-chart-wrap {
+      width: 100%;
+      height: 70px;
+      position: relative;
+      margin-top: 4px;
+    }
+
+    .chart-axis-labels {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      font-size: 9px;
+      color: var(--text-muted);
+      font-family: monospace;
+      pointer-events: none;
+    }
+
+    .chart-svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    /* Other Sub-Panels (Files, Options, Plugins, Users, Networking) */
+    .generic-panel-wrap {
+      flex: 1;
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .panel-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-lg);
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .panel-header-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+    .panel-header-desc {
+      font-size: 12.5px;
+      color: var(--text-dim);
+      margin-top: 2px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 7px 14px;
+      font-size: 12.5px;
+      font-weight: 700;
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .btn-sm { padding: 4px 10px; font-size: 11.5px; }
+    .btn-primary { background: #2563eb; color: #fff; border-color: #2563eb; }
+    .btn-primary:hover { background: #1d4ed8; border-color: #1d4ed8; }
+    .btn-secondary { background: rgba(255, 255, 255, 0.06); border-color: var(--border-card); color: var(--text-main); }
+    .btn-secondary:hover { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.2); }
+    .btn-danger { background: #dc2626; color: #fff; border-color: #dc2626; }
+    .btn-danger:hover { background: #b91c1c; border-color: #b91c1c; }
+
+    /* Form Inputs */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .input-label {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .input-field {
+      background: var(--bg-input);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-sm);
+      padding: 9px 12px;
+      color: var(--text-main);
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .input-field:focus { border-color: var(--border-focus); }
+
+    /* File Explorer Specific */
+    .file-breadcrumb-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: monospace;
+      font-size: 12.5px;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-card);
+      overflow-x: auto;
+    }
+    .crumb-link { color: var(--accent-cyan); cursor: pointer; font-weight: 700; }
+    .crumb-link:hover { text-decoration: underline; }
+
+    .file-item-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .file-item-row:hover { background: var(--bg-card-hover); }
+
+    .code-editor-box {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      background: #020408;
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      margin-bottom: 14px;
+    }
+    .editor-textarea {
+      width: 100%;
+      height: 380px;
+      background: #050810;
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-sm);
+      color: #f8fafc;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 12.5px;
+      line-height: 1.5;
+      padding: 12px;
+      outline: none;
+      user-select: text;
+      resize: vertical;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--bg-card);
+      border: 1px solid var(--accent-cyan);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      padding: 12px 20px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+      z-index: 999;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { border-color: var(--status-green); }
+    .toast.error { border-color: var(--status-red); }
+    .toast.info { border-color: var(--accent-cyan); }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="top-navbar">
+    <div class="top-left">
+      <div style="width: 26px; height: 26px; filter: drop-shadow(0 0 6px rgba(255,255,255,0.4)); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+        <svg viewBox="0 0 256 256" style="width: 100%; height: 100%;">
+          <g fill="#ffffff">
+            <g transform="rotate(0 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+            <g transform="rotate(45 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+            <g transform="rotate(90 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+            <g transform="rotate(135 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+            <g transform="rotate(180 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+            <g transform="rotate(225 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+            <g transform="rotate(270 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+            <g transform="rotate(315 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+            <circle cx="128" cy="128" r="34"/>
+          </g>
+          <circle cx="128" cy="128" r="58" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="server-status-pill">
+        <span class="live-dot" id="header-live-dot"></span>
+        <img id="header-server-icon" src="/assets/loader_paper.svg" style="width: 18px; height: 18px; border-radius: 4px; object-fit: contain;" onerror="this.src='/assets/loader_vanilla.svg'">
+        <span id="header-server-name">Loading Server...</span>
+      </div>
+
+      <div class="top-stats-row">
+        <span class="top-stat-item">CPU <b id="top-cpu-metric">0.0%</b></span>
+        <span class="top-stat-item">RAM <b id="top-ram-metric">0 MB</b></span>
+        <span class="top-stat-item">DISK <b id="top-disk-metric">0 MB</b></span>
+      </div>
+    </div>
+
+    <div class="top-right">
+      <div class="power-btn-group">
+        <button class="p-btn start" id="btn-start" onclick="actionStart()">
+          <span>▶ Start</span>
+        </button>
+        <button class="p-btn restart" id="btn-restart" onclick="actionRestart()">
+          <span>↻ Restart</span>
+        </button>
+        <button class="p-btn stop" id="btn-stop" onclick="actionStop()">
+          <span>■ Stop</span>
+        </button>
+      </div>
+
+      <div class="user-profile-badge">
+        <div class="user-avatar-circle" id="user-avatar-circle">A</div>
+        <span id="user-display-name">DivineAdmin</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <div class="app-main-layout">
+
+    <!-- Left Slim Icon Sidebar -->
+    <nav class="left-icon-sidebar">
+      <button class="icon-nav-btn active" data-tip="Terminal Console" data-tab="console" onclick="switchView('console')">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+      </button>
+
+      <button class="icon-nav-btn" data-tip="File Manager" data-tab="files" onclick="switchView('files')">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+      </button>
+
+      <button class="icon-nav-btn" data-tip="Plugin Store" data-tab="marketplace" onclick="switchView('marketplace')">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+      </button>
+
+      <button class="icon-nav-btn" data-tip="Server Properties" data-tab="options" onclick="switchView('options')">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+      </button>
+
+      <button class="icon-nav-btn" data-tip="Network &amp; Tunneling" data-tab="networking" onclick="switchView('networking')">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
+      </button>
+
+      <button class="icon-nav-btn" data-tip="Players &amp; Whitelist" data-tab="players" onclick="switchView('players')">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+      </button>
+
+      <button class="icon-nav-btn" data-tip="Sub-Users &amp; Access" data-tab="users" onclick="switchView('users')">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+      </button>
+
+      <button class="icon-nav-btn" data-tip="Server Settings &amp; Icon" data-tab="settings" onclick="switchView('settings')">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+      </button>
+
+      <div class="icon-sidebar-footer">
+        <button class="icon-nav-btn" data-tip="Back to Launcher" onclick="window.close()">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 15l-3-3m0 0l3-3m-3 3h8M3 12a9 9 0 1118 0 9 9 0 01-18 0z"/></svg>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Workspace Viewports -->
+    <main class="workspace-area">
+
+      <!-- TAB 1: Console View (Pterodactyl Layout) -->
+      <section class="tab-view active console-layout" id="view-console">
+        <!-- Center Terminal -->
+        <div class="terminal-section">
+          <div class="terminal-output-screen" id="terminal-screen">
+            <div class="log-line pterodactyl">container@pterodactyl~ Server marked as starting...</div>
+            <div class="log-line pterodactyl">container@pterodactyl~ java -version</div>
+            <div class="log-line info">openjdk version "21.0.2" Temurin (build 21.0.2+13-LTS)</div>
+            <div class="log-line pterodactyl">container@pterodactyl~ java -Xms1024M -Xmx2048M -jar server.jar nogui</div>
+            <div class="log-line system">[Divine Server Engine] Live dedicated server console attached.</div>
+          </div>
+
+          <div class="terminal-input-bar">
+            <span class="terminal-prompt-chevron">&gt;</span>
+            <input type="text" class="terminal-input-field" id="terminal-cmd-input" placeholder="Enter a command..." onkeydown="handleConsoleKey(event)">
+            <span class="terminal-shortcut-badge">/</span>
+            <button class="btn btn-primary btn-sm" onclick="sendConsoleCommand()">Send</button>
+          </div>
+        </div>
+
+        <!-- Right Telemetry Widgets Sidebar -->
+        <aside class="telemetry-sidebar">
+          <!-- IP Address Widget -->
+          <div class="widget-card" style="cursor: pointer;" onclick="copyServerIP()" title="Click to copy join address">
+            <div class="widget-header-row">
+              <span>IP Address</span>
+              <span style="font-size: 11px; color: var(--accent-cyan);">Copy</span>
+            </div>
+            <div class="widget-val-main" id="side-ip-display" style="color: var(--accent-cyan);">localhost:25565</div>
+          </div>
+
+          <!-- Uptime Widget -->
+          <div class="widget-card">
+            <div class="widget-header-row">
+              <span>Uptime</span>
+              <span style="font-size: 10px; text-transform: uppercase;" id="side-status-text">OFFLINE</span>
+            </div>
+            <div class="widget-val-main" id="side-uptime-display">--</div>
+          </div>
+
+          <!-- CPU Graph Widget -->
+          <div class="widget-card">
+            <div class="widget-header-row">
+              <span>CPU</span>
+              <span id="side-cpu-text" style="color: var(--accent-cyan);">0.00%</span>
+            </div>
+            <div class="widget-chart-wrap">
+              <div class="chart-axis-labels">
+                <span>300.00%</span>
+                <span>150.00%</span>
+                <span>0.00%</span>
+              </div>
+              <svg class="chart-svg" id="chart-cpu-svg" viewBox="0 0 240 70" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="cpu-grad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#38e1d0" stop-opacity="0.35"/>
+                    <stop offset="100%" stop-color="#38e1d0" stop-opacity="0.0"/>
+                  </linearGradient>
+                </defs>
+                <path id="chart-cpu-area" fill="url(#cpu-grad)" d="M 0 70 L 240 70 Z"/>
+                <path id="chart-cpu-line" fill="none" stroke="#38e1d0" stroke-width="2" d="M 0 70 L 240 70"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- RAM Graph Widget -->
+          <div class="widget-card">
+            <div class="widget-header-row">
+              <span>RAM</span>
+              <span id="side-ram-text" style="color: #60a5fa;">0 MiB</span>
+            </div>
+            <div class="widget-chart-wrap">
+              <div class="chart-axis-labels">
+                <span id="axis-ram-max">2048 MiB</span>
+                <span id="axis-ram-mid">1024 MiB</span>
+                <span>0 MiB</span>
+              </div>
+              <svg class="chart-svg" id="chart-ram-svg" viewBox="0 0 240 70" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="ram-grad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#60a5fa" stop-opacity="0.35"/>
+                    <stop offset="100%" stop-color="#60a5fa" stop-opacity="0.0"/>
+                  </linearGradient>
+                </defs>
+                <path id="chart-ram-area" fill="url(#ram-grad)" d="M 0 70 L 240 70 Z"/>
+                <path id="chart-ram-line" fill="none" stroke="#60a5fa" stroke-width="2" d="M 0 70 L 240 70"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Network Activity Graph Widget -->
+          <div class="widget-card">
+            <div class="widget-header-row">
+              <span>Network Activity</span>
+              <div style="display: flex; gap: 4px; font-size: 11px;">
+                <span style="color: #38e1d0;">↓</span>
+                <span style="color: #f59e0b;">↑</span>
+              </div>
+            </div>
+            <div class="widget-chart-wrap">
+              <div class="chart-axis-labels">
+                <span>64 KiB</span>
+                <span>32 KiB</span>
+                <span>0 Bytes</span>
+              </div>
+              <svg class="chart-svg" id="chart-net-svg" viewBox="0 0 240 70" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="net-grad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.3"/>
+                    <stop offset="100%" stop-color="#f59e0b" stop-opacity="0.0"/>
+                  </linearGradient>
+                </defs>
+                <path id="chart-net-area" fill="url(#net-grad)" d="M 0 70 L 240 70 Z"/>
+                <path id="chart-net-line" fill="none" stroke="#f59e0b" stroke-width="2" d="M 0 70 L 240 70"/>
+              </svg>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <!-- TAB 2: File Manager -->
+      <section class="tab-view" id="view-files">
+        <div class="generic-panel-wrap">
+          <div class="panel-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+              <div>
+                <div class="panel-header-title">Server File Explorer</div>
+                <div class="file-breadcrumb-bar" id="file-breadcrumb-bar" style="margin-top: 6px;">
+                  <span class="crumb-link" onclick="loadDirectoryFiles('')">/ (root)</span>
+                </div>
+              </div>
+
+              <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+                <input type="text" id="file-search-input" class="input-field" placeholder="Filter files..." style="padding: 5px 10px; font-size: 12px; min-width: 160px;" oninput="filterFilesList()">
+                <button class="btn btn-primary btn-sm" onclick="promptNewFile()">+ New File</button>
+                <button class="btn btn-secondary btn-sm" onclick="promptNewFolder()">+ New Folder</button>
+                <label class="btn btn-secondary btn-sm" style="cursor: pointer;">
+                  <span>Upload</span>
+                  <input type="file" id="file-upload-input" multiple style="display: none;" onchange="handleFileUpload(event)">
+                </label>
+                <button class="btn btn-secondary btn-sm" onclick="loadDirectoryFiles(currentSub)">Refresh</button>
+                <button class="btn btn-secondary btn-sm" onclick="openServerFolder()">Open Explorer</button>
+              </div>
+            </div>
+
+            <!-- Code Editor Box -->
+            <div class="code-editor-box" id="file-editor-box">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-weight: 800; font-family: monospace; font-size: 13.5px; color: var(--accent-cyan);" id="file-editor-title">editing file</span>
+                  <span id="file-editor-modified-pill" style="display: none; background: rgba(245, 158, 11, 0.2); color: #f59e0b; font-size: 10px; padding: 2px 6px; border-radius: 4px;">Unsaved</span>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                  <button class="btn btn-secondary btn-sm" onclick="downloadCurrentFile()">Download</button>
+                  <button class="btn btn-secondary btn-sm" onclick="closeFileEditor()">Close</button>
+                  <button class="btn btn-primary btn-sm" onclick="saveFileEditorContent()">Save Changes (Ctrl+S)</button>
+                </div>
+              </div>
+              <textarea id="file-editor-content" class="editor-textarea" placeholder="File content..." oninput="document.getElementById('file-editor-modified-pill').style.display='inline-block'" onkeydown="handleEditorKeyDown(event)"></textarea>
+            </div>
+
+            <!-- File Table -->
+            <div style="background: rgba(0, 0, 0, 0.25); border: 1px solid var(--border-card); border-radius: var(--radius-md); overflow: hidden;">
+              <div id="files-list-container" style="max-height: 520px; overflow-y: auto;">
+                <div style="padding: 24px; text-align: center; color: var(--text-muted);">Loading files...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: Marketplace / Plugins -->
+      <section class="tab-view" id="view-marketplace">
+        <div class="generic-panel-wrap">
+          <div class="panel-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+              <div>
+                <div class="panel-header-title">Modrinth Plugin Marketplace</div>
+                <div class="panel-header-desc">Install Bukkit and Paper plugins directly into your dedicated server.</div>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <input type="text" class="input-field" id="input-plugin-search" placeholder="Search plugins (e.g. LuckPerms, Essentials)..." style="width: 280px;" onkeydown="if(event.key==='Enter') searchPlugins()">
+                <button class="btn btn-primary" onclick="searchPlugins()">Search</button>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+              <button class="btn btn-secondary btn-sm" onclick="searchPlugins('')">Popular Plugins</button>
+              <button class="btn btn-secondary btn-sm" onclick="searchPlugins('luckperms')">Permissions</button>
+              <button class="btn btn-secondary btn-sm" onclick="searchPlugins('worldedit')">World Management</button>
+              <button class="btn btn-secondary btn-sm" onclick="searchPlugins('chunky')">Optimization</button>
+              <button class="btn btn-secondary btn-sm" onclick="searchPlugins('voice')">Voice Chat</button>
+              <button class="btn btn-secondary btn-sm" onclick="searchPlugins('vault')">Economy</button>
+            </div>
+
+            <div id="plugins-search-results" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; max-height: 380px; overflow-y: auto;"></div>
+
+            <div style="margin-top: 10px; border-top: 1px solid var(--border-card); padding-top: 14px;">
+              <div class="panel-header-title" style="font-size: 14px; margin-bottom: 10px;">Installed Plugins in /plugins</div>
+              <div id="installed-plugins-list" style="display: flex; flex-direction: column; gap: 6px; max-height: 250px; overflow-y: auto;">
+                <div style="color: var(--text-muted); font-size: 12px; text-align: center; padding: 12px;">No plugins installed.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 4: Server Properties -->
+      <section class="tab-view" id="view-options">
+        <div class="generic-panel-wrap">
+          <div class="panel-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <div class="panel-header-title">Server Properties Configuration</div>
+                <div class="panel-header-desc">Edit server parameters without manual formatting.</div>
+              </div>
+              <button class="btn btn-primary" onclick="savePropertiesForm()">Save &amp; Apply</button>
+            </div>
+
+            <div class="form-grid">
+              <div class="input-group">
+                <label class="input-label">Server MOTD</label>
+                <input type="text" class="input-field" id="prop-motd">
+              </div>
+              <div class="input-group">
+                <label class="input-label">Server Port</label>
+                <input type="number" class="input-field" id="prop-server-port" value="25565">
+              </div>
+              <div class="input-group">
+                <label class="input-label">Max Players</label>
+                <input type="number" class="input-field" id="prop-max-players" value="20">
+              </div>
+              <div class="input-group">
+                <label class="input-label">Game Mode</label>
+                <select class="input-field" id="prop-gamemode">
+                  <option value="survival">Survival</option>
+                  <option value="creative">Creative</option>
+                  <option value="adventure">Adventure</option>
+                  <option value="spectator">Spectator</option>
+                </select>
+              </div>
+              <div class="input-group">
+                <label class="input-label">Difficulty</label>
+                <select class="input-field" id="prop-difficulty">
+                  <option value="peaceful">Peaceful</option>
+                  <option value="easy">Easy</option>
+                  <option value="normal">Normal</option>
+                  <option value="hard">Hard</option>
+                </select>
+              </div>
+              <div class="input-group">
+                <label class="input-label">PVP Combat</label>
+                <select class="input-field" id="prop-pvp">
+                  <option value="true">Enabled</option>
+                  <option value="false">Disabled</option>
+                </select>
+              </div>
+              <div class="input-group">
+                <label class="input-label">Online Mode</label>
+                <select class="input-field" id="prop-online-mode">
+                  <option value="true">Enabled (Official accounts)</option>
+                  <option value="false">Disabled (Offline mode)</option>
+                </select>
+              </div>
+              <div class="input-group">
+                <label class="input-label">Whitelist</label>
+                <select class="input-field" id="prop-white-list">
+                  <option value="false">Disabled</option>
+                  <option value="true">Enabled</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 5: Networking & Static IP -->
+      <section class="tab-view" id="view-networking">
+        <div class="generic-panel-wrap">
+          <div class="panel-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <div class="panel-header-title">Public Networking &amp; Static IP</div>
+                <div class="panel-header-desc">Manage public addresses, Bore tunneling, and Playit.gg accounts.</div>
+              </div>
+              <button class="btn btn-primary" onclick="saveNetworkSettings()">Save Configuration</button>
+            </div>
+
+            <div class="form-grid">
+              <div class="input-group">
+                <label class="input-label">Tunneling Provider</label>
+                <select class="input-field" id="net-tunnel-provider">
+                  <option value="bore">Bore Tunnel (Automatic, zero-config)</option>
+                  <option value="playit">Playit.gg (Permanent Anycast)</option>
+                  <option value="local">LAN / Direct IP (Local only)</option>
+                </select>
+              </div>
+
+              <div class="input-group">
+                <label class="input-label">Public Domain / Static IP</label>
+                <input type="text" class="input-field" id="net-static-domain" placeholder="e.g. example.craft.playit.gg or play.divinemc.net">
+              </div>
+
+              <div class="input-group">
+                <label class="input-label">Bore Static Port (Optional)</label>
+                <input type="number" class="input-field" id="net-bore-port" placeholder="25565">
+              </div>
+
+              <div class="input-group">
+                <label class="input-label">Playit.gg Secret Key</label>
+                <input type="password" class="input-field" id="net-playit-secret" placeholder="Paste playit secret token">
+              </div>
+            </div>
+
+            <!-- Playit Setup Instructions -->
+            <div style="background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.25); border-radius: var(--radius-md); padding: 14px 18px; margin-top: 14px;">
+              <div style="font-weight: 800; font-size: 13.5px; color: #818cf8;">How to Set Up Playit.gg &amp; Custom IP</div>
+              <div style="font-size: 12.5px; line-height: 1.6; color: #cbd5e1; margin-top: 8px;">
+                1. Go to <a href="https://playit.gg" target="_blank" style="color: var(--accent-cyan); font-weight: 700;">playit.gg</a> &gt; Account &gt; Tunnels &gt; Add Minecraft Java tunnel.<br>
+                2. Copy your assigned permanent domain (e.g. <code>my-server.craft.playit.gg</code>) and paste it into <b>Public Domain / Static IP</b> above.<br>
+                3. Copy your <b>Secret Key</b> from Playit.gg &gt; Agents &gt; Secret Key, paste it into the secret field above, and click <b>Save Configuration</b>.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 6: Players & Whitelist -->
+      <section class="tab-view" id="view-players">
+        <div class="generic-panel-wrap">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 18px;">
+            <!-- Whitelist Card -->
+            <div class="panel-card">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div class="panel-header-title">Whitelist Players</div>
+                <span style="font-size: 11px; background: rgba(255,255,255,0.08); padding: 2px 8px; border-radius: 999px;" id="whitelist-count-badge">0 Players</span>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <input type="text" class="input-field" id="input-whitelist-user" placeholder="Player username" style="flex: 1;">
+                <button class="btn btn-primary" onclick="addWhitelistUser()">Add Player</button>
+              </div>
+              <div id="whitelist-users-list" style="display: flex; flex-direction: column; gap: 6px; max-height: 280px; overflow-y: auto;"></div>
+            </div>
+
+            <!-- OP Admins Card -->
+            <div class="panel-card">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div class="panel-header-title">Server Operators (OP)</div>
+                <span style="font-size: 11px; background: rgba(56, 225, 208, 0.15); color: var(--accent-cyan); padding: 2px 8px; border-radius: 999px;" id="ops-count-badge">0 Admins</span>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <input type="text" class="input-field" id="input-op-user" placeholder="Player username" style="flex: 1;">
+                <button class="btn btn-primary" onclick="addOpUser()">Add OP</button>
+              </div>
+              <div id="ops-users-list" style="display: flex; flex-direction: column; gap: 6px; max-height: 280px; overflow-y: auto;"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 7: Sub-Users -->
+      <section class="tab-view" id="view-users">
+        <div class="generic-panel-wrap">
+          <div class="panel-card">
+            <div class="panel-header-title">Collaborators &amp; Sub-Users</div>
+            <div class="panel-header-desc">Grant access to other Divine players or friends with granular control.</div>
+
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <input type="text" class="input-field" id="input-subuser-name" placeholder="Divine Player Username" style="flex: 1; min-width: 220px;">
+              <button class="btn btn-primary" onclick="addSubUser()">Grant Access</button>
+            </div>
+
+            <div style="display: flex; gap: 14px; flex-wrap: wrap; background: rgba(0,0,0,0.25); padding: 10px 14px; border-radius: var(--radius-sm);">
+              <label style="font-size: 12px; display: flex; align-items: center; gap: 6px;"><input type="checkbox" id="perm-power" checked> Power Actions</label>
+              <label style="font-size: 12px; display: flex; align-items: center; gap: 6px;"><input type="checkbox" id="perm-console" checked> Terminal Console</label>
+              <label style="font-size: 12px; display: flex; align-items: center; gap: 6px;"><input type="checkbox" id="perm-files" checked> File Manager</label>
+              <label style="font-size: 12px; display: flex; align-items: center; gap: 6px;"><input type="checkbox" id="perm-players" checked> Player Control</label>
+              <label style="font-size: 12px; display: flex; align-items: center; gap: 6px;"><input type="checkbox" id="perm-network" checked> Network Config</label>
+            </div>
+
+            <div id="subusers-list" style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px;"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 8: Settings & Custom Icon -->
+      <section class="tab-view" id="view-settings">
+        <div class="generic-panel-wrap">
+          <div class="panel-card">
+            <div class="panel-header-title">Server Settings &amp; Custom Icon</div>
+            <div class="panel-header-desc">Set custom icon, allocated RAM, and manage server installation.</div>
+
+            <!-- Custom Icon Selector -->
+            <div style="display: flex; align-items: center; gap: 18px; background: rgba(0,0,0,0.25); padding: 14px 18px; border-radius: var(--radius-md); border: 1px solid var(--border-card);">
+              <img id="server-icon-preview" src="/assets/loader_paper.svg" style="width: 56px; height: 56px; border-radius: 10px; object-fit: contain; background: #000; padding: 4px; border: 1px solid var(--border-card);">
+              <div>
+                <div style="font-weight: 800; font-size: 14px; color: var(--text-main);">Dedicated Server Icon</div>
+                <div style="font-size: 12px; color: var(--text-dim); margin-top: 2px;">Upload a 64x64 PNG or custom image to customize the icon across the server list.</div>
+                <div style="display: flex; gap: 8px; margin-top: 8px;">
+                  <label class="btn btn-primary btn-sm" style="cursor: pointer;">
+                    <span>Upload Custom Image</span>
+                    <input type="file" id="input-server-icon-file" accept="image/*" style="display: none;" onchange="uploadServerIconFile(event)">
+                  </label>
+                  <button class="btn btn-secondary btn-sm" onclick="resetServerIconToDefault()">Reset Icon</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- RAM & Actions -->
+            <div class="form-grid" style="margin-top: 8px;">
+              <div class="input-group">
+                <label class="input-label">Allocated RAM (MB)</label>
+                <input type="number" class="input-field" id="settings-ram-input" value="2048">
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 12px; border-top: 1px solid var(--border-card); padding-top: 16px;">
+              <button class="btn btn-secondary" onclick="openServerFolder()">Open Server Folder</button>
+              <button class="btn btn-danger" style="margin-left: auto;" onclick="actionDeleteServer()">Delete Dedicated Server</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast-el">Action executed</div>
+
+  <script>
+    try {
+      const savedTheme = localStorage.getItem("divine_theme") || "obsidian-dark";
+      document.documentElement.setAttribute("data-theme", savedTheme);
+    } catch (e) {}
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const serverId = urlParams.get("id") || "";
+    let serverData = null;
+    let pollTimer = null;
+    let currentSub = "";
+    let currentEditingPath = "";
+    let cachedFiles = [];
+    let installedPluginFiles = [];
+
+    // Historical Telemetry arrays for real-time SVG charts
+    const MAX_POINTS = 30;
+    let cpuHistory = new Array(MAX_POINTS).fill(0);
+    let ramHistory = new Array(MAX_POINTS).fill(0);
+    let netHistory = new Array(MAX_POINTS).fill(0);
+
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return "";
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function showToast(msg, type = "info") {
+      const t = document.getElementById("toast-el");
+      if (!t) return;
+      t.textContent = msg;
+      t.className = `toast show ${type}`;
+      setTimeout(() => t.classList.remove("show"), 3000);
+    }
+
+    function switchView(tabId) {
+      document.querySelectorAll(".icon-nav-btn").forEach(btn => {
+        btn.classList.toggle("active", btn.getAttribute("data-tab") === tabId);
+      });
+      document.querySelectorAll(".tab-view").forEach(view => {
+        view.classList.remove("active");
+      });
+      document.getElementById(`view-${tabId}`)?.classList.add("active");
+
+      if (tabId === "files") loadDirectoryFiles(currentSub || "");
+      if (tabId === "marketplace") { loadPlugins(); searchPlugins(""); }
+      if (tabId === "options") loadProperties();
+      if (tabId === "networking") loadNetwork();
+      if (tabId === "players") { loadWhitelist(); loadOps(); }
+      if (tabId === "users") loadSubUsers();
+      if (tabId === "settings") loadSettingsTab();
+    }
+
+    function getLoaderIconUrl(loader) {
+      const l = (loader || "paper").toLowerCase();
+      if (l.includes("fabric")) return "/assets/loader_fabric.svg";
+      if (l.includes("forge")) return "/assets/loader_forge.svg";
+      if (l.includes("purpur")) return "/assets/loader_purpur.svg";
+      if (l.includes("paper")) return "/assets/loader_paper.svg";
+      return "/assets/loader_vanilla.svg";
+    }
+
+    // Load server details & telemetry
+    async function loadServerDetails() {
+      if (!serverId) {
+        document.getElementById("header-server-name").textContent = "No server ID specified";
+        return;
+      }
+      try {
+        const res = await fetch(`/api/servers/${encodeURIComponent(serverId)}/info`);
+        const data = await res.json();
+        if (data && data.success) {
+          serverData = data;
+          document.title = `${data.name} - Divine Control Panel`;
+          document.getElementById("header-server-name").textContent = data.name;
+          const headerIcon = document.getElementById("header-server-icon");
+          if (headerIcon) headerIcon.src = data.custom_icon || (data.icon && !data.icon.includes("loader_") ? data.icon : "/assets/icon_mono.png");
+
+          const isOnline = data.status === "running";
+          const isBooting = data.status === "starting" || data.status === "booting";
+          const liveDot = document.getElementById("header-live-dot");
+          if (liveDot) {
+            liveDot.className = `live-dot ${isOnline ? "online" : isBooting ? "booting" : ""}`;
+          }
+
+          document.getElementById("side-status-text").textContent = isOnline ? "ONLINE" : isBooting ? "BOOTING" : "OFFLINE";
+          document.getElementById("side-status-text").style.color = isOnline ? "var(--status-green)" : isBooting ? "var(--status-yellow)" : "var(--text-muted)";
+
+          const displayIp = data.public_address || (data.static_domain ? data.static_domain : `localhost:${data.port || 25565}`);
+          document.getElementById("side-ip-display").textContent = displayIp;
+
+          // Telemetry
+          const cpu = typeof data.cpu_percent === "number" ? data.cpu_percent : 0;
+          const ramUsed = typeof data.ram_used_mb === "number" ? Math.round(data.ram_used_mb) : 0;
+          const ramAlloc = data.ram_allocated_mb || 2048;
+          const storageMb = data.storage_mb || 0;
+
+          document.getElementById("top-cpu-metric").textContent = `${cpu.toFixed(1)}%`;
+          document.getElementById("top-ram-metric").textContent = `${ramUsed} MB`;
+          document.getElementById("top-disk-metric").textContent = `${storageMb} MB`;
+
+          document.getElementById("side-cpu-text").textContent = `${cpu.toFixed(2)}%`;
+          document.getElementById("side-ram-text").textContent = `${ramUsed} MiB`;
+
+          if (data.uptime && (isOnline || isBooting)) {
+            const s = Math.floor(data.uptime);
+            const m = Math.floor(s / 60);
+            const h = Math.floor(m / 60);
+            document.getElementById("side-uptime-display").textContent = `${h}h ${m % 60}m ${s % 60}s`;
+          } else {
+            document.getElementById("side-uptime-display").textContent = "--";
+          }
+
+          // Update real-time SVG charts
+          updateCharts(cpu, ramUsed, ramAlloc, isOnline);
+        }
+      } catch (e) {
+        console.warn("Failed to load server info:", e);
+      }
+    }
+
+    // Real-time SVG Charts Renderer (matching screenshot curve)
+    function updateCharts(cpuVal, ramVal, ramMax, isOnline) {
+      cpuHistory.push(isOnline ? Math.min(300, Math.max(0, cpuVal)) : 0);
+      cpuHistory.shift();
+
+      ramHistory.push(isOnline ? Math.max(0, ramVal) : 0);
+      ramHistory.shift();
+
+      // Simulated network activity burst based on CPU & players
+      const netVal = isOnline ? Math.round(Math.random() * (cpuVal > 10 ? 45 : 12) + 2) : 0;
+      netHistory.push(netVal);
+      netHistory.shift();
+
+      renderSplineChart("chart-cpu-line", "chart-cpu-area", cpuHistory, 300);
+      renderSplineChart("chart-ram-line", "chart-ram-area", ramHistory, ramMax || 2048);
+      renderSplineChart("chart-net-line", "chart-net-area", netHistory, 64);
+
+      document.getElementById("axis-ram-max").textContent = `${ramMax} MiB`;
+      document.getElementById("axis-ram-mid").textContent = `${Math.round(ramMax / 2)} MiB`;
+    }
+
+    function renderSplineChart(lineId, areaId, data, maxY) {
+      const lineEl = document.getElementById(lineId);
+      const areaEl = document.getElementById(areaId);
+      if (!lineEl || !areaEl) return;
+
+      const w = 240;
+      const h = 70;
+      const step = w / (data.length - 1);
+
+      const points = data.map((val, idx) => {
+        const x = idx * step;
+        const normalized = Math.min(1, Math.max(0, val / maxY));
+        const y = h - (normalized * (h - 10)) - 4;
+        return { x, y };
+      });
+
+      let d = `M ${points[0].x} ${points[0].y}`;
+      for (let i = 1; i < points.length; i++) {
+        const p0 = points[i - 1];
+        const p1 = points[i];
+        const cx = (p0.x + p1.x) / 2;
+        d += ` C ${cx} ${p0.y}, ${cx} ${p1.y}, ${p1.x} ${p1.y}`;
+      }
+
+      lineEl.setAttribute("d", d);
+      areaEl.setAttribute("d", `${d} L ${w} ${h} L 0 ${h} Z`);
+    }
+
+    // Real-time Console Polling
+    async function pollConsole() {
+      if (!serverData || !serverData.session_id) return;
+      try {
+        const res = await fetch(`/api/servers/${encodeURIComponent(serverData.session_id)}/console`);
+        const d = await res.json();
+        if (d && d.lines) {
+          const screen = document.getElementById("terminal-screen");
+          screen.innerHTML = "";
+          d.lines.forEach(line => {
+            const div = document.createElement("div");
+            div.className = "log-line";
+            if (line.includes("WARN")) div.classList.add("warn");
+            else if (line.includes("ERROR") || line.includes("Exception")) div.classList.add("error");
+            else if (line.includes("joined the game") || line.includes("left the game")) div.classList.add("player");
+            else if (line.startsWith("container@pterodactyl")) div.classList.add("pterodactyl");
+            else div.classList.add("info");
+            div.textContent = line;
+            screen.appendChild(div);
+          });
+          screen.scrollTop = screen.scrollHeight;
+        }
+      } catch (e) {}
+    }
+
+    function copyServerIP() {
+      const ip = document.getElementById("side-ip-display").textContent;
+      if (ip) {
+        navigator.clipboard.writeText(ip);
+        showToast(`Server IP copied: ${ip}`, "success");
+      }
+    }
+
+    // Power Actions
+    async function actionStart() {
+      showToast("Starting dedicated server...", "info");
+      const res = await fetch("/api/servers/start", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          instance_id: serverId,
+          ram_mb: serverData?.ram_allocated_mb || 2048,
+          tunnel_provider: serverData?.tunnel_provider || "bore"
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast("Server started!", "success");
+        await loadServerDetails();
+      } else {
+        showToast(data.error || "Failed to start server", "error");
+      }
+    }
+
+    async function actionStop() {
+      if (!serverData?.session_id) return;
+      showToast("Stopping server gracefully...", "info");
+      await fetch(`/api/servers/${encodeURIComponent(serverData.session_id)}/stop`, { method: "POST" });
+      setTimeout(loadServerDetails, 1000);
+    }
+
+    async function actionRestart() {
+      if (!serverData?.session_id) return;
+      showToast("Restarting server...", "info");
+      await fetch(`/api/servers/${encodeURIComponent(serverData.session_id)}/restart`, { method: "POST" });
+      setTimeout(loadServerDetails, 1000);
+    }
+
+    async function sendConsoleCommand() {
+      const input = document.getElementById("terminal-cmd-input");
+      const cmd = (input?.value || "").trim();
+      if (!cmd) return;
+      if (!serverData?.session_id) {
+        showToast("Server is offline. Start the server first.", "warning");
+        return;
+      }
+      input.value = "";
+      await fetch(`/api/servers/${encodeURIComponent(serverData.session_id)}/command`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ command: cmd })
+      });
+      setTimeout(pollConsole, 200);
+    }
+
+    function handleConsoleKey(e) {
+      if (e.key === "Enter") {
+        sendConsoleCommand();
+      }
+    }
+
+    async function openServerFolder() {
+      await fetch(`/api/servers/${encodeURIComponent(serverId)}/open-folder`, { method: "POST" });
+      showToast("Opened server directory in Explorer", "info");
+    }
+
+    async function actionDeleteServer() {
+      if (!confirm(`Are you sure you want to permanently delete '${serverData?.name || "this server"}'? This cannot be undone.`)) {
+        return;
+      }
+      showToast("Deleting dedicated server...", "info");
+      try {
+        const res = await fetch(`/api/servers/${encodeURIComponent(serverId)}/delete`, { method: "POST" });
+        const data = await res.json();
+        if (data && data.success) {
+          showToast("Server deleted successfully", "success");
+          try {
+            if (window.opener) {
+              window.opener.postMessage({ type: "server-deleted", serverId }, "*");
+              if (window.opener.loadServerCards) window.opener.loadServerCards();
+            }
+          } catch (e) {}
+          document.body.innerHTML = `
+            <div style="height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #080d1a; color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; text-align: center; padding: 20px;">
+              <svg width="48" height="48" fill="none" stroke="#ef4444" viewBox="0 0 24 24" style="margin-bottom: 16px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+              <h2 style="font-size: 20px; font-weight: 700; margin-bottom: 8px;">Dedicated Server Deleted</h2>
+              <p style="color: #94a3b8; font-size: 13.5px; margin-bottom: 24px;">The server and all its associated world, mod, and configuration files were removed.</p>
+              <button onclick="window.close()" style="background: #0284c7; color: #fff; border: none; padding: 9px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 13.5px;">Close Panel</button>
+            </div>
+          `;
+          setTimeout(() => {
+            window.close();
+          }, 1500);
+        } else {
+          showToast(data?.error || "Failed to delete server", "error");
+        }
+      } catch (e) {
+        showToast("Error deleting server: " + e.message, "error");
+      }
+    }
+
+    // =========================================================================
+    // FILE MANAGER
+    // =========================================================================
+    function getFileGlyph(name, isDir) {
+      if (isDir) {
+        return `<svg width="15" height="15" fill="none" stroke="#38e1d0" stroke-width="2" viewBox="0 0 24 24" style="vertical-align: middle;"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>`;
+      }
+      const low = name.toLowerCase();
+      if (low.endsWith(".jar")) {
+        return `<svg width="15" height="15" fill="none" stroke="#f59e0b" stroke-width="2" viewBox="0 0 24 24" style="vertical-align: middle;"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>`;
+      }
+      if (low.endsWith(".yml") || low.endsWith(".yaml") || low.endsWith(".properties") || low.endsWith(".toml") || low.endsWith(".json")) {
+        return `<svg width="15" height="15" fill="none" stroke="#818cf8" stroke-width="2" viewBox="0 0 24 24" style="vertical-align: middle;"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>`;
+      }
+      return `<svg width="15" height="15" fill="none" stroke="#94a3b8" stroke-width="2" viewBox="0 0 24 24" style="vertical-align: middle;"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>`;
+    }
+
+    function updateBreadcrumb(sub) {
+      const bar = document.getElementById("file-breadcrumb-bar");
+      if (!bar) return;
+      if (!sub) {
+        bar.innerHTML = `<span class="crumb-link" onclick="loadDirectoryFiles('')">/ (root)</span>`;
+        return;
+      }
+      const parts = sub.split("/").filter(Boolean);
+      let html = `<span class="crumb-link" onclick="loadDirectoryFiles('')">root</span>`;
+      let accumulated = "";
+      parts.forEach((p) => {
+        accumulated += (accumulated ? "/" : "") + p;
+        const curPath = accumulated;
+        html += ` <span style="color: var(--text-muted);">&gt;</span> <span class="crumb-link" onclick="loadDirectoryFiles('${escapeHtml(curPath)}')">${escapeHtml(p)}</span>`;
+      });
+      bar.innerHTML = html;
+    }
+
+    async function loadDirectoryFiles(sub = "") {
+      currentSub = sub;
+      updateBreadcrumb(sub);
+      const container = document.getElementById("files-list-container");
+      container.innerHTML = `<div style="padding: 20px; color: var(--text-muted); text-align: center;">Loading files...</div>`;
+
+      try {
+        const res = await fetch(`/api/servers/${encodeURIComponent(serverId)}/files?sub=${encodeURIComponent(sub)}`);
+        const data = await res.json();
+        cachedFiles = data.files || [];
+        renderFilesList(cachedFiles);
+      } catch (e) {
+        container.innerHTML = `<div style="padding: 20px; color: #ef4444; text-align: center;">Failed to load files</div>`;
+      }
+    }
+
+    function renderFilesList(files) {
+      const container = document.getElementById("files-list-container");
+      if (!container) return;
+      if (files.length === 0) {
+        container.innerHTML = `<div style="padding: 24px; color: var(--text-muted); text-align: center;">Directory is empty</div>`;
+        return;
+      }
+
+      let backHtml = "";
+      if (currentSub) {
+        const parentSub = currentSub.includes("/") ? currentSub.substring(0, currentSub.lastIndexOf("/")) : "";
+        backHtml = `
+          <div class="file-item-row" onclick="loadDirectoryFiles('${escapeHtml(parentSub)}')">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <svg width="15" height="15" fill="none" stroke="var(--accent-cyan)" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+              <span style="font-weight: 700; color: var(--accent-cyan); font-size: 13px;">.. (Up to parent directory)</span>
+            </div>
+            <div></div>
+          </div>
+        `;
+      }
+
+      container.innerHTML = backHtml + files.map(f => {
+        const isEditable = !f.is_dir && (f.name.endsWith(".txt") || f.name.endsWith(".properties") || f.name.endsWith(".yml") || f.name.endsWith(".yaml") || f.name.endsWith(".json") || f.name.endsWith(".toml") || f.name.endsWith(".log") || f.name.endsWith(".sh") || f.name.endsWith(".bat") || f.size_bytes < 500000);
+        return `
+          <div class="file-item-row" onclick="handleFileClick('${escapeHtml(f.rel_path)}', ${f.is_dir})">
+            <div style="display: flex; align-items: center; gap: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+              ${getFileGlyph(f.name, f.is_dir)}
+              <span style="font-weight: 600; font-size: 13px; color: ${f.is_dir ? 'var(--accent-cyan)' : 'var(--text-main)'};">${escapeHtml(f.name)}</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;" onclick="event.stopPropagation()">
+              <span style="color: var(--text-muted); font-size: 11.5px; margin-right: 6px;">${f.is_dir ? 'Directory' : f.size_human} &bull; ${f.modified}</span>
+              ${isEditable ? `<button class="btn btn-secondary btn-sm" onclick="openFileInEditor('${escapeHtml(f.rel_path)}')">Edit</button>` : ''}
+              ${!f.is_dir ? `<button class="btn btn-secondary btn-sm" onclick="downloadFile('${escapeHtml(f.rel_path)}')">Download</button>` : ''}
+              <button class="btn btn-secondary btn-sm" onclick="promptRenameItem('${escapeHtml(f.rel_path)}')">Rename</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteServerFile('${escapeHtml(f.rel_path)}')">Delete</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function filterFilesList() {
+      const q = (document.getElementById("file-search-input")?.value || "").toLowerCase().trim();
+      if (!q) { renderFilesList(cachedFiles); return; }
+      renderFilesList(cachedFiles.filter(f => f.name.toLowerCase().includes(q) || f.rel_path.toLowerCase().includes(q)));
+    }
+
+    async function handleFileClick(relPath, isDir) {
+      if (isDir) loadDirectoryFiles(relPath);
+      else openFileInEditor(relPath);
+    }
+
+    async function openFileInEditor(relPath) {
+      currentEditingPath = relPath;
+      try {
+        const res = await fetch(`/api/servers/${encodeURIComponent(serverId)}/files/read?file=${encodeURIComponent(relPath)}`);
+        const data = await res.json();
+        if (data.content !== undefined) {
+          const editorBox = document.getElementById("file-editor-box");
+          editorBox.style.display = "flex";
+          document.getElementById("file-editor-title").textContent = `Editing: /${relPath}`;
+          document.getElementById("file-editor-modified-pill").style.display = "none";
+          document.getElementById("file-editor-content").value = data.content;
+          document.getElementById("file-editor-content").focus();
+          editorBox.scrollIntoView({ behavior: "smooth" });
+        }
+      } catch (e) {
+        showToast("Cannot open binary file in text editor", "error");
+      }
+    }
+
+    function closeFileEditor() {
+      document.getElementById("file-editor-box").style.display = "none";
+      currentEditingPath = "";
+    }
+
+    function handleEditorKeyDown(e) {
+      if ((e.ctrlKey || e.metaKey) && e.key === "s") {
+        e.preventDefault();
+        saveFileEditorContent();
+      }
+    }
+
+    async function saveFileEditorContent() {
+      if (!currentEditingPath) return;
+      const content = document.getElementById("file-editor-content").value;
+      showToast("Saving file...", "info");
+      const res = await fetch(`/api/servers/${encodeURIComponent(serverId)}/files/write`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ file: currentEditingPath, content })
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast("File saved successfully!", "success");
+        document.getElementById("file-editor-modified-pill").style.display = "none";
+        loadDirectoryFiles(currentSub);
+      } else {
+        showToast(data.error || "Failed to save file", "error");
+      }
+    }
+
+    function downloadFile(relPath) {
+      window.location.href = `/api/servers/${encodeURIComponent(serverId)}/files/download?file=${encodeURIComponent(relPath)}`;
+    }
+
+    function downloadCurrentFile() {
+      if (currentEditingPath) downloadFile(currentEditingPath);
+    }
+
+    async function promptNewFile() {
+      const name = prompt("Enter new file name (e.g. custom.yml, whitelist.json):");
+      if (!name || !name.trim()) return;
+      const fullRel = currentSub ? `${currentSub}/${name.trim()}` : name.trim();
+      const res = await fetch(`/api/servers/${encodeURIComponent(serverId)}/files/write`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ file: fullRel, content: "" })
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast(`Created file ${name}`, "success");
+        await loadDirectoryFiles(currentSub);
+        openFileInEditor(fullRel);
+      } else {
+        showToast(data.error || "Failed to create file", "error");
+      }
+    }
+
+    async function promptNewFolder() {
+      const name = prompt("Enter new folder name (e.g. plugins, config):");
+      if (!name || !name.trim()) return;
+      const fullRel = currentSub ? `${currentSub}/${name.trim()}` : name.trim();
+      const res = await fetch(`/api/servers/${encodeURIComponent(serverId)}/files/create-folder`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ folder: fullRel })
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast(`Created folder ${name}`, "success");
+        loadDirectoryFiles(currentSub);
+      } else {
+        showToast(data.error || "Failed to create folder", "error");
+      }
+    }
+
+    async function promptRenameItem(relPath) {
+      const oldName = relPath.split("/").pop();
+      const newName = prompt(`Rename '${oldName}' to:`, oldName);
+      if (!newName || newName.trim() === oldName) return;
+      const parent = relPath.includes("/") ? relPath.substring(0, relPath.lastIndexOf("/")) : "";
+      const newRel = parent ? `${parent}/${newName.trim()}` : newName.trim();
+      const res = await fetch(`/api/servers/${encodeURIComponent(serverId)}/files/rename`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ old_path: relPath, new_path: newRel })
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast(`Renamed to ${newName}`, "success");
+        loadDirectoryFiles(currentSub);
+      } else {
+        showToast(data.error || "Failed to rename", "error");
+      }
+    }
+
+    async function handleFileUpload(e) {
+      const files = e.target.files;
+      if (!files || files.length === 0) return;
+      const formData = new FormData();
+      formData.append("sub", currentSub);
+      for (let i = 0; i < files.length; i++) formData.append("file", files[i]);
+      showToast(`Uploading ${files.length} file(s)...`, "info");
+      try {
+        const res = await fetch(`/api/servers/${encodeURIComponent(serverId)}/files/upload?sub=${encodeURIComponent(currentSub)}`, {
+          method: "POST",
+          body: formData
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast("Upload completed!", "success");
+          loadDirectoryFiles(currentSub);
+        } else {
+          showToast(data.error || "Upload failed", "error");
+        }
+      } catch (err) {
+        showToast("Error: " + err.message, "error");
+      }
+    }
+
+    async function deleteServerFile(relPath) {
+      if (!confirm(`Are you sure you want to delete ${relPath}?`)) return;
+      await fetch(`/api/servers/${encodeURIComponent(serverId)}/files/delete`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ file: relPath })
+      });
+      showToast(`Deleted ${relPath}`, "info");
+      loadDirectoryFiles(currentSub);
+    }
+
+    // =========================================================================
+    // MARKETPLACE & PLUGINS
+    // =========================================================================
+    async function loadPlugins() {
+      const res = await fetch(`/api/servers/${encodeURIComponent(serverId)}/plugins`);
+      const data = await res.json();
+      const list = data.plugins || [];
+      installedPluginFiles = list.map(p => (p.filename || "").toLowerCase());
+      const el = document.getElementById("installed-plugins-list");
+      if (list.length === 0) {
+        el.innerHTML = `<div style="color: var(--text-muted); font-size: 12px; text-align: center; padding: 12px;">No plugins installed.</div>`;
+        return;
+      }
+      el.innerHTML = list.map(p => `
+        <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.25); padding: 8px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-card);">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 5h-2V5h2v3zM4 19h16v2H4z"/></svg>
+            <div>
+              <div style="font-weight: 700; font-size: 13px;">${escapeHtml(p.filename)}</div>
+              <div style="font-size: 11px; color: var(--text-dim);">${p.size_human} &bull; ${p.modified}</div>
+            </div>
+          </div>
+          <button class="btn btn-danger btn-sm" onclick="deletePlugin('${escapeHtml(p.filename)}')">Delete</button>
+        </div>
+      `).join("");
+    }
+
+    async function searchPlugins(query = null) {
+      const searchInput = document.getElementById("input-plugin-search");
+      if (query !== null && searchInput) searchInput.value = query;
+      const q = query !== null ? query : (searchInput?.value || "").trim();
+      const resEl = document.getElementById("plugins-search-results");
+      resEl.innerHTML = `<div style="grid-column: 1/-1; padding: 20px; text-align: center; color: var(--text-muted);">Searching plugins...</div>`;
+
+      try {
+        const res = await fetch(`/api/plugins/search?q=${encodeURIComponent(q)}&limit=18`);
+        const data = await res.json();
+        const hits = data.hits || [];
+        if (hits.length === 0) {
+          resEl.innerHTML = `<div style="grid-column: 1/-1; padding: 20px; text-align: center; color: var(--text-muted);">No plugins found matching '${escapeHtml(q)}'</div>`;
+          return;
+        }
+
+        resEl.innerHTML = hits.map(h => {
+          const pid = h.project_id || h.slug;
+          const iconSrc = h.icon_url || "/assets/loader_paper.svg";
+          const isInstalled = installedPluginFiles.some(fn => fn.includes((h.slug || "").toLowerCase()) || fn.includes((h.title || "").toLowerCase().replace(/[^a-z0-9]/g, "")));
+          const dlCount = h.downloads > 1000000 ? `${(h.downloads / 1000000).toFixed(1)}M` : h.downloads > 1000 ? `${(h.downloads / 1000).toFixed(0)}k` : `${h.downloads || 0}`;
+
+          return `
+            <div style="background: rgba(0,0,0,0.35); border: 1px solid var(--border-card); border-radius: var(--radius-md); padding: 14px; display: flex; flex-direction: column; justify-content: space-between; gap: 10px;">
+              <div style="display: flex; gap: 12px; align-items: flex-start;">
+                <img src="${escapeHtml(iconSrc)}" style="width: 38px; height: 38px; border-radius: 8px; object-fit: contain; background: rgba(0,0,0,0.4); padding: 2px;" onerror="this.src='/assets/loader_paper.svg'">
+                <div style="overflow: hidden;">
+                  <div style="font-weight: 800; font-size: 13.5px; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(h.title)}</div>
+                  <div style="font-size: 11px; color: var(--accent-cyan); margin-top: 1px;">by ${escapeHtml(h.author || "Creator")} &bull; ${dlCount} dl</div>
+                </div>
+              </div>
+              <div style="font-size: 11.5px; color: var(--text-dim); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                ${escapeHtml(h.description || "Minecraft Paper/Bukkit plugin.")}
+              </div>
+              <button id="btn-inst-plug-${escapeHtml(pid)}" class="btn ${isInstalled ? 'btn-secondary' : 'btn-primary'} btn-sm" onclick="installModrinthPlugin('${escapeHtml(pid)}', 'btn-inst-plug-${escapeHtml(pid)}')">
+                ${isInstalled ? 'Installed' : 'Install Plugin'}
+              </button>
+            </div>
+          `;
+        }).join("");
+      } catch (e) {
+        resEl.innerHTML = `<div style="grid-column: 1/-1; padding: 20px; color: #ef4444; text-align: center;">Failed to connect to Modrinth API.</div>`;
+      }
+    }
+
+    async function installModrinthPlugin(projectId, btnId) {
+      const btn = document.getElementById(btnId);
+      if (btn) { btn.disabled = true; btn.textContent = "Installing..."; }
+      showToast("Downloading and installing plugin JAR...", "info");
+      try {
+        const res = await fetch(`/api/servers/${encodeURIComponent(serverId)}/plugins/install`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ project_id: projectId })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast(`Plugin ${data.filename} installed!`, "success");
+          if (btn) { btn.textContent = "Installed"; btn.className = "btn btn-secondary btn-sm"; }
+          await loadPlugins();
+        } else {
+          showToast(data.error || "Installation failed", "error");
+          if (btn) { btn.disabled = false; btn.textContent = "Install Plugin"; }
+        }
+      } catch (err) {
+        showToast("Error: " + err.message, "error");
+        if (btn) { btn.disabled = false; btn.textContent = "Install Plugin"; }
+      }
+    }
+
+    async function deletePlugin(fn) {
+      if (!confirm(`Delete plugin ${fn}?`)) return;
+      await fetch(`/api/servers/${encodeURIComponent(serverId)}/plugins/delete`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ filename: fn })
+      });
+      showToast(`Plugin ${fn} deleted`, "info");
+      loadPlugins();
+    }
+
+    // =========================================================================
+    // PROPERTIES & NETWORK & PLAYERS & USERS & SETTINGS
+    // =========================================================================
+    async function loadProperties() {
+      const res = await fetch(`/api/servers/${encodeURIComponent(serverId)}/properties`);
+      const data = await res.json();
+      const p = data.properties || {};
+
+      document.getElementById("prop-motd").value = p["motd"] || serverData?.name || "Divine Dedicated Server";
+      document.getElementById("prop-server-port").value = p["server-port"] || 25565;
+      document.getElementById("prop-max-players").value = p["max-players"] || 20;
+      document.getElementById("prop-gamemode").value = p["gamemode"] || "survival";
+      document.getElementById("prop-difficulty").value = p["difficulty"] || "normal";
+      document.getElementById("prop-pvp").value = p["pvp"] || "true";
+      document.getElementById("prop-online-mode").value = p["online-mode"] || "true";
+      document.getElementById("prop-white-list").value = p["white-list"] || "false";
+    }
+
+    async function savePropertiesForm() {
+      const payload = {
+        properties: {
+          "motd": document.getElementById("prop-motd").value,
+          "server-port": document.getElementById("prop-server-port").value,
+          "max-players": document.getElementById("prop-max-players").value,
+          "gamemode": document.getElementById("prop-gamemode").value,
+          "difficulty": document.getElementById("prop-difficulty").value,
+          "pvp": document.getElementById("prop-pvp").value,
+          "online-mode": document.getElementById("prop-online-mode").value,
+          "white-list": document.getElementById("prop-white-list").value,
+        }
+      };
+      showToast("Saving server properties...", "info");
+      await fetch(`/api/servers/${encodeURIComponent(serverId)}/properties`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      showToast("Properties saved! Restart server to apply.", "success");
+    }
+
+    async function loadNetwork() {
+      const res = await fetch(`/api/servers/${encodeURIComponent(serverId)}/network`);
+      const data = await res.json();
+      document.getElementById("net-tunnel-provider").value = data.tunnel_provider || "bore";
+      document.getElementById("net-static-domain").value = data.static_domain || "";
+      document.getElementById("net-bore-port").value = data.bore_static_port || "";
+      document.getElementById("net-playit-secret").value = data.playit_secret || "";
+    }
+
+    async function saveNetworkSettings() {
+      const payload = {
+        tunnel_provider: document.getElementById("net-tunnel-provider").value,
+        static_domain: document.getElementById("net-static-domain").value.trim(),
+        bore_static_port: document.getElementById("net-bore-port").value.trim(),
+        playit_secret: document.getElementById("net-playit-secret").value.trim()
+      };
+      showToast("Saving network configuration...", "info");
+      await fetch(`/api/servers/${encodeURIComponent(serverId)}/network`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      showToast("Network settings saved!", "success");
+      await loadServerDetails();
+    }
+
+    // Whitelist & Ops
+    async function loadWhitelist() {
+      const res = await fetch(`/api/servers/${encodeURIComponent(serverId)}/whitelist`);
+      const data = await res.json();
+      const list = data.players || [];
+      document.getElementById("whitelist-count-badge").textContent = `${list.length} Players`;
+      const el = document.getElementById("whitelist-users-list");
+      if (list.length === 0) {
+        el.innerHTML = `<div style="color: var(--text-muted); font-size: 12px; text-align: center; padding: 12px;">No players on whitelist.</div>`;
+        return;
+      }
+      el.innerHTML = list.map(p => {
+        const name = p.name || p;
+        return `
+          <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.25); padding: 6px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-card);">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <img src="https://mc-heads.net/avatar/${encodeURIComponent(name)}/24" style="width: 20px; height: 20px; border-radius: 4px;" onerror="this.src='/assets/ui_account.png'">
+              <span style="font-weight: 700; font-size: 13px;">${escapeHtml(name)}</span>
+            </div>
+            <button class="btn btn-danger btn-sm" onclick="removeWhitelistUser('${escapeHtml(name)}')">Remove</button>
+          </div>
+        `;
+      }).join("");
+    }
+
+    async function addWhitelistUser() {
+      const inp = document.getElementById("input-whitelist-user");
+      const name = (inp?.value || "").trim();
+      if (!name) return;
+      inp.value = "";
+      const cur = await (await fetch(`/api/servers/${encodeURIComponent(serverId)}/whitelist`)).json();
+      const players = cur.players || [];
+      if (!players.some(p => (p.name || p).toLowerCase() === name.toLowerCase())) {
+        players.push({ name, uuid: "" });
+        await fetch(`/api/servers/${encodeURIComponent(serverId)}/whitelist`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ players })
+        });
+        showToast(`Added ${name} to whitelist`, "success");
+        loadWhitelist();
+      }
+    }
+
+    async function removeWhitelistUser(name) {
+      const cur = await (await fetch(`/api/servers/${encodeURIComponent(serverId)}/whitelist`)).json();
+      const players = (cur.players || []).filter(p => (p.name || p).toLowerCase() !== name.toLowerCase());
+      await fetch(`/api/servers/${encodeURIComponent(serverId)}/whitelist`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ players })
+      });
+      showToast(`Removed ${name}`, "info");
+      loadWhitelist();
+    }
+
+    async function loadOps() {
+      const res = await fetch(`/api/servers/${encodeURIComponent(serverId)}/ops`);
+      const data = await res.json();
+      const list = data.ops || [];
+      document.getElementById("ops-count-badge").textContent = `${list.length} Admins`;
+      const el = document.getElementById("ops-users-list");
+      if (list.length === 0) {
+        el.innerHTML = `<div style="color: var(--text-muted); font-size: 12px; text-align: center; padding: 12px;">No operators assigned.</div>`;
+        return;
+      }
+      el.innerHTML = list.map(o => {
+        const name = o.name || o;
+        return `
+          <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.25); padding: 6px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-card);">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <img src="https://mc-heads.net/avatar/${encodeURIComponent(name)}/24" style="width: 20px; height: 20px; border-radius: 4px;" onerror="this.src='/assets/ui_account.png'">
+              <span style="font-weight: 700; font-size: 13px;">${escapeHtml(name)}</span>
+            </div>
+            <button class="btn btn-danger btn-sm" onclick="removeOpUser('${escapeHtml(name)}')">Deop</button>
+          </div>
+        `;
+      }).join("");
+    }
+
+    async function addOpUser() {
+      const inp = document.getElementById("input-op-user");
+      const name = (inp?.value || "").trim();
+      if (!name) return;
+      inp.value = "";
+      const cur = await (await fetch(`/api/servers/${encodeURIComponent(serverId)}/ops`)).json();
+      const ops = cur.ops || [];
+      if (!ops.some(o => (o.name || o).toLowerCase() === name.toLowerCase())) {
+        ops.push({ name, uuid: "", level: 4, bypassesPlayerLimit: false });
+        await fetch(`/api/servers/${encodeURIComponent(serverId)}/ops`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ops })
+        });
+        showToast(`Granted OP to ${name}`, "success");
+        loadOps();
+      }
+    }
+
+    async function removeOpUser(name) {
+      const cur = await (await fetch(`/api/servers/${encodeURIComponent(serverId)}/ops`)).json();
+      const ops = (cur.ops || []).filter(o => (o.name || o).toLowerCase() !== name.toLowerCase());
+      await fetch(`/api/servers/${encodeURIComponent(serverId)}/ops`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ops })
+      });
+      showToast(`Revoked OP for ${name}`, "info");
+      loadOps();
+    }
+
+    // Sub-users
+    async function loadSubUsers() {
+      const res = await fetch(`/api/servers/${encodeURIComponent(serverId)}/access`);
+      const data = await res.json();
+      const list = data.users || [];
+      const el = document.getElementById("subusers-list");
+      if (list.length === 0) {
+        el.innerHTML = `<div style="color: var(--text-muted); font-size: 12px; text-align: center; padding: 12px;">No sub-users added.</div>`;
+        return;
+      }
+      el.innerHTML = list.map(u => `
+        <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.25); padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-card);">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <img src="https://mc-heads.net/avatar/${encodeURIComponent(u.username)}/28" style="width: 28px; height: 28px; border-radius: 4px;" onerror="this.src='/assets/ui_account.png'">
+            <div>
+              <div style="font-weight: 800; font-size: 13.5px;">${escapeHtml(u.username)}</div>
+              <div style="font-size: 11px; color: var(--accent-cyan); margin-top: 2px;">Permissions: ${(u.permissions || []).join(", ")}</div>
+            </div>
+          </div>
+          <button class="btn btn-danger btn-sm" onclick="revokeSubUser('${escapeHtml(u.username)}')">Revoke Access</button>
+        </div>
+      `).join("");
+    }
+
+    async function addSubUser() {
+      const inp = document.getElementById("input-subuser-name");
+      const username = (inp?.value || "").trim();
+      if (!username) return;
+
+      const permissions = [];
+      if (document.getElementById("perm-power")?.checked) permissions.push("power");
+      if (document.getElementById("perm-console")?.checked) permissions.push("console");
+      if (document.getElementById("perm-files")?.checked) permissions.push("files");
+      if (document.getElementById("perm-players")?.checked) permissions.push("players");
+      if (document.getElementById("perm-network")?.checked) permissions.push("network");
+
+      showToast(`Granting panel access to ${username}...`, "info");
+      const res = await fetch(`/api/servers/${encodeURIComponent(serverId)}/access/add`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, permissions })
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast(`Access granted to ${username}!`, "success");
+        inp.value = "";
+        loadSubUsers();
+      } else {
+        showToast(data.error || "Failed to grant access", "error");
+      }
+    }
+
+    async function revokeSubUser(username) {
+      if (!confirm(`Revoke server access for ${username}?`)) return;
+      await fetch(`/api/servers/${encodeURIComponent(serverId)}/access/remove`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username })
+      });
+      showToast(`Revoked access for ${username}`, "info");
+      loadSubUsers();
+    }
+
+    // Settings & Custom Icon
+    function loadSettingsTab() {
+      if (serverData) {
+        document.getElementById("settings-ram-input").value = serverData.ram_allocated_mb || 2048;
+        const iconSrc = serverData.custom_icon || (serverData.icon && !serverData.icon.includes("loader_") ? serverData.icon : "/assets/icon_mono.png");
+        document.getElementById("server-icon-preview").src = iconSrc;
+      }
+    }
+
+    async function uploadServerIconFile(e) {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const formData = new FormData();
+      formData.append("file", file);
+      showToast("Uploading custom server icon...", "info");
+      try {
+        const res = await fetch(`/api/servers/${encodeURIComponent(serverId)}/icon`, {
+          method: "POST",
+          body: formData
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast("Server icon updated!", "success");
+          document.getElementById("server-icon-preview").src = `${data.icon_url}?t=${Date.now()}`;
+          await loadServerDetails();
+        } else {
+          showToast(data.error || "Failed to update icon", "error");
+        }
+      } catch (err) {
+        showToast("Error: " + err.message, "error");
+      }
+    }
+
+    async function resetServerIconToDefault() {
+      showToast("Resetting to default white server icon...", "info");
+      await fetch(`/api/servers/${encodeURIComponent(serverId)}/icon`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ icon: "/assets/icon_mono.png" })
+      });
+      document.getElementById("server-icon-preview").src = "/assets/icon_mono.png";
+      await loadServerDetails();
+    }
+
+    // Startup loop
+    window.addEventListener("DOMContentLoaded", async () => {
+      await loadServerDetails();
+      pollTimer = setInterval(async () => {
+        await loadServerDetails();
+        await pollConsole();
+      }, 1000);
+    });
+  </script>
+</body>
+</html>

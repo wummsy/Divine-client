@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Privacy Policy — Divine Client{% endblock %}
+{% block description %}Transparent, local-first data practices for Divine Client launcher, dedicated servers, and account services.{% endblock %}
+
+{% block body %}
+<div class="hero">
+  <h1>Privacy Policy</h1>
+  <p class="lead">Transparent, local-first data architecture. Divine Client does not track your gameplay, sell your data, or collect behavioral telemetry.</p>
+</div>
+
+<div class="card" style="margin-bottom: 18px;">
+  <div class="card-title">1. Local-First Architecture</div>
+  <div class="card-desc">
+    All Minecraft versions, mod configurations, worlds, screenshots, server databases, and game saves are stored directly on your local computer. Divine Client never uploads your game files or world data to remote servers.
+  </div>
+</div>
+
+<div class="card" style="margin-bottom: 18px;">
+  <div class="card-title">2. Discord Authentication &amp; Profile Data</div>
+  <div class="card-desc">
+    When connecting your Discord account, we only request public identification data (Discord User ID, Global Display Name, and Avatar URL) through standard OAuth2 scopes. We never access your private messages, email address, passwords, or server membership lists.
+  </div>
+</div>
+
+<div class="card" style="margin-bottom: 18px;">
+  <div class="card-title">3. Zero Third-Party Advertising</div>
+  <div class="card-desc">
+    Divine Client contains zero commercial tracking SDKs, no behavioral telemetry trackers, and no third-party advertisements.
+  </div>
+</div>
+
+<div class="card" style="margin-bottom: 18px;">
+  <div class="card-title">4. Multiplayer &amp; Server Tunnel Relays</div>
+  <div class="card-desc">
+    When hosting dedicated multiplayer servers using automated relay connections, game network traffic is forwarded directly to connected players with zero content inspection or logging of game events.
+  </div>
+</div>
+{% endblock %}

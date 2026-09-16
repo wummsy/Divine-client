@@ -1,0 +1,240 @@
+/* ==========================================================================
+   DIVINE CLIENT - MULTI-THEME ENGINE
+   CLEAN OBSIDIAN • AMOLED VOID • CYBER CYAN • EMERALD MATRIX • NEBULA • CRIMSON
+   ========================================================================== */
+
+/* 1. DEFAULT / DIVINE (OBSIDIAN & PURE WHITE) */
+:root,
+[data-theme="divine"],
+[data-theme="white"] {
+  --bg-app: #08090d;
+  --bg-sidebar: rgba(12, 14, 20, 0.96);
+  --bg-topbar: rgba(12, 14, 20, 0.65);
+  --bg-card: rgba(16, 19, 28, 0.85);
+  --bg-card-hover: rgba(24, 28, 42, 0.95);
+  --bg-card-active: rgba(32, 38, 56, 0.98);
+  --bg-input: #0f121a;
+  --bg-modal: #0d1017;
+  --bg-terminal: #07080c;
+
+  --theme-gradient: radial-gradient(1200px 600px at 50% -100px, rgba(255, 255, 255, 0.06) 0%, transparent 70%), linear-gradient(180deg, #0e1017 0%, #08090d 45%, #050608 100%);
+  --watermark-opacity: 0.035;
+
+  --border-color: rgba(255, 255, 255, 0.10);
+  --border-card: rgba(255, 255, 255, 0.08);
+  --border-subtle: rgba(255, 255, 255, 0.05);
+  --border-highlight: #ffffff;
+  --border-glow: rgba(255, 255, 255, 0.45);
+
+  --accent-primary: #ffffff;
+  --accent-hover: #e2e8f0;
+  --accent-text: #000000;
+  --accent-glow: rgba(255, 255, 255, 0.45);
+  --accent-secondary: #94a3b8;
+  --accent-cyan: #38bdf8;
+  --accent-green: #22c55e;
+  --accent-red: #ef4444;
+
+  --text-primary: #ffffff;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+
+  --status-success: #22c55e;
+  --status-warning: #f59e0b;
+  --status-danger: #ef4444;
+  --status-info: #38bdf8;
+
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+  --sidebar-width: 68px;
+}
+
+/* 2. AMOLED VOID (PURE BLACK PITCH) */
+[data-theme="all-black"],
+[data-theme="amoled"] {
+  --bg-app: #000000;
+  --bg-sidebar: #050505;
+  --bg-topbar: #050505;
+  --bg-card: #0a0a0c;
+  --bg-card-hover: #141418;
+  --bg-card-active: #1c1c22;
+  --bg-input: #08080a;
+  --bg-modal: #08080a;
+  --bg-terminal: #000000;
+
+  --theme-gradient: linear-gradient(180deg, #050505 0%, #000000 100%);
+  --watermark-opacity: 0.02;
+
+  --border-color: rgba(255, 255, 255, 0.12);
+  --border-card: rgba(255, 255, 255, 0.08);
+  --border-subtle: rgba(255, 255, 255, 0.04);
+  --border-highlight: #ffffff;
+  --border-glow: rgba(255, 255, 255, 0.35);
+
+  --accent-primary: #ffffff;
+  --accent-hover: #d4d4d8;
+  --accent-text: #000000;
+  --accent-glow: rgba(255, 255, 255, 0.35);
+  --accent-secondary: #a1a1aa;
+  --accent-cyan: #38bdf8;
+  --accent-green: #22c55e;
+  --accent-red: #ef4444;
+
+  --text-primary: #ffffff;
+  --text-secondary: #d4d4d8;
+  --text-muted: #a1a1aa;
+  --text-dim: #71717a;
+}
+
+/* 3. CYBER NEON CYAN */
+[data-theme="cyber-cyan"],
+[data-theme="cyan"] {
+  --bg-app: #030812;
+  --bg-sidebar: rgba(5, 14, 30, 0.96);
+  --bg-topbar: rgba(5, 14, 30, 0.70);
+  --bg-card: rgba(8, 22, 46, 0.85);
+  --bg-card-hover: rgba(12, 32, 66, 0.95);
+  --bg-card-active: rgba(16, 42, 86, 0.98);
+  --bg-input: #07152b;
+  --bg-modal: #051022;
+  --bg-terminal: #02060d;
+
+  --theme-gradient: radial-gradient(1200px 600px at 50% -100px, rgba(0, 240, 255, 0.14) 0%, transparent 70%), linear-gradient(180deg, #071733 0%, #030812 45%, #01040a 100%);
+  --watermark-opacity: 0.045;
+
+  --border-color: rgba(0, 240, 255, 0.22);
+  --border-card: rgba(0, 240, 255, 0.15);
+  --border-subtle: rgba(0, 240, 255, 0.08);
+  --border-highlight: #00f0ff;
+  --border-glow: rgba(0, 240, 255, 0.55);
+
+  --accent-primary: #00f0ff;
+  --accent-hover: #38bdf8;
+  --accent-text: #020814;
+  --accent-glow: rgba(0, 240, 255, 0.55);
+  --accent-secondary: #7dd3fc;
+  --accent-cyan: #00f0ff;
+  --accent-green: #22c55e;
+  --accent-red: #ef4444;
+
+  --text-primary: #f0fdfa;
+  --text-secondary: #bae6fd;
+  --text-muted: #7dd3fc;
+  --text-dim: #38bdf8;
+}
+
+/* 4. EMERALD MATRIX */
+[data-theme="emerald"],
+[data-theme="green"] {
+  --bg-app: #030d07;
+  --bg-sidebar: rgba(5, 20, 11, 0.96);
+  --bg-topbar: rgba(5, 20, 11, 0.70);
+  --bg-card: rgba(8, 30, 17, 0.85);
+  --bg-card-hover: rgba(12, 44, 25, 0.95);
+  --bg-card-active: rgba(16, 58, 33, 0.98);
+  --bg-input: #071f11;
+  --bg-modal: #05180d;
+  --bg-terminal: #010603;
+
+  --theme-gradient: radial-gradient(1200px 600px at 50% -100px, rgba(34, 197, 94, 0.14) 0%, transparent 70%), linear-gradient(180deg, #072213 0%, #030d07 45%, #010503 100%);
+  --watermark-opacity: 0.045;
+
+  --border-color: rgba(34, 197, 94, 0.22);
+  --border-card: rgba(34, 197, 94, 0.15);
+  --border-subtle: rgba(34, 197, 94, 0.08);
+  --border-highlight: #22c55e;
+  --border-glow: rgba(34, 197, 94, 0.55);
+
+  --accent-primary: #22c55e;
+  --accent-hover: #4ade80;
+  --accent-text: #011206;
+  --accent-glow: rgba(34, 197, 94, 0.55);
+  --accent-secondary: #86efac;
+  --accent-cyan: #38bdf8;
+  --accent-green: #22c55e;
+  --accent-red: #ef4444;
+
+  --text-primary: #f0fdf4;
+  --text-secondary: #bbf7d0;
+  --text-muted: #86efac;
+  --text-dim: #4ade80;
+}
+
+/* 5. NEBULA VIOLET */
+[data-theme="nebula-purple"],
+[data-theme="purple"] {
+  --bg-app: #0a0515;
+  --bg-sidebar: rgba(16, 8, 32, 0.96);
+  --bg-topbar: rgba(16, 8, 32, 0.70);
+  --bg-card: rgba(24, 12, 48, 0.85);
+  --bg-card-hover: rgba(36, 18, 70, 0.95);
+  --bg-card-active: rgba(48, 24, 92, 0.98);
+  --bg-input: #170b30;
+  --bg-modal: #130928;
+  --bg-terminal: #05020a;
+
+  --theme-gradient: radial-gradient(1200px 600px at 50% -100px, rgba(168, 85, 247, 0.16) 0%, transparent 70%), linear-gradient(180deg, #1b0c38 0%, #0a0515 45%, #040208 100%);
+  --watermark-opacity: 0.045;
+
+  --border-color: rgba(168, 85, 247, 0.25);
+  --border-card: rgba(168, 85, 247, 0.18);
+  --border-subtle: rgba(168, 85, 247, 0.08);
+  --border-highlight: #c084fc;
+  --border-glow: rgba(168, 85, 247, 0.55);
+
+  --accent-primary: #c084fc;
+  --accent-hover: #d8b4fe;
+  --accent-text: #0d041c;
+  --accent-glow: rgba(168, 85, 247, 0.55);
+  --accent-secondary: #e9d5ff;
+  --accent-cyan: #38bdf8;
+  --accent-green: #22c55e;
+  --accent-red: #ef4444;
+
+  --text-primary: #faf5ff;
+  --text-secondary: #e9d5ff;
+  --text-muted: #c084fc;
+  --text-dim: #a855f7;
+}
+
+/* 6. CRIMSON RED */
+[data-theme="crimson"],
+[data-theme="red"] {
+  --bg-app: #120406;
+  --bg-sidebar: rgba(26, 6, 10, 0.96);
+  --bg-topbar: rgba(26, 6, 10, 0.70);
+  --bg-card: rgba(38, 9, 15, 0.85);
+  --bg-card-hover: rgba(56, 14, 23, 0.95);
+  --bg-card-active: rgba(74, 18, 30, 0.98);
+  --bg-input: #24070d;
+  --bg-modal: #1e060a;
+  --bg-terminal: #080102;
+
+  --theme-gradient: radial-gradient(1200px 600px at 50% -100px, rgba(244, 63, 94, 0.16) 0%, transparent 70%), linear-gradient(180deg, #2b080f 0%, #120406 45%, #080102 100%);
+  --watermark-opacity: 0.045;
+
+  --border-color: rgba(244, 63, 94, 0.25);
+  --border-card: rgba(244, 63, 94, 0.18);
+  --border-subtle: rgba(244, 63, 94, 0.08);
+  --border-highlight: #f43f5e;
+  --border-glow: rgba(244, 63, 94, 0.55);
+
+  --accent-primary: #f43f5e;
+  --accent-hover: #fb7185;
+  --accent-text: #180205;
+  --accent-glow: rgba(244, 63, 94, 0.55);
+  --accent-secondary: #fecdd3;
+  --accent-cyan: #38bdf8;
+  --accent-green: #22c55e;
+  --accent-red: #ef4444;
+
+  --text-primary: #fff1f2;
+  --text-secondary: #fecdd3;
+  --text-muted: #fb7185;
+  --text-dim: #f43f5e;
+}

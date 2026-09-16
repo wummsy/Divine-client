@@ -1,0 +1,12 @@
+# The one-file alternative to nginx, if Caddy is your thing: it fetches and
+# renews the certificate itself, so there is nothing else to configure.
+#
+#   sudo cp server/deploy/Caddyfile /etc/caddy/Caddyfile && sudo systemctl reload caddy
+#
+# Caddy proxies to the app and sets X-Forwarded-Proto for it, which is what
+# PUBLIC_BASE_URL and the legacy-host 301s need to stay consistent.
+
+divineclient.wispbyte.org {
+	encode gzip zstd
+	reverse_proxy 127.0.0.1:10230
+}

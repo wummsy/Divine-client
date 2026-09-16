@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="vgTop" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#55b836"/>
+      <stop offset="100%" stop-color="#3b8522"/>
+    </linearGradient>
+    <linearGradient id="vgLeft" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#866043"/>
+      <stop offset="100%" stop-color="#573d2a"/>
+    </linearGradient>
+    <linearGradient id="vgRight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6e4e36"/>
+      <stop offset="100%" stop-color="#442f20"/>
+    </linearGradient>
+  </defs>
+  <!-- Top Face (Grass) -->
+  <polygon points="32,4 60,20 32,36 4,20" fill="url(#vgTop)" stroke="#275c14" stroke-width="1.5"/>
+  <!-- Left Face (Dirt) -->
+  <polygon points="4,20 32,36 32,60 4,44" fill="url(#vgLeft)" stroke="#382517" stroke-width="1.5"/>
+  <!-- Right Face (Dirt) -->
+  <polygon points="32,36 60,20 60,44 32,60" fill="url(#vgRight)" stroke="#2b1c11" stroke-width="1.5"/>
+  <!-- Grass hanging overhangs -->
+  <polygon points="4,20 12,25 18,21 26,27 32,23 32,36 4,20" fill="#48a02d"/>
+  <polygon points="32,36 38,28 46,33 54,26 60,20 32,36" fill="#388022"/>
+</svg>

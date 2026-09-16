@@ -1,0 +1,22 @@
+# Divine Client Discord bot (systemd unit)
+# Runs on the SAME server as divine-web, sharing the same divine.db.
+# Install: copy to /etc/systemd/system/divine-bot.service, then
+#   sudo systemctl daemon-reload && sudo systemctl enable --now divine-bot
+[Unit]
+Description=Divine Client Discord bot
+After=network.target divine-web.service
+
+[Service]
+Type=simple
+User=divine
+WorkingDirectory=/opt/divine/server
+Environment=PUBLIC_BASE_URL=https://divineclient.wispbyte.org
+Environment=DISCORD_BOT_TOKEN=CHANGE_ME_bot_token
+# IMPORTANT: same database file as the web service
+Environment=DIVINE_DB=/opt/divine/server/divine.db
+ExecStart=/opt/divine/server/.venv/bin/python bot.py
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

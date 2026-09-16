@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <radialGradient id="divineWhiteGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="60%" stop-color="#F1F5F9" />
+      <stop offset="100%" stop-color="#CBD5E1" />
+    </radialGradient>
+    <filter id="whiteGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="4" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  <g fill="url(#divineWhiteGrad)" filter="url(#whiteGlow)">
+    <g transform="rotate(0 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+    <g transform="rotate(45 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+    <g transform="rotate(90 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+    <g transform="rotate(135 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+    <g transform="rotate(180 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+    <g transform="rotate(225 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+    <g transform="rotate(270 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+    <g transform="rotate(315 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+    <circle cx="128" cy="128" r="34"/>
+  </g>
+  <circle cx="128" cy="128" r="58" fill="none" stroke="url(#divineWhiteGrad)" stroke-width="9" stroke-linecap="round"/>
+</svg>

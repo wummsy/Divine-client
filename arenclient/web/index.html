@@ -1,0 +1,1599 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="divine">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Divine Client v4.0.0</title>
+  <link rel="icon" type="image/png" href="/assets/divine_icon.png">
+  <link rel="shortcut icon" href="/assets/icon.ico">
+  <link rel="stylesheet" href="/css/theme.css">
+  <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+
+  <!-- Full Windowless Startup Animation (Pure White Divine Sun Logo Only) -->
+  <div id="startup-gateway-screen" class="startup-splash-overlay" onclick="this.classList.add('fade-out'); setTimeout(() => { this.style.display='none'; }, 400);" title="Click anywhere to skip">
+    <div class="startup-stage-container">
+      <svg viewBox="0 0 256 256" class="startup-sun-svg">
+        <g class="spikes-layer">
+          <g transform="rotate(0 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+          <g transform="rotate(45 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+          <g transform="rotate(90 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+          <g transform="rotate(135 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+          <g transform="rotate(180 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+          <g transform="rotate(225 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+          <g transform="rotate(270 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+          <g transform="rotate(315 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+        </g>
+        <circle class="ring" cx="128" cy="128" r="58"/>
+        <circle class="core" cx="128" cy="128" r="34"/>
+      </svg>
+    </div>
+  </div>
+  <script>
+    // Failsafe auto-dismiss timer in case scripts are slow or interrupted
+    setTimeout(function() {
+      var s = document.getElementById("startup-gateway-screen");
+      if (s && !s.classList.contains("fade-out")) {
+        s.classList.add("fade-out");
+        setTimeout(function() { s.style.display = "none"; }, 500);
+      }
+    }, 2000);
+  </script>
+
+  <!-- Background Watermark Logo -->
+  <svg class="app-background-watermark" viewBox="0 0 256 256">
+    <g fill="#ffffff">
+      <g transform="rotate(0 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+      <g transform="rotate(45 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+      <g transform="rotate(90 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+      <g transform="rotate(135 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+      <g transform="rotate(180 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+      <g transform="rotate(225 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+      <g transform="rotate(270 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+      <g transform="rotate(315 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+      <circle cx="128" cy="128" r="34"/>
+    </g>
+    <circle cx="128" cy="128" r="58" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round"/>
+  </svg>
+
+  <!-- APP ROOT: HORIZONTAL LEFT SIDEBAR SHELL -->
+  <div id="app-root">
+
+    <!-- LEFT SIDEBAR (ICONS ONLY • COMPACT RAIL) -->
+    <aside class="app-sidebar-left">
+      <div class="sidebar-top-section">
+        <!-- Client Logo Header (Pure White Sun) -->
+        <button class="sidebar-brand-btn" onclick="switchTab('overview')" data-tooltip="Divine Client Home">
+          <svg viewBox="0 0 256 256">
+            <g fill="#ffffff">
+              <g transform="rotate(0 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+              <g transform="rotate(45 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+              <g transform="rotate(90 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+              <g transform="rotate(135 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+              <g transform="rotate(180 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+              <g transform="rotate(225 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+              <g transform="rotate(270 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+              <g transform="rotate(315 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+              <circle cx="128" cy="128" r="34"/>
+            </g>
+            <circle cx="128" cy="128" r="58" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round"/>
+          </svg>
+        </button>
+
+        <div class="sidebar-divider"></div>
+
+        <!-- Navigation Tabs (Icons Only) -->
+        <nav class="sidebar-nav">
+          <!-- 1. Home / Instances -->
+          <button class="sidebar-nav-item active" data-tab="overview" onclick="switchTab('overview')" data-tooltip="Home &amp; Launch">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+          </button>
+
+          <!-- 2. Modpack Store -->
+          <button class="sidebar-nav-item" data-tab="modpacks" onclick="switchTab('modpacks')" data-tooltip="Modpack Store">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l-5.5 9h11L12 2zm0 3.84L13.93 9h-3.86L12 5.84zM17.5 13c-2.49 0-4.5 2.01-4.5 4.5s2.01 4.5 4.5 4.5 4.5-2.01 4.5-4.5-2.01-4.5-4.5-4.5zm0 7c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5zM3 21.5h8v-8H3v8zm2-6h4v4H5v-4z"/></svg>
+          </button>
+
+          <!-- 3. Instance Editor Tab -->
+          <button class="sidebar-nav-item" data-tab="editor" onclick="switchTab('editor')" data-tooltip="Instance Editor &amp; Mods">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          </button>
+
+          <!-- 4. Dedicated Servers -->
+          <button class="sidebar-nav-item" data-tab="servers" onclick="switchTab('servers')" data-tooltip="Dedicated Servers">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 20h20v-4H2v4zm2-3h2v2H4v-2zM2 4v4h20V4H2zm4 3H4V5h2v2zm-4 7h20v-4H2v4zm2-3h2v2H4v-2z"/></svg>
+          </button>
+
+          <!-- 5. Cloaks & Wardrobe -->
+          <button class="sidebar-nav-item" data-tab="cosmetics" onclick="switchTab('cosmetics')" data-tooltip="Cloaks &amp; Wardrobe">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 4a3 3 0 0 1 3 3c0 1.2-.7 2.2-1.7 2.7L21 16H3l7.7-6.3C9.7 9.2 9 8.2 9 7a3 3 0 0 1 3-3z"/>
+              <path d="M4 16v5a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-5"/>
+            </svg>
+          </button>
+
+          <!-- 6. Friends & Social (Clean Native Network) -->
+          <button class="sidebar-nav-item" data-tab="friends" onclick="switchTab('friends')" data-tooltip="Friends &amp; Player Network">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+          </button>
+
+          <!-- 7. Discord Gateway & Profile -->
+          <button class="sidebar-nav-item" data-tab="discord" onclick="switchTab('discord')" data-tooltip="Discord Community &amp; Account">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.929 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.893.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+          </button>
+        </nav>
+      </div>
+
+      <!-- Bottom Settings Button (Icons Only) -->
+      <div class="sidebar-bottom-section">
+        <button class="sidebar-settings-btn" onclick="openSettingsModal()" data-tooltip="Settings &amp; JVM">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+        </button>
+      </div>
+    </aside>
+
+    <!-- RIGHT / MAIN VIEWPORT AREA -->
+    <div class="app-main-viewport">
+      <!-- TOPBAR HEADER (Account Pill Top Right) -->
+      <header class="app-topbar-header">
+        <div class="topbar-left-breadcrumbs" id="topbar-breadcrumbs">
+          <span style="color: #ffffff; font-weight: 900;">DIVINE CLIENT</span>
+          <span style="color: #4b5563;">/</span>
+          <span style="color: #cbd5e1;" id="topbar-crumb-active">HOME</span>
+        </div>
+
+        <div class="topbar-right-actions">
+          <!-- Discord Link / Status Button in Topbar -->
+          <button class="btn btn-secondary btn-sm" id="topbar-discord-btn" onclick="switchTab('discord')" title="Discord Authentication &amp; Profile" style="gap: 6px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.929 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.893.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+            <span id="topbar-discord-label">Discord</span>
+          </button>
+
+          <!-- Top Right User Profile Pill -->
+          <div class="topbar-account-pill" id="topbar-account-btn" onclick="toggleAccountDrawer()" title="Switch Account &amp; Profiles">
+            <div class="account-avatar-box" id="topbar-avatar-container">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <div class="account-text-stack">
+              <div class="account-username" id="topbar-username">Add Account</div>
+              <div class="account-status-sub" id="topbar-status-text">ONLINE</div>
+            </div>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="#94a3b8"><path d="M7 10l5 5 5-5z"/></svg>
+          </div>
+        </div>
+      </header>
+
+      <!-- MAIN CONTENT VIEWS -->
+      <main class="app-main">
+
+        <!-- VIEW 1: HOME (MULTI-BACKGROUND SHADERS • QUICK PLAY CARD • ANIMATED SLIDER • GREEN/RED PLAY BUTTON) -->
+        <div class="view-pane active" id="view-overview">
+          <div class="home-hero-container" id="home-hero-container">
+            <div class="home-hero-header">
+              <div>
+                <h1 class="home-hero-title" id="home-main-title">Divine Client 1.21.11</h1>
+                <p class="home-hero-subtitle" id="home-main-subtitle">High-performance PvP &amp; visual QoL client with built-in cloaks and Discord RPC.</p>
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <!-- 2 Main Menus Mode Switcher -->
+                <div class="mode-toggle-group" style="display: flex; background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 2px;">
+                  <button class="btn btn-sm btn-primary" id="mode-btn-divine" onclick="setLauncherMenuMode('divine')" style="padding: 4px 12px; font-size: 12px; font-weight: 800;">Divine Client (1.21.11)</button>
+                  <button class="btn btn-sm btn-secondary" id="mode-btn-custom" onclick="setLauncherMenuMode('custom')" style="padding: 4px 12px; font-size: 12px; font-weight: 800; border: none; background: transparent;">All Instances</button>
+                </div>
+                <button class="btn btn-secondary btn-sm" onclick="cycleHeroBackground()" title="Switch Wallpaper">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                  <span id="hero-wallpaper-name">Wallpaper</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Quick Play Bar: 5 mini icons centered directly on top of the launching card -->
+            <div class="quick-play-wrapper">
+              <div class="quick-play-card">
+                <div class="quick-play-title-tag">QUICK PLAY</div>
+                <div class="quick-play-icons-bar">
+                  <!-- 1. Fabric 1.21.11 (Ultra Performance) -->
+                  <button class="quick-play-btn" onclick="quickPlayAction('fabric')" data-tooltip="Fabric 1.21.11 (Ultra Performance)" title="Fabric 1.21.11 (Ultra Performance)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                  </button>
+
+                  <!-- 2. Builder & Cinematic Studio -->
+                  <button class="quick-play-btn" onclick="quickPlayAction('builder')" data-tooltip="Builder Studio (Axiom + WorldEdit)" title="Builder Studio (Axiom + WorldEdit)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                  </button>
+
+                  <!-- 3. Bedwars PvP 1.8.9 (Forge) -->
+                  <button class="quick-play-btn" onclick="quickPlayAction('bedwars')" data-tooltip="Bedwars PvP 1.8.9 (Forge)" title="Bedwars PvP 1.8.9 (Forge)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 17.5L3 6V3h3l11.5 11.5"/><path d="M13 19l6-6"/><path d="M16 16l4 4"/><path d="M19 21l2-2"/></svg>
+                  </button>
+
+                  <!-- 4. Vanilla Survival 1.21.4 -->
+                  <button class="quick-play-btn" onclick="quickPlayAction('survival')" data-tooltip="Vanilla Survival 1.21.4" title="Vanilla Survival 1.21.4">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  </button>
+
+                  <!-- 5. Multiplayer SMP 1.21.4 -->
+                  <button class="quick-play-btn" onclick="quickPlayAction('smp')" data-tooltip="Multiplayer SMP 1.21.4" title="Multiplayer SMP 1.21.4">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10z"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Instance Slider Deck (The Launching Card) -->
+            <div class="instance-slider-deck">
+              <div class="instance-slider-main">
+                <!-- Left Nav Arrow -->
+                <button class="slider-nav-arrow" onclick="slideInstancePrev()" title="Previous Instance">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+                </button>
+
+                <!-- Instance Metadata (Animated Slide Transitions) -->
+                <div class="slider-instance-info" id="hero-slider-info-box">
+                  <div class="slider-instance-name" id="hero-slider-name">Divine Fabulously Optimized</div>
+                  <div class="slider-tags-row">
+                    <span class="badge-tag version" id="hero-slider-version">1.21.1</span>
+                    <span class="badge-tag loader" id="hero-slider-loader">FABRIC</span>
+                    <span class="badge-tag mods" id="hero-slider-mods">48 Mods</span>
+                    <span class="badge-tag" id="hero-slider-ram">4096 MB RAM</span>
+                  </div>
+                  <!-- Slider Indicator Dots -->
+                  <div class="slider-pagination-dots" id="hero-slider-dots"></div>
+                </div>
+
+                <!-- Right Nav Arrow -->
+                <button class="slider-nav-arrow" onclick="slideInstanceNext()" title="Next Instance">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+                </button>
+              </div>
+
+              <!-- Solid Green Play Button (Switches to Solid Red Stop Button When Running) -->
+              <button class="hero-launch-btn" id="hero-launch-btn" onclick="handleHeroPlayButtonClick()">
+                <svg id="hero-launch-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                <span id="hero-launch-text">PLAY MINECRAFT</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Bottom 2-Column: Announcements & Friends -->
+          <div class="overview-2col-layout">
+            <!-- Left Column: Announcements -->
+            <div>
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                <div>
+                  <h3 style="font-size: 15px; font-weight: 800; color: #ffffff;">Latest Announcements</h3>
+                  <p style="font-size: 12px; color: #94a3b8;">Official Divine updates and changelogs.</p>
+                </div>
+              </div>
+              <div id="news-grid" style="display: flex; flex-direction: column; gap: 10px;"></div>
+            </div>
+
+            <!-- Right Column: Online Friends Quick Glance -->
+            <div>
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                <div>
+                  <h3 style="font-size: 15px; font-weight: 800; color: #ffffff;">Friends Network</h3>
+                  <p style="font-size: 12px; color: #94a3b8;">Active players &amp; shared servers.</p>
+                </div>
+                <button class="btn btn-secondary btn-sm" onclick="switchTab('friends')">View All</button>
+              </div>
+              <div class="card-panel" style="padding: 12px;">
+                <div id="home-quick-friends-list" style="display: flex; flex-direction: column; gap: 8px;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- VIEW 2: MODPACK STORE (MODPACKS ONLY • MATCHING IMAGE-1.PNG) -->
+        <div class="view-pane" id="view-modpacks">
+          <div class="store-container">
+            <!-- Top Search & Filter Bar -->
+            <div class="store-topbar-filters">
+              <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
+                <span style="font-size: 15px; font-weight: 900; color: #ffffff; white-space: nowrap;">Modpacks Store</span>
+                <!-- Search Input -->
+                <div class="store-search-bar">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" id="store-search-input" placeholder="Search Modpacks on Modrinth..." oninput="debounceStoreSearch()">
+                </div>
+              </div>
+
+              <!-- Sort & Source Tabs -->
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <select class="select-field" id="store-sort-select" style="width: 140px;" onchange="fetchStoreModpacks()">
+                  <option value="downloads">Popularity</option>
+                  <option value="relevance">Relevance</option>
+                  <option value="updated">Recently Updated</option>
+                  <option value="newest">Newest</option>
+                </select>
+
+                <div class="store-source-tabs">
+                  <button class="store-source-tab" onclick="setStoreSource('curseforge', this)">CurseForge</button>
+                  <button class="store-source-tab active" onclick="setStoreSource('modrinth', this)">Modrinth</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Main 2-Column Store Layout: Left Cards Stack • Right Filters -->
+            <div class="store-main-layout">
+              <!-- Left: Modpack List -->
+              <div class="store-list-stack" id="store-modpack-list"></div>
+
+              <!-- Right: Filter Rail (Categories, Loaders, Environment, Versions) -->
+              <div class="store-filter-rail">
+                <!-- Categories -->
+                <div>
+                  <div class="filter-group-title">Categories</div>
+                  <div class="filter-pill-grid" id="store-category-filters">
+                    <div class="filter-pill active" onclick="toggleStoreFilter('category', 'all', this)">All</div>
+                    <div class="filter-pill" onclick="toggleStoreFilter('category', 'adventure', this)">Adventure</div>
+                    <div class="filter-pill" onclick="toggleStoreFilter('category', 'challenging', this)">Challenging</div>
+                    <div class="filter-pill" onclick="toggleStoreFilter('category', 'combat', this)">Combat</div>
+                    <div class="filter-pill" onclick="toggleStoreFilter('category', 'kitchen-sink', this)">Kitchen Sink</div>
+                    <div class="filter-pill" onclick="toggleStoreFilter('category', 'lightweight', this)">Lightweight</div>
+                    <div class="filter-pill" onclick="toggleStoreFilter('category', 'magic', this)">Magic</div>
+                    <div class="filter-pill" onclick="toggleStoreFilter('category', 'multiplayer', this)">Multiplayer</div>
+                    <div class="filter-pill" onclick="toggleStoreFilter('category', 'optimization', this)">Optimization</div>
+                    <div class="filter-pill" onclick="toggleStoreFilter('category', 'quests', this)">Quests</div>
+                    <div class="filter-pill" onclick="toggleStoreFilter('category', 'technology', this)">Technology</div>
+                  </div>
+                </div>
+
+                <!-- Loaders -->
+                <div>
+                  <div class="filter-group-title">Loaders</div>
+                  <div class="filter-pill-grid" id="store-loader-filters">
+                    <div class="filter-pill active" onclick="toggleStoreFilter('loader', 'all', this)">All</div>
+                    <div class="filter-pill" onclick="toggleStoreFilter('loader', 'fabric', this)">Fabric</div>
+                    <div class="filter-pill" onclick="toggleStoreFilter('loader', 'forge', this)">Forge</div>
+                    <div class="filter-pill" onclick="toggleStoreFilter('loader', 'neoforge', this)">NeoForge</div>
+                    <div class="filter-pill" onclick="toggleStoreFilter('loader', 'quilt', this)">Quilt</div>
+                  </div>
+                </div>
+
+                <!-- Game Versions -->
+                <div>
+                  <div class="filter-group-title">Game Versions</div>
+                  <div class="filter-pill-grid" id="store-version-filters" style="max-height: 220px; overflow-y: auto;">
+                    <div class="filter-pill active" onclick="toggleStoreFilter('version', 'all', this)">All</div>
+                    <div class="filter-pill" onclick="toggleStoreFilter('version', '1.21.1', this)">1.21.1</div>
+                    <div class="filter-pill" onclick="toggleStoreFilter('version', '1.21', this)">1.21</div>
+                    <div class="filter-pill" onclick="toggleStoreFilter('version', '1.20.4', this)">1.20.4</div>
+                    <div class="filter-pill" onclick="toggleStoreFilter('version', '1.20.1', this)">1.20.1</div>
+                    <div class="filter-pill" onclick="toggleStoreFilter('version', '1.19.4', this)">1.19.4</div>
+                    <div class="filter-pill" onclick="toggleStoreFilter('version', '1.18.2', this)">1.18.2</div>
+                    <div class="filter-pill" onclick="toggleStoreFilter('version', '1.16.5', this)">1.16.5</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- VIEW 3: DEDICATED INSTANCE EDITOR TAB -->
+        <div class="view-pane" id="view-editor">
+          <div class="editor-container">
+            <!-- Header Card with Instance Name & Icon Picker -->
+            <div class="editor-header-card">
+              <div class="editor-header-left">
+                <!-- Custom Icon Box -->
+                <div class="editor-icon-preview-box" id="editor-inst-icon-box" onclick="triggerCustomIconPicker()" title="Click to Change Instance Icon">
+                  <img id="editor-inst-icon-img" src="/assets/loader_fabric.svg" style="width: 36px; height: 36px; object-fit: contain;">
+                </div>
+                <input type="file" id="editor-custom-icon-file" accept="image/*" style="display: none;" onchange="uploadInstanceIconFile(this)">
+
+                <div>
+                  <input type="text" id="editor-instance-name-input" class="input-field" style="font-size: 16px; font-weight: 800; width: 280px;" placeholder="Instance Name">
+                  <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;" id="editor-instance-meta-line">Minecraft 1.21.1 • Fabric Loader</div>
+                </div>
+              </div>
+
+              <!-- Instance Switcher & Actions -->
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <select class="select-field" id="editor-instance-select" style="width: 200px;" onchange="loadInstanceIntoEditor(this.value)"></select>
+                <button class="btn btn-secondary btn-sm" onclick="openCreateInstanceModal()">+ New Instance</button>
+                <button class="btn btn-primary btn-sm" onclick="saveCurrentEditorInstance()">Save Changes</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteCurrentEditorInstance()">Delete</button>
+              </div>
+            </div>
+
+            <!-- Sub-Tabs Navigation (Mods, Resource Packs, Shaders, Settings/Java) -->
+            <div class="editor-subtabs-nav">
+              <button class="editor-subtab-btn active" onclick="switchEditorSubpane('mods', this)">Installed Mods</button>
+              <button class="editor-subtab-btn" onclick="switchEditorSubpane('resourcepacks', this)">Resource Packs</button>
+              <button class="editor-subtab-btn" onclick="switchEditorSubpane('shaders', this)">Shader Packs</button>
+              <button class="editor-subtab-btn" onclick="switchEditorSubpane('settings', this)">Settings &amp; Java</button>
+            </div>
+
+            <!-- Sub-Pane 1: Installed Mods -->
+            <div class="editor-subpane active" id="editor-subpane-mods">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <input type="text" class="input-field" id="editor-mods-filter" placeholder="Filter installed mods..." style="width: 240px;" oninput="filterEditorModsList(this.value)">
+                  <span id="editor-mods-count-badge" class="badge-tag">0 Mods</span>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                  <button class="btn btn-secondary btn-sm" onclick="openModSearchModalForEditor()">+ Add Mods from Modrinth</button>
+                  <!-- FIX MODS BUTTON (REPLACES OPTIMIZE MODS) -->
+                  <button class="btn btn-primary btn-sm" onclick="fixCurrentEditorModsCompatibility()" title="Fixes Fabric + Iris + Sodium and dependency compatibility">Fix Mods</button>
+                </div>
+              </div>
+              <div class="editor-mods-table" id="editor-mods-table-body"></div>
+            </div>
+
+            <!-- Sub-Pane 2: Resource Packs -->
+            <div class="editor-subpane" id="editor-subpane-resourcepacks">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+                <span style="font-size: 13px; font-weight: 800; color: #ffffff;">Installed Texture &amp; Resource Packs</span>
+                <button class="btn btn-secondary btn-sm" onclick="openResourcepackSearchModal()">+ Add Resource Pack</button>
+              </div>
+              <div class="editor-mods-table" id="editor-resourcepacks-table-body"></div>
+            </div>
+
+            <!-- Sub-Pane 3: Shader Packs -->
+            <div class="editor-subpane" id="editor-subpane-shaders">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+                <span style="font-size: 13px; font-weight: 800; color: #ffffff;">Installed Iris / OptiFine Shaders</span>
+                <button class="btn btn-secondary btn-sm" onclick="openShaderSearchModal()">+ Add Shader Pack</button>
+              </div>
+              <div class="editor-mods-table" id="editor-shaders-table-body"></div>
+            </div>
+
+            <!-- Sub-Pane 4: Settings & Java Config -->
+            <div class="editor-subpane" id="editor-subpane-settings">
+              <div class="card-panel" style="max-width: 600px; display: flex; flex-direction: column; gap: 16px;">
+                <div>
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                    <label style="font-size: 13px; font-weight: 800; color: #ffffff;">Allocated RAM Memory</label>
+                    <span id="editor-ram-display" style="font-size: 13px; font-weight: 800; color: #38bdf8;">4096 MB</span>
+                  </div>
+                  <input type="range" class="range-slider" id="editor-ram-slider" min="1024" max="16384" step="512" value="4096" oninput="updateEditorRamDisplay(this.value)" style="width: 100%;">
+                </div>
+
+                <div>
+                  <label style="font-size: 13px; font-weight: 800; color: #ffffff; display: block; margin-bottom: 6px;">Custom Java Runtime Path</label>
+                  <input type="text" class="input-field" id="editor-custom-java-input" placeholder="Adoptium Temurin 21 (Auto-detected)">
+                </div>
+
+                <div>
+                  <label style="font-size: 13px; font-weight: 800; color: #ffffff; display: block; margin-bottom: 6px;">Custom JVM Arguments</label>
+                  <input type="text" class="input-field" id="editor-custom-jvm-input" placeholder="-XX:+UseG1GC -XX:+ParallelRefProcEnabled">
+                </div>
+
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                  <label style="font-size: 13px; font-weight: 800; color: #ffffff;">Launch in Fullscreen</label>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="editor-fullscreen-toggle">
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- VIEW 4: DEDICATED SERVERS -->
+        <div class="view-pane" id="view-servers">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+            <div>
+              <h1 style="font-size: 24px; font-weight: 900; color: #ffffff;">Dedicated Servers</h1>
+              <p style="font-size: 13px; color: #94a3b8;">Deploy Paper/Purpur servers with zero-config public tunnels and web console management.</p>
+            </div>
+            <button class="btn btn-primary" onclick="openCreateServerModal()">+ Deploy Dedicated Server</button>
+          </div>
+
+          <div id="servers-cards-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px;"></div>
+        </div>
+
+        <!-- VIEW 5: CLOAKS & COSMETICS WARDROBE -->
+        <div class="view-pane" id="view-cosmetics">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+            <div>
+              <h1 style="font-size: 24px; font-weight: 900; color: #ffffff;">Cloaks &amp; Wardrobe</h1>
+              <p style="font-size: 13px; color: #94a3b8;">Equip exclusive animated cloaks and nametag badges synced with your Divine account.</p>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button class="btn btn-secondary" onclick="openInGameModMenu()">Open In-Game Wardrobe</button>
+              <button class="btn btn-primary" onclick="openCosmeticRedeemModal()">Redeem Promo Code</button>
+            </div>
+          </div>
+
+          <!-- Promo Codes Banner Card -->
+          <div class="card-panel" style="margin-bottom: 24px; background: linear-gradient(135deg, rgba(30, 41, 59, 0.85), rgba(15, 23, 42, 0.95)); border: 1px solid rgba(255,255,255,0.15); padding: 20px; border-radius: 12px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <div style="width: 44px; height: 44px; border-radius: 10px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.2);">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v3"/><line x1="12" y1="12" x2="12" y2="16"/></svg>
+                </div>
+                <div>
+                  <div style="font-size: 15px; font-weight: 900; color: #ffffff;">Redeemable Promo Codes &amp; Event Keys</div>
+                  <div style="font-size: 12px; color: #94a3b8;">Enter code <code style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; color: #ffffff;">BOOSTER2026</code> to unlock the Booster Cloak instantly.</div>
+                </div>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <input type="text" class="input-field" id="cosmetics-quick-code-input" placeholder="ENTER CODE (e.g. BOOSTER2026)" style="width: 240px; text-transform: uppercase; font-weight: 700;">
+                <button class="btn btn-primary" onclick="submitQuickRedeemCode()">Redeem</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Full Width Wardrobe Grid -->
+          <div>
+            <!-- Subtabs for Categories -->
+            <div class="cosmetics-category-pills" style="display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;">
+              <button class="pill-btn active" onclick="filterCosmeticsCategory('all', this)">All Cosmetics</button>
+              <button class="pill-btn" onclick="filterCosmeticsCategory('cloaks', this)">Cloaks</button>
+              <button class="pill-btn" onclick="filterCosmeticsCategory('wings', this)">Wings</button>
+              <button class="pill-btn" onclick="filterCosmeticsCategory('halos', this)">Halos &amp; Headwear</button>
+              <button class="pill-btn" onclick="filterCosmeticsCategory('badges', this)">Nametag Badges</button>
+            </div>
+
+            <!-- Full Width Cosmetics Grid -->
+            <div id="cosmetics-items-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;"></div>
+          </div>
+        </div>
+
+        <!-- VIEW 6: FRIENDS & PLAYER NETWORK (NO DISCORD • DB-BACKED) -->
+        <div class="view-pane" id="view-friends">
+          <div class="friends-container">
+            <div class="friends-topbar-actions">
+              <div class="friends-tabs-header">
+                <button class="friends-tab-btn active" onclick="switchFriendsSubtab('friends', this)">Friends List</button>
+                <button class="friends-tab-btn" onclick="switchFriendsSubtab('pending', this)" id="friends-pending-tab-btn">Pending Requests (0)</button>
+                <button class="friends-tab-btn" onclick="switchFriendsSubtab('shared-servers', this)">Shared Servers</button>
+              </div>
+
+              <button class="btn btn-primary btn-sm" onclick="openAddFriendModal()">+ Add Friend</button>
+            </div>
+
+            <!-- Subtab 1: Friends List -->
+            <div class="friends-subpane active" id="friends-subpane-list">
+              <div class="friends-grid-cards" id="friends-full-grid"></div>
+            </div>
+
+            <!-- Subtab 2: Pending Requests -->
+            <div class="friends-subpane" id="friends-subpane-pending" style="display: none;">
+              <div style="display: flex; flex-direction: column; gap: 12px;" id="friends-pending-container"></div>
+            </div>
+
+            <!-- Subtab 3: Shared Servers -->
+            <div class="friends-subpane" id="friends-subpane-shared-servers" style="display: none;">
+              <div id="friends-shared-servers-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- VIEW 7: DISCORD AUTHENTICATION & PROFILE -->
+        <div class="view-pane" id="view-discord">
+          <!-- State A: Forced Login Screen (when unlinked) -->
+          <div id="discord-view-unlinked" class="discord-auth-gateway-wrapper">
+            <div class="discord-hero-header">
+              <div class="discord-badge-pill">AUTHENTICATION REQUIRED</div>
+              <h1 class="discord-hero-title">DIVINE CLIENT GATEWAY</h1>
+              <p class="discord-hero-subtitle">Sign in with Discord to access Divine Client launcher, multiplayer servers, modpacks, and the verified player network.</p>
+            </div>
+
+            <div class="discord-single-auth-card card-panel">
+              <div class="discord-card-head" style="justify-content: center; text-align: center; margin-bottom: 20px;">
+                <div>
+                  <div class="discord-method-title" style="font-size: 17px; font-weight: 900;">Discord Web Authorization</div>
+                  <div class="discord-method-sub" style="font-size: 12.5px;">Click the button below to authorize with Discord and unlock Divine Client</div>
+                </div>
+              </div>
+
+              <div class="discord-code-box">
+                <div class="discord-code-label">DEVICE LINK CODE</div>
+                <div class="discord-code-value" id="discord-auth-code-display">DIVINE-WAIT</div>
+                <div class="discord-code-status" id="discord-auth-code-status">
+                  <span class="pulse-dot"></span> Waiting for Discord authorization...
+                </div>
+              </div>
+
+              <div class="discord-card-actions" style="margin-top: 16px; display: flex; flex-direction: column; gap: 8px;">
+                <button class="btn btn-primary" onclick="openDiscordAuthPage()" style="width: 100%; justify-content: center; padding: 13px; font-weight: 900; font-size: 13.5px; background: #5865F2; border-color: #5865F2; color: #ffffff;">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.929 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.893.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+                  <span>Authorize with Discord (Opens Website &amp; Permissions)</span>
+                </button>
+                <div style="display: flex; gap: 8px;">
+                  <button class="btn btn-secondary" onclick="checkLocalDiscordAutoLink()" style="flex: 1.2; justify-content: center; padding: 10px; font-weight: 700;">Detect Discord &amp; Ask Permission</button>
+                  <button class="btn btn-secondary" onclick="copyDiscordAuthCode()" style="flex: 1; justify-content: center; padding: 10px;">Copy Code</button>
+                </div>
+                <div style="margin-top: 6px; padding: 10px 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; font-size: 11.5px; color: #94a3b8; display: flex; align-items: center; justify-content: space-between;">
+                  <span><b>Link via Bot:</b> Run <code id="launcher-bot-cmd" style="color: #38bdf8; font-weight: 700;">/link code:DIVINE</code> in Discord</span>
+                  <button class="btn btn-secondary btn-sm" onclick="copyLauncherBotCmd()" style="padding: 2px 8px; font-size: 10.5px;">Copy</button>
+                </div></div>
+            </div>
+
+            <!-- Footer Community banner & Legal Links -->
+            <div class="card-panel" style="display: flex; flex-direction: column; gap: 12px; padding: 16px 20px; background: rgba(255,255,255,0.03); max-width: 580px; margin: 0 auto; width: 100%;">
+              <div style="display: flex; align-items: center; justify-content: space-between;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.929 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.893.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+                  <div>
+                    <div style="font-size: 13px; font-weight: 800; color: #ffffff;">Official Divine Client Discord Community</div>
+                    <div style="font-size: 11px; color: #94a3b8;">Join for support, updates, server hosting whitelist, and community events</div>
+                  </div>
+                </div>
+                <button class="btn btn-secondary btn-sm" onclick="window.open('https://discord.gg/ER2haQtach', '_blank')">Join Discord</button>
+              </div>
+              <div style="display: flex; align-items: center; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 10px; font-size: 11.5px; color: #64748b;">
+                <span>Divine Client v4.0.0</span>
+                <div style="display: flex; gap: 14px;">
+                  <a href="/terms" target="_blank" style="color: #94a3b8; text-decoration: none; font-weight: 600;">Terms of Service</a>
+                  <a href="/privacy" target="_blank" style="color: #94a3b8; text-decoration: none; font-weight: 600;">Privacy Policy</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- State B: Connected Profile Screen (when linked) -->
+          <div id="discord-view-linked" class="discord-profile-wrapper" style="display: none; flex-direction: column; gap: 20px;">
+            <div class="card-panel" style="padding: 28px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
+                <div style="display: flex; align-items: center; gap: 16px;">
+                  <img id="discord-linked-avatar" src="/assets/ui_account.png" style="width: 64px; height: 64px; border-radius: 50%; border: 2px solid #ffffff; object-fit: cover;">
+                  <div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0;" id="discord-linked-username">DiscordUser</h2>
+                      <span class="badge" style="background: rgba(34,197,94,0.15); color: #22c55e; border: 1px solid rgba(34,197,94,0.3); font-size: 10px;">CONNECTED</span>
+                    </div>
+                    <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;" id="discord-linked-id">ID: 0000000000000000</div>
+                  </div>
+                </div>
+
+                <div style="display: flex; gap: 10px;">
+                  <button class="btn btn-secondary btn-sm" onclick="syncDiscordFriendsDirect()">Sync Mutual Friends</button>
+                  <button class="btn btn-secondary btn-sm" style="color: #ef4444;" onclick="disconnectDiscordAccount()">Disconnect Account</button>
+                </div>
+              </div>
+
+              <div class="meta-grid" style="grid-template-columns: repeat(3, 1fr); gap: 14px; background: rgba(0,0,0,0.25); padding: 16px; border-radius: 8px;">
+                <div class="meta-item">
+                  <span class="meta-label">DISCORD RPC STATUS</span>
+                  <span class="meta-val" style="color: #22c55e;">Divine Client Rich Presence Active</span>
+                </div>
+                <div class="meta-item">
+                  <span class="meta-label">AUTHENTICATION STATUS</span>
+                  <span class="meta-val" style="color: #ffffff;">Verified Divine Client User</span>
+                </div>
+                <div class="meta-item">
+                  <span class="meta-label">CONNECTED DATE</span>
+                  <span class="meta-val" id="discord-linked-time">Today</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Discord Community & Guild Info -->
+            <div class="card-panel" style="padding: 24px;">
+              <h3 style="font-size: 15px; font-weight: 800; color: #ffffff; margin-bottom: 8px;">Discord Integrations &amp; Features</h3>
+              <p style="font-size: 13px; color: #94a3b8; margin-bottom: 16px;">Your Discord connection allows real-time rich presence, automatic friends synchronization, dedicated server collaborator whitelists, and verified multiplayer skins.</p>
+              
+              <div style="display: flex; gap: 12px;">
+                <button class="btn btn-primary btn-sm" onclick="window.open('https://discord.gg/ER2haQtach', '_blank')">Open Official Discord Server</button>
+                <button class="btn btn-secondary btn-sm" onclick="openSettingsModal(); switchSettingsTab('discord', document.querySelectorAll('.settings-tab-item')[4]);">Discord RPC Settings</button>
+              </div>
+            </div>
+
+            <!-- Boosted Server Assets Showcase -->
+            <div class="card-panel" style="padding: 24px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+                <div>
+                  <h3 style="font-size: 15px; font-weight: 800; color: #ffffff;">Discord Server Boost Assets</h3>
+                  <p style="font-size: 12px; color: #94a3b8;">High-resolution animated icon and banner ready to upload to Discord Server Settings.</p>
+                </div>
+                <span class="badge" style="background: rgba(168,85,247,0.15); color: #c084fc; border: 1px solid rgba(168,85,247,0.3); font-size: 11px; font-weight: 800;">LEVEL 3 BOOST READY</span>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 140px 1fr; gap: 16px; align-items: center; margin-bottom: 16px; background: rgba(0,0,0,0.3); padding: 14px; border-radius: 8px;">
+                <img src="/assets/divine_discord_animated_icon.gif" style="width: 120px; height: 120px; border-radius: 50%; border: 2px solid #ffffff; object-fit: cover; margin: 0 auto; display: block;" alt="Animated Server Icon">
+                <div>
+                  <div style="font-size: 14px; font-weight: 800; color: #ffffff; margin-bottom: 4px;">Animated Server Icon</div>
+                  <div style="font-size: 12px; color: #94a3b8; margin-bottom: 10px;">512x512 Seamless 40-Frame Loop • Pure White Luminous Sun Emblem</div>
+                  <a href="/assets/divine_discord_animated_icon.gif" download="divine_discord_animated_icon.gif" class="btn btn-secondary btn-sm" style="display: inline-flex; text-decoration: none;">Download Icon (.GIF)</a>
+                </div>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 8px; background: rgba(0,0,0,0.3); padding: 14px; border-radius: 8px;">
+                <img src="/assets/divine_discord_animated_banner.gif" style="width: 100%; max-height: 200px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); object-fit: cover;" alt="Animated Server Banner">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 6px;">
+                  <div>
+                    <div style="font-size: 14px; font-weight: 800; color: #ffffff;">Animated Server Banner (16:9)</div>
+                    <div style="font-size: 12px; color: #94a3b8;">960x540 40-Frame Seamless Loop • Volumetric Godrays &amp; Metallic Typography Shine</div>
+                  </div>
+                  <a href="/assets/divine_discord_animated_banner.gif" download="divine_discord_animated_banner.gif" class="btn btn-primary btn-sm" style="text-decoration: none;">Download Banner (.GIF)</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+
+  </div>
+
+  <!-- ACCOUNT SLIDER DRAWER -->
+  <div class="modal-backdrop" id="drawer-backdrop" onclick="toggleAccountDrawer(false)"></div>
+  <div class="slider-drawer" id="account-slider-drawer" style="position: fixed; top: 0; right: 0; width: 340px; height: 100vh; background: #0e1017; border-left: 1px solid rgba(255,255,255,0.12); z-index: 10000; transform: translateX(100%); transition: transform 0.25s cubic-bezier(0.16,1,0.3,1); padding: 24px; display: flex; flex-direction: column; gap: 18px; box-shadow: -10px 0 30px rgba(0,0,0,0.6);">
+    <div style="display: flex; align-items: center; justify-content: space-between;">
+      <h3 style="font-size: 16px; font-weight: 800; color: #ffffff;">Account &amp; Profiles</h3>
+      <button class="btn btn-secondary btn-sm" onclick="toggleAccountDrawer(false)">&times;</button>
+    </div>
+
+    <!-- Active Profile Card -->
+    <div class="card-panel">
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+        <div class="account-avatar-box" id="drawer-avatar-box" style="width: 44px; height: 44px;"></div>
+        <div>
+          <div style="font-size: 15px; font-weight: 800; color: #ffffff;" id="drawer-username">Player</div>
+          <div style="font-size: 11.5px; color: #94a3b8;" id="drawer-account-type">• Offline Profile</div>
+        </div>
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <button class="btn btn-primary btn-sm" style="flex: 1; justify-content: center;" onclick="openAddAccountModal()">+ Add Offline</button>
+        <button class="btn btn-secondary btn-sm" style="flex: 1; justify-content: center;" onclick="openMicrosoftAuthModal()">Microsoft</button>
+      </div>
+    </div>
+
+    <!-- Saved Profiles List -->
+    <div>
+      <div style="font-size: 11.5px; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 8px;">Saved Accounts</div>
+      <div id="drawer-saved-accounts-list" style="display: flex; flex-direction: column; gap: 8px; max-height: 50vh; overflow-y: auto;"></div>
+    </div>
+  </div>
+
+  <!-- MODAL: MODPACK DETAILS & CONTENTS PREVIEW (VIEW BUTTON) -->
+  <div class="modal-backdrop" id="modal-modpack-view">
+    <div class="modal-window" style="max-width: 720px;">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <img id="modpack-view-icon" src="/assets/ui_modpack.png" style="width: 32px; height: 32px; border-radius: 6px; object-fit: cover;">
+          <div class="modal-title" id="modpack-view-title">Modpack Overview</div>
+        </div>
+        <button class="icon-btn" onclick="closeModal('modal-modpack-view')">&times;</button>
+      </div>
+      <div class="modal-body" style="display: flex; flex-direction: column; gap: 16px;">
+        <div id="modpack-view-desc" style="font-size: 13.5px; color: #cbd5e1; line-height: 1.5;"></div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;" id="modpack-view-tags"></div>
+        <div>
+          <div style="font-size: 12.5px; font-weight: 800; color: #ffffff; margin-bottom: 8px; text-transform: uppercase;">Included Mods &amp; Packages</div>
+          <div id="modpack-view-mods-list" style="max-height: 200px; overflow-y: auto; background: #11131a; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 12px; font-size: 12px; color: #94a3b8;">
+            Loading modpack dependencies...
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('modal-modpack-view')">Close</button>
+        <button class="btn-install-green" id="modpack-view-install-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+          <span>Install Modpack</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: MODPACK DOWNLOAD & PROGRESS WITH LIVE ETA & FILE COUNTER -->
+  <div class="modal-backdrop" id="modal-modpack-progress" style="z-index: 100000;">
+    <div class="modal-window" style="max-width: 560px;">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <img id="modpack-progress-icon" src="/assets/ui_modpack.png" style="width: 32px; height: 32px; border-radius: 6px; object-fit: cover;">
+          <div>
+            <div class="modal-title" id="modpack-progress-title">Downloading Modpack</div>
+            <div style="font-size: 11px; color: #94a3b8;" id="modpack-progress-subtitle">Preparing files and dependencies...</div>
+          </div>
+        </div>
+        <span id="modpack-progress-pct-badge" style="font-size: 16px; font-weight: 900; color: #ffffff;">0%</span>
+      </div>
+
+      <div class="modal-body" style="display: flex; flex-direction: column; gap: 16px;">
+        <!-- Progress Bar Track -->
+        <div style="width: 100%; height: 12px; background: rgba(255,255,255,0.06); border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); position: relative;">
+          <div id="modpack-progress-bar-fill" style="height: 100%; width: 0%; background: linear-gradient(90deg, #38bdf8, #22c55e); border-radius: 6px; transition: width 0.25s ease; box-shadow: 0 0 12px rgba(34,197,94,0.6);"></div>
+        </div>
+
+        <!-- Real-Time Metrics Row: Files, Speed, ETA -->
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+          <div class="card-panel" style="padding: 10px 12px; text-align: center;">
+            <div style="font-size: 10px; font-weight: 800; color: #94a3b8; text-transform: uppercase;">Downloaded Files</div>
+            <div style="font-size: 14px; font-weight: 900; color: #ffffff; margin-top: 4px;" id="modpack-progress-files">0 / 0</div>
+          </div>
+          <div class="card-panel" style="padding: 10px 12px; text-align: center;">
+            <div style="font-size: 10px; font-weight: 800; color: #94a3b8; text-transform: uppercase;">Download Speed</div>
+            <div style="font-size: 14px; font-weight: 900; color: #38bdf8; margin-top: 4px;" id="modpack-progress-speed">0 KB/s</div>
+          </div>
+          <div class="card-panel" style="padding: 10px 12px; text-align: center;">
+            <div style="font-size: 10px; font-weight: 800; color: #94a3b8; text-transform: uppercase;">Estimated Time (ETA)</div>
+            <div style="font-size: 14px; font-weight: 900; color: #22c55e; margin-top: 4px;" id="modpack-progress-eta">Calculating...</div>
+          </div>
+        </div>
+
+        <!-- Current File Details -->
+        <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 12px; display: flex; flex-direction: column; gap: 4px;">
+          <div style="display: flex; justify-content: space-between; font-size: 11.5px;">
+            <span style="color: #cbd5e1; font-weight: 700;">Current File:</span>
+            <span style="color: #94a3b8;" id="modpack-progress-bytes">0 MB / 0 MB</span>
+          </div>
+          <div style="font-size: 12px; font-family: monospace; color: #94a3b8; word-break: break-all;" id="modpack-progress-filename">Connecting...</div>
+        </div>
+      </div>
+
+      <div class="modal-footer" id="modpack-progress-footer">
+        <button class="btn btn-secondary" id="modpack-progress-cancel-btn" onclick="closeModal('modal-modpack-progress')">Cancel</button>
+        <button class="btn btn-primary" id="modpack-progress-action-btn" style="display: none;" onclick="handleModpackInstallDone()">Launch Game</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD MODS FROM MODRINTH -->
+  <div class="modal-backdrop" id="modal-add-mod">
+    <div class="modal-window" style="max-width: 680px;">
+      <div class="modal-header">
+        <div class="modal-title">Search &amp; Install Mods (Modrinth)</div>
+        <button class="icon-btn" onclick="closeModal('modal-add-mod')">&times;</button>
+      </div>
+      <div class="modal-body" style="display: flex; flex-direction: column; gap: 12px;">
+        <div class="store-search-bar">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text" id="add-mod-search-input" placeholder="Search mods (e.g. Sodium, Iris, Lithium, JEI, Appleskin)..." oninput="debounceModSearch()">
+        </div>
+        <div id="add-mod-results-list" style="display: flex; flex-direction: column; gap: 8px; max-height: 380px; overflow-y: auto;"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('modal-add-mod')">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD RESOURCE PACK FROM MODRINTH & UPLOAD -->
+  <div class="modal-backdrop" id="modal-add-resourcepack">
+    <div class="modal-window" style="max-width: 680px;">
+      <div class="modal-header">
+        <div class="modal-title">Add Texture &amp; Resource Packs</div>
+        <button class="icon-btn" onclick="closeModal('modal-add-resourcepack')">&times;</button>
+      </div>
+      <div class="modal-body" style="display: flex; flex-direction: column; gap: 14px;">
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <div class="store-search-bar" style="flex: 1;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <input type="text" id="add-rp-search-input" placeholder="Search resource packs (e.g. Faithful, Bare Bones, Fresh Animations)..." oninput="debounceRpSearch()">
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="document.getElementById('upload-rp-file').click()">Upload .ZIP</button>
+          <input type="file" id="upload-rp-file" accept=".zip" style="display: none;" onchange="handleResourcePackUpload(this)">
+        </div>
+        <div id="add-rp-results-list" style="display: flex; flex-direction: column; gap: 8px; max-height: 380px; overflow-y: auto;"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('modal-add-resourcepack')">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD SHADER PACK FROM MODRINTH & UPLOAD -->
+  <div class="modal-backdrop" id="modal-add-shader">
+    <div class="modal-window" style="max-width: 680px;">
+      <div class="modal-header">
+        <div class="modal-title">Add Iris / OptiFine Shaders</div>
+        <button class="icon-btn" onclick="closeModal('modal-add-shader')">&times;</button>
+      </div>
+      <div class="modal-body" style="display: flex; flex-direction: column; gap: 14px;">
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <div class="store-search-bar" style="flex: 1;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <input type="text" id="add-shader-search-input" placeholder="Search shaders (e.g. Complementary, BSL, AstraLex, Sildur's, Bliss)..." oninput="debounceShaderSearch()">
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="document.getElementById('upload-shader-file').click()">Upload .ZIP</button>
+          <input type="file" id="upload-shader-file" accept=".zip" style="display: none;" onchange="handleShaderUpload(this)">
+        </div>
+        <div id="add-shader-results-list" style="display: flex; flex-direction: column; gap: 8px; max-height: 380px; overflow-y: auto;"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('modal-add-shader')">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- IN-APP DEDICATED SERVER APP WINDOW MODAL -->
+  <div class="modal-backdrop" id="modal-server-control-panel-frame">
+    <div class="inapp-window-frame">
+      <div class="inapp-window-titlebar">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #22c55e;"></span>
+          <span style="font-size: 13px; font-weight: 800; color: #ffffff;" id="inapp-server-window-title">Divine Dedicated Server Panel</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <button class="icon-btn" onclick="closeModal('modal-server-control-panel-frame')" style="font-size: 16px;">&times;</button>
+        </div>
+      </div>
+      <iframe id="inapp-server-iframe" class="inapp-window-body" src="about:blank"></iframe>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD FRIEND (DATABASE VERIFIED) -->
+  <div class="modal-backdrop" id="modal-add-friend">
+    <div class="modal-window">
+      <div class="modal-header">
+        <div class="modal-title">Add Friend to Divine Network</div>
+        <button class="icon-btn" onclick="closeModal('modal-add-friend')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 13px; color: #94a3b8; margin-bottom: 14px;">Enter a player username. Our network database will verify the player and send a friend request.</p>
+        <div style="margin-bottom: 12px;">
+          <input type="text" class="input-field" id="add-friend-username-input" placeholder="e.g. NoxVanta, Aetherius, Vortex">
+        </div>
+        <div id="add-friend-db-status" style="font-size: 12px; min-height: 20px;"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('modal-add-friend')">Cancel</button>
+        <button class="btn btn-primary" onclick="submitAddFriend()">Send Request</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: CREATE INSTANCE -->
+  <div class="modal-backdrop" id="modal-create-instance">
+    <div class="modal-window" style="max-width: 520px;">
+      <div class="modal-header">
+        <div class="modal-title">Create New Minecraft Instance</div>
+        <button class="icon-btn" onclick="closeModal('modal-create-instance')">&times;</button>
+      </div>
+      <div class="modal-body" style="display: flex; flex-direction: column; gap: 14px;">
+        <div>
+          <label style="font-size: 12px; font-weight: 800; color: #ffffff; display: block; margin-bottom: 4px;">Instance Name</label>
+          <input type="text" class="input-field" id="create-instance-name" placeholder="e.g. My Custom Fabric 1.21.4">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div>
+            <label style="font-size: 12px; font-weight: 800; color: #ffffff; display: block; margin-bottom: 4px;">Mod Loader</label>
+            <select class="select-field" id="create-instance-loader" onchange="handleCreateInstanceLoaderChange(this.value)">
+              <option value="fabric" selected>Fabric (Ultra FPS &amp; Shaders)</option>
+              <option value="forge">Forge (Classic Mods)</option>
+              <option value="neoforge">NeoForge (Modern Mods)</option>
+              <option value="quilt">Quilt (Fabric Compatible)</option>
+              <option value="vanilla">Vanilla (Unmodded Release)</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size: 12px; font-weight: 800; color: #ffffff; display: block; margin-bottom: 4px;">Minecraft Version</label>
+            <select class="select-field" id="create-instance-version">
+              <option value="1.21.4" selected>1.21.4</option>
+              <option value="1.21.11">1.21.11</option>
+              <option value="1.21.1">1.21.1</option>
+              <option value="1.21">1.21</option>
+              <option value="1.20.4">1.20.4</option>
+              <option value="1.20.1">1.20.1</option>
+              <option value="1.19.4">1.19.4</option>
+              <option value="1.18.2">1.18.2</option>
+              <option value="1.16.5">1.16.5</option>
+              <option value="1.8.9">1.8.9 (PvP Legacy)</option>
+              <option value="1.7.10">1.7.10</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div>
+            <label style="font-size: 12px; font-weight: 800; color: #ffffff; display: block; margin-bottom: 4px;">Instance Icon</label>
+            <select class="select-field" id="create-instance-icon">
+              <option value="lightning" selected>Lightning Bolt</option>
+              <option value="cube">Crafting Cube</option>
+              <option value="sword">Diamond Sword</option>
+              <option value="grass">Grass Block</option>
+              <option value="server">Server Tower</option>
+            </select>
+          </div>
+          <div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+              <label style="font-size: 12px; font-weight: 800; color: #ffffff;">Allocated RAM</label>
+              <span id="create-instance-ram-val" style="font-size: 12px; color: #38bdf8; font-weight: 800;">4096 MB</span>
+            </div>
+            <input type="range" class="range-slider" id="create-instance-ram-slider" min="1024" max="16384" step="512" value="4096" oninput="document.getElementById('create-instance-ram-val').textContent = this.value + ' MB'" style="width: 100%;">
+          </div>
+        </div>
+
+        <div id="create-instance-opt-row" style="display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 10px 14px; border-radius: 6px;">
+          <div>
+            <div style="font-size: 12.5px; font-weight: 800; color: #ffffff;">Pre-install Optimization Suite</div>
+            <div style="font-size: 11px; color: #94a3b8;">Includes Sodium, Lithium, FerriteCore &amp; Iris Shaders</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="create-instance-opt-toggle" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('modal-create-instance')">Cancel</button>
+        <button class="btn btn-primary" onclick="submitCreateInstance()">Create Instance</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: CREATE SERVER -->
+  <div class="modal-backdrop" id="modal-create-server">
+    <div class="modal-window">
+      <div class="modal-header">
+        <div class="modal-title">Deploy Dedicated Server</div>
+        <button class="icon-btn" onclick="closeModal('modal-create-server')">&times;</button>
+      </div>
+      <div class="modal-body" style="display: flex; flex-direction: column; gap: 14px;">
+        <div>
+          <label style="font-size: 12px; font-weight: 800; color: #ffffff; display: block; margin-bottom: 4px;">Server Name</label>
+          <input type="text" class="input-field" id="create-server-name" placeholder="e.g. Divine Survival SMP">
+        </div>
+        <div>
+          <label style="font-size: 12px; font-weight: 800; color: #ffffff; display: block; margin-bottom: 4px;">Server Software / Loader</label>
+          <select class="select-field" id="create-server-loader">
+            <option value="paper">Paper (Ultra-High Performance Plugin Server)</option>
+            <option value="purpur">Purpur (Optimized Fork)</option>
+            <option value="fabric">Fabric (Mods Support)</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size: 12px; font-weight: 800; color: #ffffff; display: block; margin-bottom: 4px;">Minecraft Version</label>
+          <select class="select-field" id="create-server-version">
+            <option value="1.21.1">Release 1.21.1</option>
+            <option value="1.21">Release 1.21</option>
+            <option value="1.20.4">Release 1.20.4</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('modal-create-server')">Cancel</button>
+        <button class="btn btn-primary" onclick="submitCreateServer()">Deploy Server</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: SERVER ACCESS & SHARING VIA DISCORD NAME -->
+  <div class="modal-backdrop" id="modal-server-access">
+    <div class="modal-window">
+      <div class="modal-header">
+        <div class="modal-title" id="server-access-title">Manage Server Access</div>
+        <button class="icon-btn" onclick="closeModal('modal-server-access')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 13px; color: #94a3b8; margin-bottom: 14px;">Grant access via <b>Discord Username</b>. Collaborators can view live server telemetry, console output, send commands, and edit server files.</p>
+        <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+          <input type="text" class="input-field" id="server-access-username-input" placeholder="Discord Username (e.g. Player#1234 or Player)">
+          <button class="btn btn-primary btn-sm" onclick="submitGrantServerAccess()">Grant Access</button>
+        </div>
+        <div style="font-size: 12px; font-weight: 800; color: #cbd5e1; margin-bottom: 8px;">Active Collaborators</div>
+        <div id="server-access-users-list" style="display: flex; flex-direction: column; gap: 8px;"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('modal-server-access')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: COMPLETE SETTINGS & JVM PREFERENCES -->
+  <div class="modal-backdrop" id="modal-settings">
+    <div class="modal-window" style="max-width: 660px;">
+      <div class="modal-header">
+        <div class="modal-title">Settings &amp; Launcher Preferences</div>
+        <button class="icon-btn" onclick="closeModal('modal-settings')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <!-- Settings Subtabs -->
+        <div class="settings-nav-tabs">
+          <button class="settings-tab-item active" onclick="switchSettingsTab('java', this)">Java &amp; RAM</button>
+          <button class="settings-tab-item" onclick="switchSettingsTab('display', this)">Game &amp; Display</button>
+          <button class="settings-tab-item" onclick="switchSettingsTab('appearance', this)">Appearance</button>
+          <button class="settings-tab-item" onclick="switchSettingsTab('discord', this)">Discord</button>
+          <button class="settings-tab-item" onclick="switchSettingsTab('storage', this)">Directories</button>
+          <button class="settings-tab-item" onclick="switchSettingsTab('legal', this)">Legal &amp; Policies</button>
+        </div>
+
+        <!-- 1. Java & RAM -->
+        <div class="settings-pane active" id="settings-pane-java" style="display: flex; flex-direction: column; gap: 14px;">
+          <div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+              <label style="font-size: 12px; font-weight: 800; color: #ffffff;">Global Java RAM Memory</label>
+              <span id="modal-global-ram-display" style="font-size: 12px; color: #38bdf8; font-weight: 800;">4096 MB</span>
+            </div>
+            <input type="range" class="range-slider" id="modal-global-ram-slider" min="1024" max="16384" step="512" value="4096" oninput="updateSettingsRamDisplay(this.value)" style="width: 100%;">
+          </div>
+          <div>
+            <label style="font-size: 12px; font-weight: 800; color: #ffffff; display: block; margin-bottom: 4px;">Java Runtime Path</label>
+            <input type="text" class="input-field" id="modal-java-path-input" placeholder="Auto-detected Adoptium Temurin 21">
+          </div>
+          <div>
+            <label style="font-size: 12px; font-weight: 800; color: #ffffff; display: block; margin-bottom: 4px;">JVM Flags &amp; Garbage Collector</label>
+            <input type="text" class="input-field" id="modal-jvm-args-input" placeholder="-XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200">
+            <div style="display: flex; gap: 6px; margin-top: 6px;">
+              <button class="btn btn-secondary btn-sm" onclick="setJvmPreset('aikar')">Aikar's Flags</button>
+              <button class="btn btn-secondary btn-sm" onclick="setJvmPreset('shenandoah')">Shenandoah GC</button>
+              <button class="btn btn-secondary btn-sm" onclick="setJvmPreset('zgc')">Generational ZGC</button>
+            </div>
+          </div>
+        </div>
+
+                  <div style="background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 10px; padding: 14px; margin-top: 4px; display: flex; align-items: center; justify-content: space-between;">
+            <div>
+              <div style="font-size: 13px; font-weight: 800; color: #ffffff;">Java Runtime Health &amp; DLL Repair</div>
+              <div style="font-size: 11px; color: #94a3b8;">Fixes "jli.dll was not found", corrupt runtimes, and auto-installs verified OpenJDK 21 LTS</div>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="triggerFixJava()" style="background: #0284c7; border-color: #38bdf8; font-weight: 800; padding: 8px 14px;">⚡ Fix Java</button>
+          </div>
+        </div>
+
+        <!-- 2. Game & Display -->
+        <div class="settings-pane" id="settings-pane-display" style="display: none; flex-direction: column; gap: 14px;">
+          <div>
+            <label style="font-size: 12px; font-weight: 800; color: #ffffff; display: block; margin-bottom: 4px;">Game Window Resolution</label>
+            <select class="select-field" id="settings-resolution-select">
+              <option value="1920x1080">1920 x 1080 (1080p FHD)</option>
+              <option value="1280x720">1280 x 720 (720p HD)</option>
+              <option value="2560x1440">2560 x 1440 (2K QHD)</option>
+              <option value="854x480">854 x 480 (Default)</option>
+            </select>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <label style="font-size: 12px; font-weight: 800; color: #ffffff;">Launch in Fullscreen by Default</label>
+            <label class="toggle-switch">
+              <input type="checkbox" id="settings-fullscreen-toggle">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- 3. Appearance -->
+        <div class="settings-pane" id="settings-pane-appearance" style="display: none; flex-direction: column; gap: 14px;">
+          <div>
+            <label style="font-size: 12px; font-weight: 800; color: #ffffff; display: block; margin-bottom: 6px;">Launcher Color Theme</label>
+            <select class="select-field" id="settings-theme-select" onchange="applyTheme(this.value, true)" style="width: 100%;">
+              <option value="divine">Obsidian &amp; Pure White (Default)</option>
+              <option value="all-black">AMOLED Void (Pure Black)</option>
+              <option value="cyber-cyan">Cyber Neon Cyan</option>
+              <option value="emerald">Emerald Matrix</option>
+              <option value="nebula-purple">Nebula Violet</option>
+              <option value="crimson">Crimson Red</option>
+            </select>
+          </div>
+
+          <!-- Quick Theme Swatch Grid -->
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 4px;">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="applyTheme('divine', true)" style="display: flex; align-items: center; gap: 8px; justify-content: flex-start; padding: 8px 12px; border-color: rgba(255,255,255,0.2);">
+              <span style="width: 12px; height: 12px; border-radius: 50%; background: #ffffff; box-shadow: 0 0 6px rgba(255,255,255,0.8);"></span>
+              <span>Obsidian</span>
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="applyTheme('all-black', true)" style="display: flex; align-items: center; gap: 8px; justify-content: flex-start; padding: 8px 12px; border-color: rgba(255,255,255,0.2);">
+              <span style="width: 12px; height: 12px; border-radius: 50%; background: #000000; border: 1px solid #ffffff;"></span>
+              <span>AMOLED</span>
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="applyTheme('cyber-cyan', true)" style="display: flex; align-items: center; gap: 8px; justify-content: flex-start; padding: 8px 12px; border-color: rgba(0,240,255,0.3);">
+              <span style="width: 12px; height: 12px; border-radius: 50%; background: #00f0ff; box-shadow: 0 0 6px rgba(0,240,255,0.8);"></span>
+              <span>Cyber Cyan</span>
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="applyTheme('emerald', true)" style="display: flex; align-items: center; gap: 8px; justify-content: flex-start; padding: 8px 12px; border-color: rgba(34,197,94,0.3);">
+              <span style="width: 12px; height: 12px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 6px rgba(34,197,94,0.8);"></span>
+              <span>Emerald</span>
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="applyTheme('nebula-purple', true)" style="display: flex; align-items: center; gap: 8px; justify-content: flex-start; padding: 8px 12px; border-color: rgba(168,85,247,0.3);">
+              <span style="width: 12px; height: 12px; border-radius: 50%; background: #c084fc; box-shadow: 0 0 6px rgba(168,85,247,0.8);"></span>
+              <span>Nebula</span>
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="applyTheme('crimson', true)" style="display: flex; align-items: center; gap: 8px; justify-content: flex-start; padding: 8px 12px; border-color: rgba(244,63,94,0.3);">
+              <span style="width: 12px; height: 12px; border-radius: 50%; background: #f43f5e; box-shadow: 0 0 6px rgba(244,63,94,0.8);"></span>
+              <span>Crimson</span>
+            </button>
+          </div>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 8px;">
+            <label style="font-size: 12px; font-weight: 800; color: #ffffff;">Minecraft Shader Tree Hero Wallpaper</label>
+            <label class="toggle-switch">
+              <input type="checkbox" id="settings-tree-bg-toggle" checked onchange="toggleTreeBackground(this.checked)">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- 4. Discord -->
+        <div class="settings-pane" id="settings-pane-discord" style="display: none; flex-direction: column; gap: 14px;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div>
+              <div style="font-size: 13px; font-weight: 800; color: #ffffff;">Discord Rich Presence (RPC)</div>
+              <div style="font-size: 11px; color: #94a3b8;">Shows playing status and instance name in Discord.</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="settings-discord-rpc-toggle" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <button class="btn btn-secondary" onclick="openDiscordLinkModal()">Link Discord Account</button>
+        </div>
+
+        <!-- 5. Storage Directories -->
+        <div class="settings-pane" id="settings-pane-storage" style="display: none; flex-direction: column; gap: 18px;">
+          <div class="card-panel" style="padding: 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <label style="font-size: 13px; font-weight: 800; color: #ffffff;">Game &amp; Client Installation Directory</label>
+              <span class="badge" id="settings-gamedir-type-badge" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-size: 10px;">CUSTOMIZABLE</span>
+            </div>
+            <p style="font-size: 11.5px; color: #94a3b8; margin-bottom: 10px; line-height: 1.4;">Where Minecraft game files, assets, libraries, Java runtimes, and Divine Client instances are loaded from disk.</p>
+            
+            <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+              <input type="text" class="input-field" id="settings-gamedir-input" placeholder="e.g. C:\Games\DivineClient or D:\Minecraft" style="flex: 1; font-family: monospace; font-size: 12px;">
+              <button class="btn btn-secondary btn-sm" onclick="browseGameDirectory()" title="Choose Folder from File Explorer">Browse...</button>
+            </div>
+
+            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+              <button class="btn btn-secondary btn-sm" onclick="resetGameDirectoryToDefault()">Reset to Default</button>
+              <button class="btn btn-secondary btn-sm" onclick="openLauncherStorageFolder()">Open in Explorer</button>
+              <label style="font-size: 11.5px; color: #94a3b8; display: flex; align-items: center; gap: 6px; margin-left: auto; cursor: pointer;">
+                <input type="checkbox" id="settings-move-files-checkbox" checked>
+                <span>Move existing files to new directory</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="card-panel" style="padding: 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <label style="font-size: 13px; font-weight: 800; color: #ffffff;">Custom Instances Directory (Optional)</label>
+              <span class="badge" style="background: rgba(255,255,255,0.08); color: #94a3b8; font-size: 10px;">ADVANCED</span>
+            </div>
+            <p style="font-size: 11.5px; color: #94a3b8; margin-bottom: 10px; line-height: 1.4;">Store per-instance saves, mods, and worlds in a separate drive location.</p>
+            
+            <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+              <input type="text" class="input-field" id="settings-instancesdir-input" placeholder="Default: <Game Directory>/instances" style="flex: 1; font-family: monospace; font-size: 12px;">
+              <button class="btn btn-secondary btn-sm" onclick="browseInstancesDirectory()">Browse...</button>
+            </div>
+
+            <div style="display: flex; gap: 8px;">
+              <button class="btn btn-secondary btn-sm" onclick="resetInstancesDirectoryToDefault()">Reset to Default</button>
+              <button class="btn btn-secondary btn-sm" onclick="openInstancesStorageFolder()">Open Instances Folder</button>
+            </div>
+          </div>
+
+          <div>
+            <button class="btn btn-primary" onclick="applyStorageDirectorySettings()" style="width: 100%; justify-content: center; padding: 12px; font-weight: 800;">
+              Apply &amp; Save Directory Changes
+            </button>
+          </div>
+        </div>
+
+        <!-- 6. Legal & Policies -->
+        <div class="settings-pane" id="settings-pane-legal" style="display: none; flex-direction: column; gap: 14px;">
+          <div class="card-panel" style="padding: 16px;">
+            <div style="font-size: 14px; font-weight: 800; color: #ffffff; margin-bottom: 6px;">Terms of Service &amp; EULA</div>
+            <p style="font-size: 12px; color: #94a3b8; margin-bottom: 12px; line-height: 1.5;">Review the terms governing client usage, dedicated Paper/Fabric server hosting, and community safety guidelines.</p>
+            <button class="btn btn-secondary btn-sm" onclick="window.open('/terms', '_blank')">View Terms of Service</button>
+          </div>
+          <div class="card-panel" style="padding: 16px;">
+            <div style="font-size: 14px; font-weight: 800; color: #ffffff; margin-bottom: 6px;">Privacy Policy</div>
+            <p style="font-size: 12px; color: #94a3b8; margin-bottom: 12px; line-height: 1.5;">Learn about our local-first data architecture, zero telemetry collection, and optional Discord integration.</p>
+            <button class="btn btn-secondary btn-sm" onclick="window.open('/privacy', '_blank')">View Privacy Policy</button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('modal-settings')">Cancel</button>
+        <button class="btn btn-primary" onclick="saveGlobalSettings()">Save Settings</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: DISCORD AUTHENTICATION & LINK -->
+  <div class="modal-backdrop" id="modal-discord-link">
+    <div class="modal-window" style="text-align: center; max-width: 480px;">
+      <div class="modal-header">
+        <div class="modal-title">Discord Account Connection</div>
+        <button class="icon-btn" onclick="closeModal('modal-discord-link')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 13px; color: #94a3b8; margin-bottom: 16px;">Link your Discord account for multiplayer server access, mutual friends synchronization, and cosmetics.</p>
+        <div style="background: #11131a; border: 1px dashed rgba(255,255,255,0.2); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+          <div style="font-size: 11px; color: #94a3b8;">LINK CODE</div>
+          <div id="discord-link-code" style="font-size: 24px; font-weight: 900; color: #ffffff; letter-spacing: 2px; margin: 6px 0;">------</div>
+          <button class="btn btn-secondary btn-sm" onclick="copyDiscordLinkCode()">Copy Code</button>
+        </div>
+        <p id="discord-link-status" style="font-size: 12px; color: #38bdf8;">Click below to open the Discord verification page.</p>
+      </div>
+      <div class="modal-footer" style="justify-content: center;">
+        <button class="btn btn-primary" onclick="openDiscordLinkPage()">Open Link Page</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD OFFLINE ACCOUNT -->
+  <div class="modal-backdrop" id="modal-add-account">
+    <div class="modal-window">
+      <div class="modal-header">
+        <div class="modal-title">Add Offline Player Profile</div>
+        <button class="icon-btn" onclick="closeModal('modal-add-account')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <label style="font-size: 12px; font-weight: 800; color: #ffffff; display: block; margin-bottom: 4px;">Player Username</label>
+        <input type="text" class="input-field" id="add-offline-username" placeholder="e.g. Player">
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('modal-add-account')">Cancel</button>
+        <button class="btn btn-primary" onclick="submitAddOfflineAccount()">Save Profile</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: MICROSOFT AUTH -->
+  <div class="modal-backdrop" id="modal-microsoft-auth">
+    <div class="modal-window" style="text-align: center;">
+      <div class="modal-header">
+        <div class="modal-title">Microsoft Account Login</div>
+        <button class="icon-btn" onclick="closeMicrosoftAuthModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 13px; color: #94a3b8; margin-bottom: 16px;">Sign in with your official Microsoft account to authenticate skin avatars and join premium servers.</p>
+        <div style="background: #11131a; border: 1px dashed rgba(255,255,255,0.2); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+          <div style="font-size: 11px; color: #94a3b8;">AUTH CODE</div>
+          <div id="ms-auth-code" style="font-size: 24px; font-weight: 900; color: #ffffff; letter-spacing: 2px; margin: 6px 0;">------</div>
+          <button class="btn btn-secondary btn-sm" onclick="copyMicrosoftAuthCode()">Copy Code</button>
+        </div>
+        <p id="ms-auth-status" style="font-size: 12px; color: #38bdf8;">Connecting to Microsoft...</p>
+      </div>
+      <div class="modal-footer" style="justify-content: center;">
+        <button class="btn btn-primary" onclick="openMicrosoftLinkBrowser()">Open Microsoft Link Page</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: REDEEM PRODUCT KEY -->
+  <div class="modal-backdrop" id="modal-launcher-redeem">
+    <div class="modal-window">
+      <div class="modal-header">
+        <div class="modal-title">Redeem Product Key</div>
+        <button class="icon-btn" onclick="closeModal('modal-launcher-redeem')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <label style="font-size: 12px; font-weight: 800; color: #ffffff; display: block; margin-bottom: 4px;">Redemption Key / Promo Code</label>
+        <input type="text" class="input-field" id="launcher-redeem-input" placeholder="e.g. DIVINE2026, DEVINE, COSMIC" style="text-transform: uppercase;">
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('modal-launcher-redeem')">Cancel</button>
+        <button class="btn btn-primary" onclick="submitCosmeticRedeemFromModal()">Redeem Code</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- IN-GAME CLIENT MOD MENU OVERLAY (IMAGE-1 STYLE • ROTATING ICON & BLURRY SHADERS BACKGROUND) -->
+  <div id="ingame-modmenu-overlay" class="ingame-modmenu-backdrop" style="display: none;">
+    <!-- Blurred Shaders Background Image -->
+    <div class="modmenu-shaders-bg"></div>
+
+    <!-- Center Rotating Sun Emblem Ambient Watermark -->
+    <div class="modmenu-rotating-watermark">
+      <img src="/assets/divine_icon.png" alt="Rotating Sun Emblem">
+    </div>
+
+    <div class="modmenu-content-wrapper">
+      <!-- Mod Menu Header Bar -->
+      <header class="modmenu-header">
+        <div class="modmenu-brand">
+          <div class="modmenu-logo-spin">
+            <svg viewBox="0 0 256 256" style="width: 32px; height: 32px;">
+              <g fill="#ffffff">
+                <g transform="rotate(0 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+                <g transform="rotate(45 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+                <g transform="rotate(90 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+                <g transform="rotate(135 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+                <g transform="rotate(180 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+                <g transform="rotate(225 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+                <g transform="rotate(270 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+                <g transform="rotate(315 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
+                <circle cx="128" cy="128" r="34"/>
+              </g>
+              <circle cx="128" cy="128" r="58" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div>
+            <div style="font-size: 16px; font-weight: 900; color: #ffffff; letter-spacing: 1px;">DIVINE CLIENT</div>
+            <div style="font-size: 10px; color: #94a3b8; font-weight: 800;">IN-GAME QOL MODS &amp; COSMETICS</div>
+          </div>
+        </div>
+
+        <!-- Center Tabs -->
+        <div class="modmenu-nav-tabs">
+          <button class="modmenu-nav-btn active" onclick="switchModMenuTab('mods', this)">MODS</button>
+          <button class="modmenu-nav-btn" onclick="switchModMenuTab('hud', this)">HUD LAYOUT</button>
+          <button class="modmenu-nav-btn" onclick="switchModMenuTab('cosmetics', this)">COSMETICS</button>
+          <button class="modmenu-nav-btn" onclick="switchModMenuTab('friends', this)">FRIENDS</button>
+          <button class="modmenu-nav-btn" onclick="switchModMenuTab('settings', this)">SETTINGS</button>
+        </div>
+
+        <!-- Right: Search & Close -->
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div class="modmenu-search-box">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <input type="text" id="modmenu-search-input" placeholder="Search mods..." oninput="filterModCards(this.value)">
+          </div>
+          <button class="icon-btn" onclick="closeInGameModMenu()" style="width: 36px; height: 36px; font-size: 20px; color: #ffffff; background: rgba(255,255,255,0.1); border-radius: 8px;" title="Close (ESC)">&times;</button>
+        </div>
+      </header>
+
+      <!-- Sub-Bar: Filter Pills -->
+      <div class="modmenu-filter-bar" id="modmenu-filter-bar">
+        <button class="modmenu-filter-pill active" onclick="filterModCategory('all', this)">ALL MODS</button>
+        <button class="modmenu-filter-pill" onclick="filterModCategory('hud', this)">HUD &amp; OVERLAYS</button>
+        <button class="modmenu-filter-pill" onclick="filterModCategory('pvp', this)">PVP &amp; COMBAT</button>
+        <button class="modmenu-filter-pill" onclick="filterModCategory('visuals', this)">VISUALS &amp; SHADERS</button>
+        <button class="modmenu-filter-pill" onclick="filterModCategory('qol', this)">QUALITY OF LIFE</button>
+      </div>
+
+      <!-- Main Mod Menu Grid (Matching img 1) -->
+      <div class="modmenu-pane active" id="modmenu-pane-mods">
+        <div class="modmenu-cards-grid" id="modmenu-cards-grid"></div>
+      </div>
+
+      <!-- HUD Layout Pane -->
+      <div class="modmenu-pane" id="modmenu-pane-hud" style="display: none;">
+        <div class="hud-layout-editor-canvas" id="hud-layout-editor-canvas">
+          <div style="position: absolute; top: 12px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); padding: 6px 16px; border-radius: 20px; font-size: 12px; color: #ffffff; border: 1px solid rgba(255,255,255,0.15); font-weight: 800;">DRAG HUD WIDGETS TO CUSTOMIZE IN-GAME POSITIONS</div>
+
+          <!-- Draggable HUD Elements -->
+          <div class="draggable-hud-item" id="hud-item-fps" style="top: 24px; left: 24px;">
+            <span class="hud-label">FPS: 240</span>
+          </div>
+          <div class="draggable-hud-item" id="hud-item-coords" style="top: 56px; left: 24px;">
+            <span class="hud-label">XYZ: 142.5 / 64.0 / -829.3 (Plains)</span>
+          </div>
+          <div class="draggable-hud-item" id="hud-item-sprint" style="bottom: 24px; left: 24px;">
+            <span class="hud-label">[Sprinting (Toggled)]</span>
+          </div>
+          <div class="draggable-hud-item" id="hud-item-keystrokes" style="bottom: 24px; right: 24px;">
+            <div class="keystrokes-mock">
+              <div class="k-row"><span class="k-key">W</span></div>
+              <div class="k-row"><span class="k-key">A</span><span class="k-key">S</span><span class="k-key">D</span></div>
+              <div class="k-row"><span class="k-btn">LMB (12)</span><span class="k-btn">RMB (14)</span></div>
+            </div>
+          </div>
+          <div class="draggable-hud-item" id="hud-item-armor" style="bottom: 140px; right: 24px;">
+            <span class="hud-label">Armor: 100% (Prot IV)</span>
+          </div>
+          <div class="draggable-hud-item" id="hud-item-potions" style="top: 24px; right: 24px;">
+            <span class="hud-label">Speed II (02:45) • Strength II (01:20)</span>
+          </div>
+
+          <!-- In-Game Nametag Live Preview (Matching img 2) -->
+          <div class="draggable-hud-item" id="hud-item-nametag" style="top: 150px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.25); border-radius: 4px; padding: 6px 14px; display: flex; align-items: center; gap: 8px;">
+            <img src="/assets/divine_icon.png" style="width: 16px; height: 16px; object-fit: contain;" alt="Divine Icon">
+            <span style="color: #ffffff; font-size: 13px; font-weight: 800; font-family: monospace;">Player</span>
+            <span style="font-size: 10px; background: rgba(34,197,94,0.25); color: #22c55e; padding: 2px 6px; border-radius: 4px; font-weight: 900;">VERIFIED DIVINE</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cosmetics Wardrobe Pane -->
+      <div class="modmenu-pane" id="modmenu-pane-cosmetics" style="display: none;">
+        <div id="modmenu-cosmetics-container"></div>
+      </div>
+
+      <!-- In-Game Synced Friends Pane -->
+      <div class="modmenu-pane" id="modmenu-pane-friends" style="display: none;">
+        <div class="card-panel" style="margin-bottom: 16px; background: rgba(30, 41, 59, 0.6); display: flex; align-items: center; justify-content: space-between;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+            <div>
+              <div style="font-size: 14px; font-weight: 800; color: #ffffff;">Divine Friends Network (Live In-Game Sync)</div>
+              <div style="font-size: 12px; color: #94a3b8;">Friends are managed via the Divine Launcher. You cannot add friends directly in-game.</div>
+            </div>
+          </div>
+          <span class="badge" style="background: rgba(34,197,94,0.15); color: #22c55e; border: 1px solid rgba(34,197,94,0.3);">SYNCED WITH LAUNCHER</span>
+        </div>
+
+        <div class="modmenu-friends-grid" id="modmenu-friends-grid"></div>
+      </div>
+
+      <!-- Mod Settings & Keybinds Pane -->
+      <div class="modmenu-pane" id="modmenu-pane-settings" style="display: none;">
+        <div class="card-panel" style="max-width: 700px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px;">
+          <h3 style="font-size: 16px; font-weight: 900; color: #ffffff;">Client Mod Hotkeys &amp; Global Preferences</h3>
+          
+          <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 12px;">
+            <div>
+              <div style="font-size: 13px; font-weight: 800; color: #ffffff;">Mod Menu Keybind</div>
+              <div style="font-size: 11px; color: #94a3b8;">Key to open the in-game mods menu during gameplay</div>
+            </div>
+            <span class="keybind-badge">Right Shift / M</span>
+          </div>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 12px;">
+            <div>
+              <div style="font-size: 13px; font-weight: 800; color: #ffffff;">Cinematic Zoom Key</div>
+              <div style="font-size: 11px; color: #94a3b8;">Key to activate smooth camera zoom</div>
+            </div>
+            <span class="keybind-badge">C</span>
+          </div>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 12px;">
+            <div>
+              <div style="font-size: 13px; font-weight: 800; color: #ffffff;">Fullbright / Gamma Boost Key</div>
+              <div style="font-size: 11px; color: #94a3b8;">Instantly toggle cave lighting</div>
+            </div>
+            <span class="keybind-badge">G</span>
+          </div>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 12px;">
+            <div>
+              <div style="font-size: 13px; font-weight: 800; color: #ffffff;">FreeLook / Perspective Camera Key</div>
+              <div style="font-size: 11px; color: #94a3b8;">360 degree third-person view without changing character orientation</div>
+            </div>
+            <span class="keybind-badge">F4</span>
+          </div>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 12px;">
+            <div>
+              <div style="font-size: 13px; font-weight: 800; color: #ffffff;">Divine Nametag Badges</div>
+              <div style="font-size: 11px; color: #94a3b8;">Render pure white sun badge next to Divine Client players (like Lunar in img 2)</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="settings-nametag-toggle" checked onchange="toggleNametagBadges(this.checked)">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODAL: MOD OPTIONS FINE-TUNING DIALOG -->
+  <div class="modal-backdrop" id="modal-mod-options">
+    <div class="modal-window" style="max-width: 520px;">
+      <div class="modal-header">
+        <div class="modal-title" id="mod-options-title">Mod Options</div>
+        <button class="icon-btn" onclick="closeModal('modal-mod-options')">&times;</button>
+      </div>
+      <div class="modal-body" id="mod-options-body" style="display: flex; flex-direction: column; gap: 16px;"></div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('modal-mod-options')">Close</button>
+        <button class="btn btn-primary" onclick="saveActiveModOptions()">Save Settings</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container"></div>
+
+  <!-- JavaScript Scripts -->
+  <script src="/js/audio.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/app.js"></script>
+
+  <!-- GAME OUTPUT LIVE CONSOLE DRAWER / MODAL -->
+  <div class="modal-backdrop" id="modal-game-console" style="display: none;">
+    <div class="modal-card" style="max-width: 860px; width: 95vw; height: 80vh; display: flex; flex-direction: column; background: rgba(10, 15, 26, 0.98); border: 1px solid rgba(56, 189, 248, 0.3); box-shadow: 0 20px 60px rgba(0,0,0,0.8);">
+      <div class="modal-header" style="border-bottom: 1px solid rgba(255,255,255,0.08); padding: 14px 20px; display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="width: 10px; height: 10px; border-radius: 50%; background: #10b981; box-shadow: 0 0 10px #10b981;" class="pulse-dot"></div>
+          <div>
+            <div class="modal-title" style="font-size: 15px; font-weight: 900; color: #ffffff;">Divine Client — Game Output Console</div>
+            <div style="font-size: 11px; color: #94a3b8;" id="console-instance-status">Process Live • Streaming Minecraft logs</div>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <button class="btn btn-secondary btn-sm" onclick="copyConsoleLogs()" style="font-size: 11px; padding: 6px 12px;">Copy Logs</button>
+          <button class="btn btn-secondary btn-sm" onclick="clearConsoleLogs()" style="font-size: 11px; padding: 6px 12px;">Clear</button>
+          <button class="icon-btn" onclick="closeModal('modal-game-console')">&times;</button>
+        </div>
+      </div>
+      <div class="modal-body" style="flex: 1; padding: 12px; overflow: hidden; display: flex; flex-direction: column;">
+        <pre id="game-console-output" style="flex: 1; margin: 0; background: #06090e; border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 12px 14px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 12px; line-height: 1.5; color: #cbd5e1; overflow-y: auto; white-space: pre-wrap; word-break: break-all; user-select: text;"></pre>
+      </div>
+      <div class="modal-footer" style="padding: 10px 16px; border-top: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: space-between; font-size: 11.5px; color: #64748b;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; color: #94a3b8;">
+            <input type="checkbox" id="console-autoscroll-toggle" checked> Auto-Scroll to Bottom
+          </label>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="closeModal('modal-game-console')">Minimize Console</button>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

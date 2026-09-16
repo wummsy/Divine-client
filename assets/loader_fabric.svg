@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="fabGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#dfcf9f"/>
+      <stop offset="100%" stop-color="#c8b27a"/>
+    </linearGradient>
+    <linearGradient id="fabBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4a90e2"/>
+      <stop offset="100%" stop-color="#1d5ca3"/>
+    </linearGradient>
+  </defs>
+  <rect x="6" y="6" width="52" height="52" rx="10" fill="#1e2430" stroke="#3d4a63" stroke-width="2"/>
+  <!-- Fabric Blueprint/Scroll Icon -->
+  <path d="M16 16 h32 v32 h-32 z" fill="url(#fabGrad)" rx="3"/>
+  <path d="M22 22 h20 v20 h-20 z" fill="#1e2430"/>
+  <path d="M25 25 h14 v14 h-14 z" fill="url(#fabBlue)"/>
+  <path d="M28 28 h8 v8 h-8 z" fill="#dfcf9f"/>
+  <!-- Corner folds -->
+  <polygon points="44,16 48,20 44,20" fill="#99834d"/>
+  <polygon points="16,44 20,48 20,44" fill="#99834d"/>
+</svg>
