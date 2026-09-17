@@ -1,0 +1,47 @@
+name: Package Release Bundles
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  bundle-artifacts:
+    name: Create Dist Bundles
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Build Fabric Client Mod
+        run: |
+          mkdir -p build/classes
+          find mod/src -name "*.java" > sources.txt
+          javac -d build/classes @sources.txt
+          jar cf assets/mods/DivineClientMod-1.0.0.jar -C build/classes .
+          cp assets/mods/DivineClientMod-1.0.0.jar divineclient/web/assets/mods/DivineClientMod-1.0.0.jar
+
+      - name: Package Release Archives
+        run: |
+          mkdir -p dist_release
+          zip -r dist_release/DivineClient-Latest.zip divineclient main.py installer.py requirements.txt LICENSE README.md assets -x "*.git*" "*__pycache__*" "*.pyc"
+          zip -r dist_release/DivineServer-Latest.zip server -x "*.git*" "*__pycache__*" "*.pyc"
+
+      - name: Upload Release Bundles
+        uses: actions/upload-artifact@v4
+        with:
+          name: divine-client-release-packages
+          path: dist_release/*

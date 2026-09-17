@@ -11,7 +11,9 @@
 # file, or the download fails loudly. No more half-installed Java.
 import hashlib
 import os
+import platform
 import shutil
+import sys
 import tarfile
 import zipfile
 
@@ -22,10 +24,12 @@ from .. import paths
 API = "https://api.adoptium.net/v3"
 UA = {"User-Agent": "DivineClient/1.0"}
 
+
 # Where our Adoptium runtimes live, kept separate from Mojang's runtime folder.
 # Resolved on demand so it follows the user's chosen game-files location.
 def adoptium_dir():
     return os.path.join(paths.MINECRAFT_DIR, "adoptium")
+
 
 # Adoptium only ships LTS releases. Map whatever Java a version wants onto the
 # closest LTS that can actually run it.
@@ -41,6 +45,32 @@ def _lts_for(major):
 
 def runtime_dir(major):
     return os.path.join(adoptium_dir(), "jre-" + str(_lts_for(major)))
+
+
+def _detect_os_arch():
+    """Detect current OS and architecture compatible with Adoptium API."""
+    sys_name = platform.system().lower()
+    if "windows" in sys_name or sys.platform == "win32":
+        os_name = "windows"
+    elif "darwin" in sys_name or sys.platform == "darwin" or "mac" in sys_name:
+        os_name = "mac"
+    elif "linux" in sys_name or sys.platform.startswith("linux"):
+        os_name = "linux"
+    else:
+        os_name = "windows"
+
+    mach = platform.machine().lower()
+    if mach in ("x86_64", "amd64", "x64"):
+        arch = "x64"
+    elif mach in ("arm64", "aarch64"):
+        arch = "aarch64"
+    elif mach in ("x86", "i386", "i686"):
+        arch = "x32"
+    elif mach.startswith("arm"):
+        arch = "arm"
+    else:
+        arch = "x64"
+    return os_name, arch
 
 
 def find_java_exe(major):
@@ -71,8 +101,13 @@ def _asset_info(lts, os_name, arch):
     return pkg["link"], pkg.get("checksum", ""), pkg.get("name", "jre.zip")
 
 
-def install(major, os_name, arch, progress=None):
+def install(major=21, os_name=None, arch=None, progress=None):
     """Download + verify + extract a Temurin JRE. Returns the java executable path."""
+    if not os_name or not arch:
+        det_os, det_arch = _detect_os_arch()
+        os_name = os_name or det_os
+        arch = arch or det_arch
+
     lts = _lts_for(major)
     base = runtime_dir(major)
     os.makedirs(adoptium_dir(), exist_ok=True)

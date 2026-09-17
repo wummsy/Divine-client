@@ -121,7 +121,7 @@ def case(name):
 
 def test_can_read_detects_a_locked_file():
     """os.path.isfile() says yes while Java would still fail - the actual bug."""
-    d = tempfile.mkdtemp(prefix="aren-sdir-", dir=_TMP)
+    d = tempfile.mkdtemp(prefix="divine-sdir-", dir=_TMP)
     jar = fake_jar(os.path.join(d, "fabric-server-launch.jar"))
     assert server_host._can_read(jar)
     assert server_host.wait_jar_readable(jar, attempts=1) == jar
@@ -139,7 +139,7 @@ def test_can_read_detects_a_locked_file():
 
 
 def test_corrupt_jar_rejected():
-    d = tempfile.mkdtemp(prefix="aren-sdir-", dir=_TMP)
+    d = tempfile.mkdtemp(prefix="divine-sdir-", dir=_TMP)
     assert not server_host._is_valid_jar(fake_jar(os.path.join(d, "a.jar"), valid=False))
     assert server_host._is_valid_jar(fake_jar(os.path.join(d, "b.jar"), valid=True))
     assert not server_host._is_valid_jar(os.path.join(d, "missing.jar"))
@@ -167,7 +167,7 @@ def test_download_rejects_a_truncated_body():
     srv = HTTPServer(("127.0.0.1", 0), H)
     port = srv.server_address[1]
     threading.Thread(target=srv.serve_forever, daemon=True).start()
-    d = tempfile.mkdtemp(prefix="aren-sdir-", dir=_TMP)
+    d = tempfile.mkdtemp(prefix="divine-sdir-", dir=_TMP)
     dest = os.path.join(d, "server.jar")
     try:
         server_host._download("http://127.0.0.1:%d/x.jar" % port, dest)
@@ -211,7 +211,7 @@ def test_console_java_never_returns_javaw():
     real_platform = java_runtime.sys.platform
     try:
         java_runtime.sys.platform = "win32"
-        d = tempfile.mkdtemp(prefix="aren-java-", dir=_TMP)
+        d = tempfile.mkdtemp(prefix="divine-java-", dir=_TMP)
         bindir = os.path.join(d, "bin")
         os.makedirs(bindir)
         open(os.path.join(bindir, "javaw.exe"), "wb").close()
@@ -546,7 +546,7 @@ def test_a_bad_download_is_rejected_and_leaves_nothing_behind(tmp=None):
     srv = socketserver.TCPServer(("127.0.0.1", 0), H)
     port = srv.server_address[1]
     threading.Thread(target=srv.serve_forever, daemon=True).start()
-    d = tempfile.mkdtemp(prefix="aren-pack-", dir=_TMP)
+    d = tempfile.mkdtemp(prefix="divine-pack-", dir=_TMP)
     real_resolve, real_req = mods._resolve, mods.requests.get
     try:
         def fake(slug, mc, loader="fabric"):
@@ -583,7 +583,7 @@ def test_a_bad_download_is_rejected_and_leaves_nothing_behind(tmp=None):
         inst2, skip2 = mods.install_pack([("ok", "fine")], "1.21.4", d)
         assert inst2 == ["ok@packok-1.0.jar"] and not skip2, (inst2, skip2)
         # a jar the user put there themselves wins over ours
-        d2 = tempfile.mkdtemp(prefix="aren-pack-user-", dir=_TMP)
+        d2 = tempfile.mkdtemp(prefix="divine-pack-user-", dir=_TMP)
         open(os.path.join(d2, "packok-0.9.jar"), "wb").write(b"theirs")
         mods._resolve = lambda slug, mc, loader="fabric": fake("ok", mc, loader)
         inst3, skip3 = mods.install_pack([("ok", "fine")], "1.21.4", d2)
@@ -626,7 +626,7 @@ def test_prepare_adds_server_mods_only_when_asked():
     try:
         mods.install_server_pack = lambda mc, d, **kw: (calls.append(mc), ([], []))[1]
         i = inst("packgate")
-        sdir = tempfile.mkdtemp(prefix="aren-sdir-", dir=_TMP)
+        sdir = tempfile.mkdtemp(prefix="divine-sdir-", dir=_TMP)
         assert SH.install_server_perf_mods(i, sdir, None) == ([], []), "no config must not fetch"
         assert not calls, calls
         SH.install_server_perf_mods(i, sdir, {"auto_performance_mods": False})
@@ -908,7 +908,7 @@ def test_agent_checksums_are_pinned_and_enforced():
         assert all(c in "0123456789abcdef" for c in digest), (kind, plat)
     assert "v0.6.0" in tunnel.BORE_PINNED["win32"], "pin the digest with the release"
 
-    tmp = tempfile.mkdtemp(prefix="aren-agent-")
+    tmp = tempfile.mkdtemp(prefix="divine-agent-")
     path = os.path.join(tmp, "bore")
     with open(path, "wb") as f:
         f.write(b"the genuine bore binary, as far as this test is concerned" * 64)
@@ -1027,7 +1027,7 @@ def test_site_pages_render_and_old_hosts_redirect():
 
     root = os.path.dirname(HERE)
     server_dir = os.path.join(root, "server")
-    tmp = tempfile.mkdtemp(prefix="aren-site-")
+    tmp = tempfile.mkdtemp(prefix="divine-site-")
     saved_db = os.environ.get("DIVINE_DB")
     os.environ["DIVINE_DB"] = os.path.join(tmp, "divine.db")     # never touch the dev db
     sys.path.insert(0, server_dir)
@@ -1286,7 +1286,7 @@ def test_diagnose_names_a_locked_world_not_the_jar():
 def test_the_bore_program_is_picked_by_name_not_by_prefix():
     """A release's own folder must never be taken for the program inside it."""
     from divineclient.core import tunnel as tmod
-    d = tempfile.mkdtemp(prefix="aren-bore-", dir=_TMP)
+    d = tempfile.mkdtemp(prefix="divine-bore-", dir=_TMP)
 
     zp = os.path.join(d, "bore-win.zip")
     with zipfile.ZipFile(zp, "w") as z:
@@ -1339,7 +1339,7 @@ def test_ensure_bore_leaves_exactly_the_program_behind():
     """
     import tarfile as _tf
     from divineclient.core import tunnel as tmod
-    d = tempfile.mkdtemp(prefix="aren-bore-e2e-", dir=_TMP)
+    d = tempfile.mkdtemp(prefix="divine-bore-e2e-", dir=_TMP)
     os.makedirs(d, exist_ok=True)
     real = (tmod.tunnel_dir, tmod.bore_path, tmod._latest_bore_url, tmod._fetch,
             tmod.VERIFY_OFF)
@@ -1399,7 +1399,7 @@ def test_ensure_bore_leaves_exactly_the_program_behind():
 
 def test_a_jar_is_judged_by_its_manifest_not_its_size():
     """The 616-byte jar Fabric generates is a real server jar; size said otherwise."""
-    d = tempfile.mkdtemp(prefix="aren-jar-", dir=_TMP)
+    d = tempfile.mkdtemp(prefix="divine-jar-", dir=_TMP)
     thin = os.path.join(d, "fabric-server-launch.jar")
     with zipfile.ZipFile(thin, "w") as z:
         z.writestr("META-INF/MANIFEST.MF",

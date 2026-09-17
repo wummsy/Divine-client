@@ -33,6 +33,8 @@ public class DivineClient implements ClientModInitializer {
     private static boolean gKeyLastState = false;
     private static boolean f6KeyLastState = false;
     private static boolean rKeyLastState = false;
+    private static boolean lmbLastState = false;
+    private static boolean rmbLastState = false;
 
     @Override
     public void onInitializeClient() {
@@ -84,7 +86,6 @@ public class DivineClient implements ClientModInitializer {
                         boolean mDown = (mState == 1);
 
                         if ((rShiftDown && !rShiftLastState) || (mDown && !mKeyLastState)) {
-                            // Check if in game (not in a chat box or container)
                             if (DivineModMenuScreen.isOpen) {
                                 DivineModMenuScreen.close();
                             } else {
@@ -119,15 +120,29 @@ public class DivineClient implements ClientModInitializer {
                         rKeyLastState = rDown;
 
                         // Poll Keystrokes states
-                        DivineHudRenderer.keyW = ((int) glfwGetKeyMethod.invoke(null, windowHandle, 87) == 1); // W
-                        DivineHudRenderer.keyA = ((int) glfwGetKeyMethod.invoke(null, windowHandle, 65) == 1); // A
-                        DivineHudRenderer.keyS = ((int) glfwGetKeyMethod.invoke(null, windowHandle, 83) == 1); // S
-                        DivineHudRenderer.keyD = ((int) glfwGetKeyMethod.invoke(null, windowHandle, 68) == 1); // D
-                        DivineHudRenderer.keySpace = ((int) glfwGetKeyMethod.invoke(null, windowHandle, 32) == 1); // Space
+                        DivineHudRenderer.keyW = ((int) glfwGetKeyMethod.invoke(null, windowHandle, 87) == 1);
+                        DivineHudRenderer.keyA = ((int) glfwGetKeyMethod.invoke(null, windowHandle, 65) == 1);
+                        DivineHudRenderer.keyS = ((int) glfwGetKeyMethod.invoke(null, windowHandle, 83) == 1);
+                        DivineHudRenderer.keyD = ((int) glfwGetKeyMethod.invoke(null, windowHandle, 68) == 1);
+                        DivineHudRenderer.keySpace = ((int) glfwGetKeyMethod.invoke(null, windowHandle, 32) == 1);
 
                         if (glfwGetMouseButtonMethod != null) {
-                            DivineHudRenderer.keyLmb = ((int) glfwGetMouseButtonMethod.invoke(null, windowHandle, 0) == 1);
-                            DivineHudRenderer.keyRmb = ((int) glfwGetMouseButtonMethod.invoke(null, windowHandle, 1) == 1);
+                            int lmbVal = (int) glfwGetMouseButtonMethod.invoke(null, windowHandle, 0);
+                            int rmbVal = (int) glfwGetMouseButtonMethod.invoke(null, windowHandle, 1);
+                            boolean lmbDown = (lmbVal == 1);
+                            boolean rmbDown = (rmbVal == 1);
+
+                            if (lmbDown && !lmbLastState) {
+                                DivineHudRenderer.registerLmbClick();
+                            }
+                            if (rmbDown && !rmbLastState) {
+                                DivineHudRenderer.registerRmbClick();
+                            }
+
+                            DivineHudRenderer.keyLmb = lmbDown;
+                            DivineHudRenderer.keyRmb = rmbDown;
+                            lmbLastState = lmbDown;
+                            rmbLastState = rmbDown;
                         }
                     }
                 } catch (Throwable ignored) {}

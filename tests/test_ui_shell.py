@@ -321,7 +321,7 @@ def _zip_traversal():
 @check("main.py's --apply-update parser takes the payload and the pid to wait for")
 def _main_args():
     import importlib.util
-    spec = importlib.util.spec_from_file_location("aren_main", os.path.join(ROOT, "main.py"))
+    spec = importlib.util.spec_from_file_location("divine_main", os.path.join(ROOT, "main.py"))
     main = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(main)
     payload, pid = main._update_mode_args(["--apply-update", "/x/y", "--wait-pid", "4242"])

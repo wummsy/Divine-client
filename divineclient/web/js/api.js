@@ -12,6 +12,21 @@ function escapeHtml(str) {
     .replace(/'/g, "&#039;");
 }
 
+window.openModal = function(modalId) {
+  const el = typeof modalId === 'string' ? document.getElementById(modalId) : modalId;
+  if (el) {
+    el.classList.add('active');
+    if (el.style.display === 'none') el.style.display = 'flex';
+  }
+};
+
+window.closeModal = function(modalId) {
+  const el = typeof modalId === 'string' ? document.getElementById(modalId) : modalId;
+  if (el) {
+    el.classList.remove('active');
+  }
+};
+
 const API = {
   async getStatus() {
     const res = await fetch("/api/status");
@@ -193,6 +208,15 @@ const API = {
     return res.json();
   },
 
+  async killGame(instanceId) {
+    const res = await fetch("/api/launch/kill", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ instance_id: instanceId }),
+    });
+    return res.json();
+  },
+
   async getGameLogs(instanceId) {
     const res = await fetch(`/api/launch/logs?instance_id=${encodeURIComponent(instanceId || "")}`);
     return res.json();
@@ -335,30 +359,125 @@ const API = {
     return this.createServerInstance(data);
   },
 
-  async importServerInstance(data) {
+  async importServerInstance(instanceId) {
     const res = await fetch("/api/servers/import-instance", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
+      body: JSON.stringify({ instance_id: instanceId }),
     });
     return res.json();
   },
 
-  async redeemServerCode(code) {
-    try {
-      const res = await fetch("/api/servers/redeem", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code }),
-      });
-      return await res.json();
-    } catch (err) {
-      return { success: false, error: "Network error connecting to verification server." };
-    }
+  async deleteServerInstance(instanceId) {
+    const res = await fetch(`/api/servers/${encodeURIComponent(instanceId)}/delete`, {
+      method: "POST",
+    });
+    return res.json();
   },
 
-  async getRedeemedCodes() {
-    const res = await fetch("/api/user/redeemed-codes");
+  async getServerInfo(instanceId) {
+    const res = await fetch(`/api/servers/${encodeURIComponent(instanceId)}/info`);
+    return res.json();
+  },
+
+  async getServerProperties(instanceId) {
+    const res = await fetch(`/api/servers/${encodeURIComponent(instanceId)}/properties`);
+    return res.json();
+  },
+
+  async saveServerProperties(instanceId, properties) {
+    const res = await fetch(`/api/servers/${encodeURIComponent(instanceId)}/properties`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ properties }),
+    });
+    return res.json();
+  },
+
+  async getServerPlugins(instanceId) {
+    const res = await fetch(`/api/servers/${encodeURIComponent(instanceId)}/plugins`);
+    return res.json();
+  },
+
+  async installServerPlugin(instanceId, pluginName, version = null) {
+    const res = await fetch(`/api/servers/${encodeURIComponent(instanceId)}/plugins/install`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: pluginName, version }),
+    });
+    return res.json();
+  },
+
+  async deleteServerPlugin(instanceId, filename) {
+    const res = await fetch(`/api/servers/${encodeURIComponent(instanceId)}/plugins/delete`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ filename }),
+    });
+    return res.json();
+  },
+
+  async searchServerPlugins(query, mcVersion = "1.21.1") {
+    const params = new URLSearchParams({ q: query, version: mcVersion });
+    const res = await fetch(`/api/plugins/search?${params.toString()}`);
+    return res.json();
+  },
+
+  async getServerWhitelist(instanceId) {
+    const res = await fetch(`/api/servers/${encodeURIComponent(instanceId)}/whitelist`);
+    return res.json();
+  },
+
+  async saveServerWhitelist(instanceId, whitelist) {
+    const res = await fetch(`/api/servers/${encodeURIComponent(instanceId)}/whitelist`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ whitelist }),
+    });
+    return res.json();
+  },
+
+  async getServerOps(instanceId) {
+    const res = await fetch(`/api/servers/${encodeURIComponent(instanceId)}/ops`);
+    return res.json();
+  },
+
+  async saveServerOps(instanceId, ops) {
+    const res = await fetch(`/api/servers/${encodeURIComponent(instanceId)}/ops`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ops }),
+    });
+    return res.json();
+  },
+
+  async getServerFiles(instanceId, subpath = "") {
+    const params = new URLSearchParams({ path: subpath });
+    const res = await fetch(`/api/servers/${encodeURIComponent(instanceId)}/files?${params.toString()}`);
+    return res.json();
+  },
+
+  async readServerFile(instanceId, filepath) {
+    const params = new URLSearchParams({ path: filepath });
+    const res = await fetch(`/api/servers/${encodeURIComponent(instanceId)}/files/read?${params.toString()}`);
+    return res.json();
+  },
+
+  async writeServerFile(instanceId, filepath, content) {
+    const res = await fetch(`/api/servers/${encodeURIComponent(instanceId)}/files/write`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ path: filepath, content }),
+    });
+    return res.json();
+  },
+
+  async deleteServerFile(instanceId, filepath) {
+    const res = await fetch(`/api/servers/${encodeURIComponent(instanceId)}/files/delete`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ path: filepath }),
+    });
     return res.json();
   },
 
@@ -367,7 +486,7 @@ const API = {
     return res.json();
   },
 
-  async addServerSubUser(instanceId, username, permissions) {
+  async addServerSubUser(instanceId, username, permissions = []) {
     const res = await fetch(`/api/servers/${encodeURIComponent(instanceId)}/access/add`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -535,9 +654,6 @@ const API = {
     return res.json();
   },
 
-  
-  // Discord Local Detection & Auto-Link
-  
   async fixJavaRuntime() {
     try {
       const res = await fetch("/api/system/fix-java", {
@@ -555,10 +671,11 @@ const API = {
       const res = await fetch(`/api/launch/logs?instance_id=${encodeURIComponent(instanceId)}`);
       return await res.json();
     } catch (e) {
-      return { logs: "", status: "idle" };
+      return { logs: [], status: "idle" };
     }
   },
-async detectLocalDiscord() {
+
+  async detectLocalDiscord() {
     try {
       const res = await fetch("/api/social/discord/local-detect");
       return await res.json();
@@ -578,7 +695,8 @@ async detectLocalDiscord() {
       return { success: false };
     }
   },
-async startSocialLink() {
+
+  async startSocialLink() {
     const res = await fetch("/api/social/link/start", { method: "POST" });
     return res.json();
   },
@@ -743,3 +861,5 @@ async startSocialLink() {
   pollMicrosoftAuth(code) { return this.pollMicrosoftLogin(code, 3, 300); },
   redeemKey(code) { return this.redeemServerCode(code); },
 };
+
+window.API = API;

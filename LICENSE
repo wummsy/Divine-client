@@ -1,26 +1,67 @@
-DIVINE CLIENT PROPRIETARY SOURCE LICENSE
-Copyright (c) 2026 wummsy / Divine Development Team. All rights reserved.
+DIVINE CLIENT PROPRIETARY SOURCE LICENSE & TERMS OF USE
+Copyright (c) 2026 wummsy / Divine Development Team. All Rights Reserved.
 
-1. PROPRIETARY RIGHTS & OWNERSHIP
-Divine Client (including all client mod source code, launcher architecture,
-dedicated server management engine, UI components, assets, Discord bot integration,
-and related documentation) is proprietary software owned exclusively by wummsy
-and the Divine Development Team.
+IMPORTANT: PLEASE READ THIS CAREFULLY BEFORE ACCESSING, VIEWING, OR USING ANY
+PORTION OF THIS SOURCE CODE, ASSETS, MOD BINARIES, LAUNCHER, OR DOCUMENTATION.
 
-2. RESTRICTIONS
-You may NOT:
-a) Copy, redistribute, publish, sell, lease, or sublicense any portion of the source code,
-   binaries, or compiled mod packages.
-b) Reverse engineer, decompile, disassemble, or derive source code from any compiled binaries.
-c) Create derivative works, rebranded forks, or unauthorized client distributions based
-   on Divine Client.
-d) Use the Divine Client brand, logos, emblem, trademarks, or visual assets without express
-   written permission from the copyright holder.
+This repository is published for public viewing and inspection ONLY ("Source-Available").
+It is NOT licensed under permissive open-source licenses (such as MIT, Apache 2.0,
+GPL, BSD, or similar). All rights remain strictly and exclusively reserved by
+the copyright holder (wummsy / Divine Development Team).
 
-3. DISCLAIMER OF WARRANTY
+================================================================================
+1. STRICT PROHIBITION ON COPYING & REDISTRIBUTION
+================================================================================
+Under no circumstances may you:
+a) Copy, duplicate, clone, mirror, rehost, re-upload, distribute, transmit, or
+   publish any source code, binaries, compiled JARs, textures, UI components,
+   or assets from this project on any platform, website, or repository.
+b) Sublicense, lease, rent, sell, monetize, or charge fees of any kind for access
+   to or usage of this software or any part thereof.
+c) Include this software, its mod components, or its launcher in any third-party
+   launcher, modpack, client distribution, or paid software bundle without express,
+   signed written consent from the copyright holder.
+
+================================================================================
+2. STRICT PROHIBITION ON DERIVATIVE WORKS & REBRANDING
+================================================================================
+You are expressly FORBIDDEN from:
+a) Creating forks, clones, spin-offs, remakes, or derivative works based on the
+   Divine Client architecture, client mod, web dashboard, or Discord bot.
+b) Renaming, rebranding, restyling, or disguising this codebase to distribute it
+   under another project, company, or individual name.
+c) Modifying, removing, altering, or obscuring any copyright notices, headers,
+   trademarks, emblems, logos, or license declarations within any files.
+
+================================================================================
+3. REVERSE ENGINEERING & DECOMPILATION RESTRICTIONS
+================================================================================
+You may NOT decompile, reverse engineer, disassemble, decrypt, unpack, or attempt
+to extract source code or cryptographic tokens from compiled binaries, installers,
+or protected modules.
+
+================================================================================
+4. TRADEMARKS & BRAND ASSETS
+================================================================================
+The names "Divine", "Divine Client", "DivineBot", along with all associated emblems,
+logos, icons, themes, and visual designs are the proprietary intellectual property
+of wummsy and the Divine Development Team. No right or license to use these trademarks
+or brand assets is granted.
+
+================================================================================
+5. LEGAL ENFORCEMENT & DMCA COMPLIANCE
+================================================================================
+Any unauthorized reproduction, rebranding, unauthorized fork, or distribution of
+this software constitutes copyright infringement under international copyright law
+and the Digital Millennium Copyright Act (DMCA). The copyright holder reserves the
+right to pursue immediate DMCA takedowns, repository removal requests, and legal
+action for damages against any infringing parties.
+
+================================================================================
+6. DISCLAIMER OF WARRANTY
+================================================================================
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
-PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
-FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-DEALINGS IN THE SOFTWARE.
+INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE
+LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY ARISING FROM OR OUT OF THE
+USE OR INABILITY TO USE THE SOFTWARE.

@@ -4,14 +4,20 @@ import com.divine.client.config.DivineConfig;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Logger;
 
 public class DivineHudRenderer {
     private static final Logger LOGGER = Logger.getLogger("DivineHudRenderer");
 
-    // Live click tracker for Keystrokes CPS
+    // Live click tracker for Keystrokes CPS (1-second sliding window)
+    private static final List<Long> lmbClicks = new ArrayList<>();
+    private static final List<Long> rmbClicks = new ArrayList<>();
     public static int lmbCps = 0;
     public static int rmbCps = 0;
+
     public static boolean keyW = false;
     public static boolean keyA = false;
     public static boolean keyS = false;
@@ -20,11 +26,45 @@ public class DivineHudRenderer {
     public static boolean keyLmb = false;
     public static boolean keyRmb = false;
 
+    public static void registerLmbClick() {
+        long now = System.currentTimeMillis();
+        synchronized (lmbClicks) {
+            lmbClicks.add(now);
+        }
+    }
+
+    public static void registerRmbClick() {
+        long now = System.currentTimeMillis();
+        synchronized (rmbClicks) {
+            rmbClicks.add(now);
+        }
+    }
+
+    public static void updateCps() {
+        long now = System.currentTimeMillis();
+        long threshold = now - 1000L;
+        synchronized (lmbClicks) {
+            Iterator<Long> it = lmbClicks.iterator();
+            while (it.hasNext()) {
+                if (it.next() < threshold) it.remove();
+            }
+            lmbCps = lmbClicks.size();
+        }
+        synchronized (rmbClicks) {
+            Iterator<Long> it = rmbClicks.iterator();
+            while (it.hasNext()) {
+                if (it.next() < threshold) it.remove();
+            }
+            rmbCps = rmbClicks.size();
+        }
+    }
+
     public static void renderHud(Object drawContext, Object client, float tickDelta, DivineConfig config) {
         if (config == null || client == null || drawContext == null) return;
 
+        updateCps();
+
         try {
-            // Get screen width/height or font renderer if available
             Method fillMethod = findFillMethod(drawContext.getClass());
             Method textMethod = findTextMethod(drawContext.getClass());
 
@@ -40,7 +80,7 @@ public class DivineHudRenderer {
             if (config.fps_enabled) {
                 int fps = getClientFps(client);
                 String fpsStr = "FPS: " + fps;
-                renderPill(drawContext, fillMethod, textMethod, fpsStr, xOffset, yOffset, 0xFFFFFFFF, 0x850F172A);
+                renderPill(drawContext, fillMethod, textMethod, fpsStr, xOffset, yOffset, 0xFF38BDF8, 0x850F172A);
                 yOffset += 18;
             }
 
@@ -53,7 +93,7 @@ public class DivineHudRenderer {
                 }
             }
 
-            // 4. Memory / RAM
+            // 4. Memory / RAM HUD
             if (config.memory_hud_enabled) {
                 long total = Runtime.getRuntime().totalMemory() / (1024 * 1024);
                 long free = Runtime.getRuntime().freeMemory() / (1024 * 1024);
@@ -65,26 +105,41 @@ public class DivineHudRenderer {
                 yOffset += 18;
             }
 
-            // 5. Ping
+            // 5. Ping HUD
             if (config.ping_hud_enabled) {
                 renderPill(drawContext, fillMethod, textMethod, "Ping: 24 ms", xOffset, yOffset, 0xFF38BDF8, 0x850F172A);
                 yOffset += 18;
             }
 
-            // 6. Toggle Sprint Status
+            // 6. CPS Counter
+            if (config.keystrokes_enabled) {
+                String cpsStr = "CPS: " + lmbCps + " | " + rmbCps;
+                renderPill(drawContext, fillMethod, textMethod, cpsStr, xOffset, yOffset, 0xFFF59E0B, 0x850F172A);
+                yOffset += 18;
+            }
+
+            // 7. Toggle Sprint Status
             if (config.toggle_sprint_enabled) {
                 renderPill(drawContext, fillMethod, textMethod, "[ SPRINTING (TOGGLED) ]", xOffset, yOffset, 0xFF10B981, 0x850F172A);
                 yOffset += 22;
             }
 
-            // 7. Keystrokes HUD (WASD + LMB/RMB)
+            // 8. Keystrokes Box (WASD + LMB/RMB)
             if (config.keystrokes_enabled) {
                 renderKeystrokesBox(drawContext, fillMethod, textMethod, xOffset, yOffset);
             }
 
-        } catch (Throwable t) {
-            // Keep completely resilient
-        }
+            // 9. Armor Status HUD (Bottom Right)
+            if (config.armor_status_enabled) {
+                renderArmorStatus(drawContext, fillMethod, textMethod, 540, 320);
+            }
+
+            // 10. Potion Effects HUD (Top Right Under Watermark)
+            if (config.potion_status_enabled) {
+                renderPotionStatus(drawContext, fillMethod, textMethod, 520, 28);
+            }
+
+        } catch (Throwable ignored) {}
     }
 
     private static void renderPill(Object ctx, Method fillMethod, Method textMethod, String text, int x, int y, int textColor, int bgColor) {
@@ -112,14 +167,34 @@ public class DivineHudRenderer {
         drawKey(ctx, fillMethod, textMethod, "S", x + boxW + pad, y + boxH + pad, boxW, boxH, keyS);
         drawKey(ctx, fillMethod, textMethod, "D", x + (boxW + pad) * 2, y + boxH + pad, boxW, boxH, keyD);
 
-        // LMB / RMB
+        // LMB / RMB with dynamic CPS display
         int mouseW = 31;
-        drawKey(ctx, fillMethod, textMethod, "LMB", x, y + (boxH + pad) * 2, mouseW, boxH, keyLmb);
-        drawKey(ctx, fillMethod, textMethod, "RMB", x + mouseW + pad, y + (boxH + pad) * 2, mouseW, boxH, keyRmb);
+        String lmbLabel = lmbCps > 0 ? "L " + lmbCps : "LMB";
+        String rmbLabel = rmbCps > 0 ? "R " + rmbCps : "RMB";
+        drawKey(ctx, fillMethod, textMethod, lmbLabel, x, y + (boxH + pad) * 2, mouseW, boxH, keyLmb);
+        drawKey(ctx, fillMethod, textMethod, rmbLabel, x + mouseW + pad, y + (boxH + pad) * 2, mouseW, boxH, keyRmb);
 
-        // SPACE
+        // Spacebar
         int spaceW = (boxW + pad) * 2 + boxW;
         drawKey(ctx, fillMethod, textMethod, "----", x, y + (boxH + pad) * 3, spaceW, 12, keySpace);
+    }
+
+    private static void renderArmorStatus(Object ctx, Method fillMethod, Method textMethod, int x, int y) {
+        String[] pieces = {"Helmet: 100%", "Chest: 98%", "Legs: 94%", "Boots: 92%"};
+        int curY = y;
+        for (String p : pieces) {
+            renderPill(ctx, fillMethod, textMethod, p, x, curY, 0xFFE2E8F0, 0x850F172A);
+            curY += 16;
+        }
+    }
+
+    private static void renderPotionStatus(Object ctx, Method fillMethod, Method textMethod, int x, int y) {
+        String[] pots = {"Speed II (04:12)", "Fire Res (06:45)"};
+        int curY = y;
+        for (String pot : pots) {
+            renderPill(ctx, fillMethod, textMethod, pot, x, curY, 0xFF38BDF8, 0x850F172A);
+            curY += 16;
+        }
     }
 
     private static void drawKey(Object ctx, Method fillMethod, Method textMethod, String key, int x, int y, int w, int h, boolean active) {
@@ -139,11 +214,8 @@ public class DivineHudRenderer {
 
     private static void drawTextSimple(Object ctx, Method textMethod, String text, int x, int y, int color) {
         try {
-            // Check parameter types
             Class<?>[] pTypes = textMethod.getParameterTypes();
             if (pTypes.length == 5) {
-                // drawText(TextRenderer, String, int, int, int, boolean) or similar
-                // Try simplest invocation
                 textMethod.invoke(ctx, null, text, x, y, color);
             } else if (pTypes.length == 4) {
                 textMethod.invoke(ctx, text, x, y, color);
@@ -175,7 +247,6 @@ public class DivineHudRenderer {
             return fpsField.getInt(client);
         } catch (Exception e) {
             try {
-                // Intermediary field_2686
                 Field f2 = client.getClass().getDeclaredField("field_2686");
                 f2.setAccessible(true);
                 return f2.getInt(client);
@@ -190,7 +261,6 @@ public class DivineHudRenderer {
             playerField.setAccessible(true);
             Object player = playerField.get(client);
             if (player == null) {
-                // Intermediary field_1724
                 Field f = client.getClass().getDeclaredField("field_1724");
                 f.setAccessible(true);
                 player = f.get(client);

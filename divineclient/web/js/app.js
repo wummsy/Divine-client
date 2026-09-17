@@ -1,3 +1,40 @@
+
+window.openModal = function(modalId) {
+  const el = typeof modalId === "string" ? document.getElementById(modalId) : modalId;
+  if (el) {
+    el.classList.add("active");
+    if (el.style.display === "none") el.style.display = "flex";
+  }
+};
+
+window.closeModal = function(modalId) {
+  const el = typeof modalId === "string" ? document.getElementById(modalId) : modalId;
+  if (el) {
+    el.classList.remove("active");
+  }
+};
+
+async function fetchAndRenderInstances() {
+  try {
+    const instRes = await API.getInstances();
+    if (instRes && instRes.instances) {
+      AppState.instances = instRes.instances;
+      renderHomeSlider();
+      populateEditorInstanceSelect();
+    }
+  } catch (e) {
+    console.error("Error fetching instances:", e);
+  }
+}
+
+async function loadLauncherData() {
+  await initClientData();
+}
+
+window.renderHeroSlider = renderHomeSlider;
+window.fetchAndRenderInstances = fetchAndRenderInstances;
+window.loadLauncherData = loadLauncherData;
+
 /**
  * Divine Client v4.0.0 - Next-Gen Minecraft Launcher Frontend
  * Clean White & Obsidian Theme • Modpack Store • Instance Slider • Dedicated Editor
@@ -619,18 +656,18 @@ function setLauncherMenuMode(mode) {
       btnCustom.style.background = "transparent";
       btnCustom.style.border = "none";
     }
-    if (title) title.textContent = "Divine Client 1.21.11";
+    if (title) title.textContent = "Divine Client (1.21.11)";
     if (subtitle) subtitle.textContent = "Official High-Performance Client Edition with built-in QoL mods and cloaks.";
 
-    // Select the divine client instance
-    const divineInst = AppState.instances.find(i => i.id.includes("divine") || i.name.includes("Divine") || i.mc_version.startsWith("1.21"));
+    const divineInst = (AppState.instances || []).find(i => i.is_divine_exclusive || i.id.includes("divine") || i.name.includes("Divine"));
     if (divineInst) {
       AppState.activeInstanceId = divineInst.id;
-      renderHeroSlider();
-    setLauncherMenuMode("divine");
     }
+    AppState.sliderIndex = 0;
+    renderHomeSlider();
+
     const playText = document.getElementById("hero-launch-text");
-    if (playText && (!launchPollInterval || !launchPollInterval.isRunning)) {
+    if (playText && !AppState.isGameRunning) {
       playText.textContent = "PLAY DIVINE CLIENT";
     }
     if (quickPlay) quickPlay.style.display = "none";
@@ -653,8 +690,14 @@ function setLauncherMenuMode(mode) {
     if (quickPlay) quickPlay.style.display = "flex";
     if (leftArrow) leftArrow.style.visibility = "visible";
     if (rightArrow) rightArrow.style.visibility = "visible";
-    renderHeroSlider();
-    setLauncherMenuMode("divine");
+
+    AppState.sliderIndex = 0;
+    renderHomeSlider();
+
+    const playText = document.getElementById("hero-launch-text");
+    if (playText && !AppState.isGameRunning) {
+      playText.textContent = "PLAY MINECRAFT";
+    }
   }
 }
 
@@ -3566,7 +3609,11 @@ async function pollConsoleLogs(instanceId) {
     const res = await API.getLaunchLogs(instanceId);
     if (res && res.logs !== undefined) {
       if (res.logs) {
-        outputEl.textContent = res.logs;
+        if (Array.isArray(res.logs)) {
+          outputEl.textContent = res.logs.join("");
+        } else {
+          outputEl.textContent = res.logs;
+        }
       } else if (!outputEl.textContent) {
         outputEl.textContent = `[DIVINE CLIENT] Launching process with Java 21 LTS...\n[DIVINE CLIENT] Attached stdout/stderr streaming.\n[INFO] Initializing Minecraft launch arguments...\n`;
       }
@@ -3578,6 +3625,48 @@ async function pollConsoleLogs(instanceId) {
     }
   } catch (e) {}
 }
+
+async function killActiveGame() {
+  window.soundEngine?.playClick?.();
+  const iid = AppState.activeInstanceId || "";
+  try {
+    showToast("Terminating game process...", "info");
+    const res = await API.killGame(iid);
+    if (res && res.success) {
+      showToast("Game process forcibly terminated.", "success");
+      updatePlayButtonVisuals(false, false);
+      const outputEl = document.getElementById("game-console-output");
+      if (outputEl) {
+        outputEl.textContent += "\n[DIVINE CLIENT] Game process terminated by user.\n";
+        outputEl.scrollTop = outputEl.scrollHeight;
+      }
+    } else {
+      showToast(res?.error || "No active game process to kill.", "error");
+    }
+  } catch (err) {
+    showToast("Error killing process: " + err.message, "error");
+  }
+}
+
+async function stopActiveGame() {
+  window.soundEngine?.playClick?.();
+  const iid = AppState.activeInstanceId || "";
+  try {
+    showToast("Stopping game...", "info");
+    const res = await API.stopGame(iid);
+    if (res && res.success) {
+      showToast("Game stopped.", "success");
+      updatePlayButtonVisuals(false, false);
+    } else {
+      showToast(res?.error || "No active process to stop.", "error");
+    }
+  } catch (err) {
+    showToast("Error stopping game: " + err.message, "error");
+  }
+}
+
+window.killActiveGame = killActiveGame;
+window.stopActiveGame = stopActiveGame;
 
 function copyConsoleLogs() {
   const outputEl = document.getElementById("game-console-output");

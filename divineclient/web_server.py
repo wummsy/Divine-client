@@ -1642,6 +1642,43 @@ def launch_game():
     return jsonify({"success": True, "instance_id": instance_id})
 
 
+@app.route("/api/launch/kill", methods=["POST"])
+def kill_game():
+    data = request.json or {}
+    instance_id = data.get("instance_id") or launch_state.get("instance_id")
+
+    killed = False
+    with launch_lock:
+        if instance_id and instance_id in running_game_processes:
+            pinfo = running_game_processes[instance_id]
+            try:
+                pinfo["proc"].kill()
+            except Exception:
+                pass
+            try:
+                del running_game_processes[instance_id]
+            except Exception:
+                pass
+            killed = True
+        else:
+            for iid, pinfo in list(running_game_processes.items()):
+                try:
+                    pinfo["proc"].kill()
+                except Exception:
+                    pass
+                try:
+                    del running_game_processes[iid]
+                except Exception:
+                    pass
+                killed = True
+
+        launch_state["status"] = "idle"
+        launch_state["stage"] = "Game terminated"
+        launch_state["error"] = None
+
+    return jsonify({"success": True, "killed": killed})
+
+
 @app.route("/api/launch/stop", methods=["POST"])
 def stop_game():
     data = request.json or {}

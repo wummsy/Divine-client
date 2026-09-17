@@ -85,7 +85,7 @@ THEME_GREYS = {"gray14", "gray17", "grey14", "grey17", "#242424", "#2b2b2b",
                "gray23", "#3b3b3b", "gray78", "#c7c7c7", "gray28", "#484848"}
 
 
-@check("no canvas in the app is left holding the theme's grey")
+@check("no canvas in the app is left holding the theme's grey", needs_display=True)
 def _no_theme_grey():
     """The invariant behind the minimize/maximize glitch.
 
@@ -132,7 +132,7 @@ def _no_theme_grey():
     assert seen[0] > 40, "only %d surfaces walked: the tree is not what this test expects" % seen[0]
 
 
-@check("a settled window costs a walk to re-pin, not a repaint")
+@check("a settled window costs a walk to re-pin, not a repaint", needs_display=True)
 def _pin_is_idempotent():
     """The resize path must be free, because this is what runs on every minimize and maximize.
 
@@ -194,7 +194,7 @@ def _pin_is_idempotent():
         theme.pin_surfaces(app)
 
 
-@check("the shell's containers are plain Tk frames, not painted CTk frames")
+@check("the shell's containers are plain Tk frames, not painted CTk frames", needs_display=True)
 def _containers_are_plain():
     """A CTkFrame's fill canvas is `place`d, and a placed window stacks above grid-managed
     children - so a container that only has to be a colour should not be one."""
@@ -208,7 +208,7 @@ def _containers_are_plain():
         assert str(w.cget("bg")).lower() != "#2b2b2b"
 
 
-@check("the wash is painted from geometry, with no image and no timer")
+@check("the wash is painted from geometry, with no image and no timer", needs_display=True)
 def _wash_is_items():
     from divineclient.ui import widgets
     src = inspect.getsource(widgets.Gradient._draw)
@@ -226,7 +226,7 @@ def _wash_is_items():
     assert hasattr(app.nav, "_wash_on"), "the sidebar is the wash"
 
 
-@check("moving the RAM slider moves nothing but its own number")
+@check("moving the RAM slider moves nothing but its own number", needs_display=True)
 def _slider_does_not_reflow():
     """The other half of the report: a slider that redraws the whole page.
 
@@ -264,7 +264,7 @@ def _slider_does_not_reflow():
     app.update()
 
 
-@check("the hero paints its cover as a canvas item, once per idle")
+@check("the hero paints its cover as a canvas item, once per idle", needs_display=True)
 def _hero_cover_is_an_item():
     app = _app()
     home = app.pages["home"]
@@ -282,7 +282,7 @@ def _hero_cover_is_an_item():
 
 
 # --------------------------------------------------------------------------- the palette
-@check("the four backgrounds are real palettes, and switching one repaints the app")
+@check("the four backgrounds are real palettes, and switching one repaints the app", needs_display=True)
 def _backgrounds():
     from divineclient.ui import theme
     names = [k for k, _l, _n in theme.background_names()]
@@ -313,7 +313,7 @@ def _backgrounds():
         theme.set_background(original)
 
 
-@check("the chosen background is what opens next time")
+@check("the chosen background is what opens next time", needs_display=True)
 def _background_is_saved():
     app = _app()
     from divineclient.ui import theme as _t
@@ -353,7 +353,7 @@ class _FakeProc:
         return 0
 
 
-@check("a second instance cannot be launched, and says so")
+@check("a second instance cannot be launched, and says so", needs_display=True)
 def _one_instance():
     app = _app()
     mgr = app.instances
@@ -415,7 +415,7 @@ def _one_instance():
         app.update()
 
 
-@check("the other cards grey their Launch and the open one says Running")
+@check("the other cards grey their Launch and the open one says Running", needs_display=True)
 def _cards_show_the_lock():
     app = _app()
     mgr = app.instances
@@ -481,7 +481,7 @@ def _cards_show_the_lock():
     app.update()
 
 
-@check("the instances grid changes columns with the window, without rebuilding")
+@check("the instances grid changes columns with the window, without rebuilding", needs_display=True)
 def _grid_is_responsive():
     app = _app()
     page = app.pages["instances"]
@@ -502,7 +502,7 @@ def _grid_is_responsive():
 
 
 # ---------------------------------------------------------------------- tiles for the rest
-@check("a pack with no picture still gets a tile, and the tile is ours")
+@check("a pack with no picture still gets a tile, and the tile is ours", needs_display=True)
 def _letter_tiles():
     from divineclient.ui import widgets
     app = _app()
@@ -519,7 +519,7 @@ def _letter_tiles():
     label.destroy()
 
 
-@check("the modpack rows put a tile on before anything is asked of the network")
+@check("the modpack rows put a tile on before anything is asked of the network", needs_display=True)
 def _modpack_row():
     from divineclient.ui.modpack_dialog import ModpackDialog
     app = _app()
@@ -602,7 +602,7 @@ def _no_resize_image_storms():
     assert not bad, "these repaint an image on a timer instead of on the next idle: %s" % bad
 
 
-@check("a restyle rebuilds the shell and keeps the page the person was on")
+@check("a restyle rebuilds the shell and keeps the page the person was on", needs_display=True)
 def _restyle_keeps_state():
     app = _app()
     app.show_page("instances")

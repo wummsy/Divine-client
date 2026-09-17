@@ -25,7 +25,7 @@ from divineclient.core.instances import Instance                 # noqa: E402
 
 _PIDS = []
 MC = os.environ.get("DIVINE_LIVE_MC", "1.16.5")
-BOOT_TIMEOUT = float(os.environ.get("AREN_LIVE_TIMEOUT", "420"))
+BOOT_TIMEOUT = float(os.environ.get("DIVINE_LIVE_TIMEOUT", "420"))
 
 
 class Config(dict):

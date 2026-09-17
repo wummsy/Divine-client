@@ -30,7 +30,7 @@ from divineclient.core.server_sessions import ServerSessionManager  # noqa: E402
 from divineclient.ui.pages import servers_page                    # noqa: E402
 from divineclient.ui.pages.servers_page import ServersPage        # noqa: E402
 
-BOOT_TIMEOUT = float(os.environ.get("AREN_GUI_TIMEOUT", "420"))
+BOOT_TIMEOUT = float(os.environ.get("DIVINE_GUI_TIMEOUT", "420"))
 
 
 class StubTunnel:
@@ -113,8 +113,8 @@ def main():
 
     paths.ensure_dirs()
     app = FakeApp()
-    iid = os.environ.get("AREN_GUI_INSTANCE", "ayyy")
-    mc = os.environ.get("AREN_GUI_MC", "1.16.5")
+    iid = os.environ.get("DIVINE_GUI_INSTANCE", "ayyy")
+    mc = os.environ.get("DIVINE_GUI_MC", "1.16.5")
     inst = Instance({"id": iid, "name": iid, "mc_version": mc, "loader": "fabric",
                      "loader_version": None})
     app.instances.instances = [inst]

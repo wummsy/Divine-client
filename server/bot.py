@@ -278,7 +278,7 @@ async def on_ready():
 
     # 1. Update Discord bot username to DivineBot if allowed
     try:
-        if client.user and "aren" in client.user.name.lower():
+        if client.user and client.user.name != "DivineBot":
             await client.user.edit(username="DivineBot")
             print("Successfully updated Discord bot username to DivineBot.")
     except Exception as e:

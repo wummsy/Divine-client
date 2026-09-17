@@ -164,7 +164,7 @@ def _too_broad():
         (W("C:", "Users", "me", "AppData", "Local", "Temp", "x"), False, "a temp install"),
         ("/", True, "the posix root"),
         ("/home", True, "one level deep on posix"),
-        ("/opt/aren", False, "a linux install folder"),
+        ("/opt/divineclient", False, "a linux install folder"),
     ]
     for path, want, why in shape:
         got = defender.too_broad(path)
