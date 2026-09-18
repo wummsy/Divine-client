@@ -1143,6 +1143,150 @@ async def clearserver(interaction: discord.Interaction, target: str = None):
         await interaction.response.send_message(embed=embed)
 
 
+@client.tree.command(name="grantaccess", description="Grant a collaborator permission to manage your dedicated server")
+@app_commands.describe(
+    server_code="The 6-character server code (e.g. ABC123)",
+    target="The Discord user @mention, username, or user ID to grant access to",
+    permissions="Comma-separated permissions: power, console, files, players, settings, network (or 'all')"
+)
+async def grantaccess(interaction: discord.Interaction, server_code: str, target: str, permissions: str = "all"):
+    code = server_code.strip().upper()
+    srv = db.get_server(code)
+    if not srv:
+        await interaction.response.send_message(f"No dedicated server found with code `{code}`.", ephemeral=True)
+        return
+
+    perms_user = getattr(interaction.user, "guild_permissions", None)
+    is_admin = bool(perms_user and perms_user.administrator)
+    if not is_admin and str(interaction.user.id) != str(srv.get("host_id")):
+        await interaction.response.send_message(f"Only the owner of server `{code}` can grant collaborator access.", ephemeral=True)
+        return
+
+    info = db.resolve_target(target)
+    target_uid = info.get("user_id") if info else target.strip("<@!>")
+    target_name = info.get("username") if info else target
+
+    if permissions.lower() in ("all", "*", "admin"):
+        perm_list = ["power", "console", "files", "players", "settings", "network"]
+    else:
+        perm_list = [p.strip().lower() for p in permissions.split(",") if p.strip()]
+        if not perm_list:
+            perm_list = ["power", "console", "files", "players"]
+
+    db.add_server_collaborator(code, target_uid, target_name, perm_list)
+
+    embed = discord.Embed(
+        title="Server Access Granted",
+        description=f"Granted collaborator permissions on **{srv.get('name', 'Server')}** (`{code}`) to <@{target_uid}> (`{target_name}`).",
+        color=GREEN,
+        timestamp=discord.utils.utcnow()
+    )
+    embed.add_field(name="Server", value=f"**{srv.get('name')}** (`{code}`)", inline=True)
+    embed.add_field(name="Collaborator", value=f"<@{target_uid}> (`{target_name}`)", inline=True)
+    embed.add_field(name="Permissions", value=", ".join([f"`{p}`" for p in perm_list]), inline=False)
+    embed.set_footer(text=f"Granted by {_display_name(interaction.user)} • Divine Server Manager")
+    await interaction.response.send_message(embed=embed)
+
+
+@client.tree.command(name="revokeaccess", description="Revoke a collaborator's access to your dedicated server")
+@app_commands.describe(
+    server_code="The 6-character server code (e.g. ABC123)",
+    target="The Discord user @mention, username, or user ID to revoke"
+)
+async def revokeaccess(interaction: discord.Interaction, server_code: str, target: str):
+    code = server_code.strip().upper()
+    srv = db.get_server(code)
+    if not srv:
+        await interaction.response.send_message(f"No dedicated server found with code `{code}`.", ephemeral=True)
+        return
+
+    perms_user = getattr(interaction.user, "guild_permissions", None)
+    is_admin = bool(perms_user and perms_user.administrator)
+    if not is_admin and str(interaction.user.id) != str(srv.get("host_id")):
+        await interaction.response.send_message(f"Only the owner of server `{code}` can revoke collaborator access.", ephemeral=True)
+        return
+
+    info = db.resolve_target(target)
+    target_uid = info.get("user_id") if info else target.strip("<@!>")
+    target_name = info.get("username") if info else target
+
+    db.remove_server_collaborator(code, target_uid)
+
+    embed = discord.Embed(
+        title="Server Access Revoked",
+        description=f"Revoked collaborator access on **{srv.get('name', 'Server')}** (`{code}`) for <@{target_uid}> (`{target_name}`).",
+        color=RED,
+        timestamp=discord.utils.utcnow()
+    )
+    embed.set_footer(text=f"Revoked by {_display_name(interaction.user)} • Divine Server Manager")
+    await interaction.response.send_message(embed=embed)
+
+
+@client.tree.command(name="serveraccess", description="View all collaborators and permissions for a dedicated server")
+@app_commands.describe(server_code="The 6-character server code (e.g. ABC123)")
+async def serveraccess(interaction: discord.Interaction, server_code: str):
+    code = server_code.strip().upper()
+    srv = db.get_server(code)
+    if not srv:
+        await interaction.response.send_message(f"No dedicated server found with code `{code}`.", ephemeral=True)
+        return
+
+    collabs = db.get_server_collaborators(code)
+    host_id = srv.get("host_id")
+
+    embed = discord.Embed(
+        title=f"Collaborators: {srv.get('name', 'Server')} [`{code}`]",
+        description=f"**Owner:** <@{host_id}>\n**Address:** `{srv.get('address') or 'N/A'}`\n**Status:** `{srv.get('status', 'offline').upper()}`",
+        color=TEAL,
+        timestamp=discord.utils.utcnow()
+    )
+
+    if not collabs:
+        embed.add_field(name="Collaborators", value="*No collaborators have been added to this server yet. Use `/grantaccess` to invite team members.*", inline=False)
+    else:
+        for c in collabs:
+            perms_str = ", ".join([f"`{p}`" for p in c.get("permissions", [])])
+            uid = c.get("user_id")
+            uname = c.get("username")
+            embed.add_field(
+                name=f"👤 {uname}",
+                value=f"• **User:** <@{uid}> (`{uid}`)\n• **Permissions:** {perms_str}",
+                inline=False
+            )
+
+    embed.set_footer(text=f"Divine Client Dedicated Server Access • Total: {len(collabs)} collaborator(s)")
+    await interaction.response.send_message(embed=embed)
+
+
+@client.tree.command(name="sharedservers", description="List all dedicated servers shared with you as a collaborator")
+async def sharedservers(interaction: discord.Interaction):
+    uid = str(interaction.user.id)
+    shared = db.get_shared_servers_for_user(uid)
+
+    embed = discord.Embed(
+        title="Shared Dedicated Servers",
+        description=f"Showing servers where you have been granted collaborator permissions ({len(shared)} total).",
+        color=TEAL,
+        timestamp=discord.utils.utcnow()
+    )
+
+    if not shared:
+        embed.add_field(name="Shared Servers", value="*You do not currently have collaborator access to any servers. Ask a server owner to grant you access with `/grantaccess`.*", inline=False)
+    else:
+        for s in shared[:15]:
+            perms_str = ", ".join([f"`{p}`" for p in s.get("permissions", [])])
+            st = "ONLINE" if s.get("status") == "online" else "OFFLINE"
+            addr = s.get("address") or "N/A"
+            embed.add_field(
+                name=f"{s.get('name', 'Server')} [`{s.get('code')}`]",
+                value=f"• **Host:** <@{s.get('host_id')}>\n• **Status:** `{st}`\n• **Address:** `{addr}`\n• **Your Permissions:** {perms_str}",
+                inline=False
+            )
+
+    embed.set_footer(text="Divine Client Server Network")
+    await interaction.response.send_message(embed=embed)
+
+
 @client.tree.command(name="announce", description="(Server admins) post an Divine Client update")
 @app_commands.describe(title="Headline", body="What's new",
                        tag="Short label, e.g. Release / Update / Fix (optional)")

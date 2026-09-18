@@ -1034,19 +1034,27 @@
 
   <!-- MODAL: SERVER ACCESS & SHARING VIA DISCORD NAME -->
   <div class="modal-backdrop" id="modal-server-access">
-    <div class="modal-window">
+    <div class="modal-window" style="max-width: 580px;">
       <div class="modal-header">
         <div class="modal-title" id="server-access-title">Manage Server Access</div>
         <button class="icon-btn" onclick="closeModal('modal-server-access')">&times;</button>
       </div>
       <div class="modal-body">
-        <p style="font-size: 13px; color: #94a3b8; margin-bottom: 14px;">Grant access via <b>Discord Username</b>. Collaborators can view live server telemetry, console output, send commands, and edit server files.</p>
-        <div style="display: flex; gap: 8px; margin-bottom: 16px;">
-          <input type="text" class="input-field" id="server-access-username-input" placeholder="Discord Username (e.g. Player#1234 or Player)">
+        <p style="font-size: 13px; color: #94a3b8; margin-bottom: 14px;">Grant collaborator access via <b>Discord Username</b>, <b>Discord User ID</b>, or <b>Divine Name</b>. Collaborators can control server power, live console, files, players, and settings.</p>
+        <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+          <input type="text" class="input-field" id="server-access-username-input" placeholder="Discord Username or User ID (e.g. wummsy or 1234567890)" style="flex: 1;">
           <button class="btn btn-primary btn-sm" onclick="submitGrantServerAccess()">Grant Access</button>
         </div>
+        <div style="display: flex; gap: 12px; flex-wrap: wrap; background: rgba(0,0,0,0.25); padding: 10px 14px; border-radius: 6px; margin-bottom: 16px; border: 1px solid rgba(255,255,255,0.06);">
+          <label style="font-size: 12px; display: flex; align-items: center; gap: 6px; cursor: pointer;"><input type="checkbox" id="server-perm-power" checked> Power Actions</label>
+          <label style="font-size: 12px; display: flex; align-items: center; gap: 6px; cursor: pointer;"><input type="checkbox" id="server-perm-console" checked> Terminal Console</label>
+          <label style="font-size: 12px; display: flex; align-items: center; gap: 6px; cursor: pointer;"><input type="checkbox" id="server-perm-files" checked> File Manager</label>
+          <label style="font-size: 12px; display: flex; align-items: center; gap: 6px; cursor: pointer;"><input type="checkbox" id="server-perm-players" checked> Player Control</label>
+          <label style="font-size: 12px; display: flex; align-items: center; gap: 6px; cursor: pointer;"><input type="checkbox" id="server-perm-settings" checked> Settings</label>
+          <label style="font-size: 12px; display: flex; align-items: center; gap: 6px; cursor: pointer;"><input type="checkbox" id="server-perm-network" checked> Network</label>
+        </div>
         <div style="font-size: 12px; font-weight: 800; color: #cbd5e1; margin-bottom: 8px;">Active Collaborators</div>
-        <div id="server-access-users-list" style="display: flex; flex-direction: column; gap: 8px;"></div>
+        <div id="server-access-users-list" style="display: flex; flex-direction: column; gap: 8px; max-height: 240px; overflow-y: auto;"></div>
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary" onclick="closeModal('modal-server-access')">Close</button>

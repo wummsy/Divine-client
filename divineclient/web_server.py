@@ -2510,6 +2510,26 @@ def _write_server_access(sdir, data):
     with open(acc_file, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2)
 
+def _auto_whitelist_user(sdir, username):
+    """Ensure a newly added collaborator is added to whitelist.json if the file exists."""
+    try:
+        wfile = os.path.join(sdir, "whitelist.json")
+        entries = []
+        if os.path.isfile(wfile):
+            try:
+                with open(wfile, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                    if isinstance(data, list):
+                        entries = data
+            except Exception:
+                entries = []
+            if not any(isinstance(e, dict) and e.get("name", "").lower() == username.lower() for e in entries):
+                entries.append({"name": username, "uuid": ""})
+                with open(wfile, "w", encoding="utf-8") as f:
+                    json.dump(entries, f, indent=2)
+    except Exception:
+        pass
+
 @app.route("/api/servers/<instance_id>/access", methods=["GET"])
 def get_server_access_list(instance_id):
     inst = _get_server(instance_id)
@@ -2534,27 +2554,38 @@ def add_server_sub_user(instance_id):
         sdir = server_host.server_dir(inst)
         os.makedirs(sdir, exist_ok=True)
         data = request.json or {}
-        username = (data.get("username") or "").strip()
+        username = (data.get("username") or data.get("target") or data.get("user_id") or "").strip()
+        discord_id = (data.get("discord_id") or "").strip()
         if not username:
-            return jsonify({"error": "Username or Discord ID is required", "success": False}), 400
+            return jsonify({"error": "Username, Discord ID, or Divine Name is required", "success": False}), 400
 
-        permissions = data.get("permissions", ["power", "console", "files", "players", "network"])
+        # If username is all numeric (Discord ID), handle as discord_id
+        if username.isdigit() and len(username) >= 15 and not discord_id:
+            discord_id = username
+
+        permissions = data.get("permissions", ["power", "console", "files", "players", "settings", "network"])
         acc_data = _read_server_access(sdir)
         users = acc_data.get("users", [])
 
-        existing = next((u for u in users if u.get("username") == username), None)
+        existing = next((u for u in users if u.get("username", "").lower() == username.lower() or (discord_id and u.get("discord_id") == discord_id)), None)
         if existing:
             existing["permissions"] = permissions
             existing["updated_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            if discord_id and not existing.get("discord_id"):
+                existing["discord_id"] = discord_id
         else:
-            users.append({
+            new_entry = {
                 "username": username,
                 "permissions": permissions,
                 "added_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            })
+            }
+            if discord_id:
+                new_entry["discord_id"] = discord_id
+            users.append(new_entry)
 
         acc_data["users"] = users
         _write_server_access(sdir, acc_data)
+        _auto_whitelist_user(sdir, username)
         return jsonify({"success": True, "users": users, "message": f"Access granted to '{username}'."})
     except Exception as e:
         return jsonify({"error": str(e), "success": False}), 500
@@ -2567,12 +2598,12 @@ def remove_server_sub_user(instance_id):
     try:
         sdir = server_host.server_dir(inst)
         data = request.json or {}
-        username = (data.get("username") or "").strip()
+        username = (data.get("username") or data.get("target") or "").strip()
         if not username:
-            return jsonify({"error": "Username is required", "success": False}), 400
+            return jsonify({"error": "Username or ID is required", "success": False}), 400
 
         acc_data = _read_server_access(sdir)
-        users = [u for u in acc_data.get("users", []) if u.get("username") != username]
+        users = [u for u in acc_data.get("users", []) if u.get("username", "").lower() != username.lower() and u.get("discord_id") != username]
         acc_data["users"] = users
         _write_server_access(sdir, acc_data)
         return jsonify({"success": True, "users": users, "message": f"Access revoked for '{username}'."})

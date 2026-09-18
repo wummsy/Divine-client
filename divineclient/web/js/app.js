@@ -1766,21 +1766,36 @@ function renderSharedServersList() {
   grid.innerHTML = "";
 
   if (servers.length === 0) {
-    grid.innerHTML = `<div class="card-panel" style="grid-column: 1/-1; text-align: center; padding: 32px; color: #94a3b8;">No shared multiplayer servers found.</div>`;
+    grid.innerHTML = `<div class="card-panel" style="grid-column: 1/-1; text-align: center; padding: 36px; color: #94a3b8;">No shared multiplayer servers found. Ask friends to grant you collaborator access on their servers!</div>`;
     return;
   }
 
   servers.forEach(s => {
     const card = document.createElement("div");
     card.className = "card-panel";
+    const isOnline = s.status === "running" || s.status === "online";
+    const address = s.public_address || (s.port ? `localhost:${s.port}` : "127.0.0.1:25565");
+    const motd = s.motd || "created by Divine client servers";
+    const accessUsers = s.access_users || [];
     card.innerHTML = `
       <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-        <span style="font-size: 14.5px; font-weight: 800; color: #ffffff;">${escapeHtml(s.name)}</span>
-        <span class="badge-tag loader">${escapeHtml(s.loader || 'Paper').toUpperCase()}</span>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 14.5px; font-weight: 800; color: #ffffff;">${escapeHtml(s.name)}</span>
+          <span class="badge-tag loader">${escapeHtml(s.loader || 'Paper').toUpperCase()}</span>
+          <span class="badge-tag version">${escapeHtml(s.mc_version || '1.21.4')}</span>
+        </div>
+        <span class="badge-tag ${isOnline ? 'mods' : ''}" style="${isOnline ? 'background: rgba(34,197,94,0.2); color: #22c55e; border-color: rgba(34,197,94,0.4);' : 'background: rgba(239,68,68,0.15); color: #ef4444; border-color: rgba(239,68,68,0.3);'}">${isOnline ? 'ONLINE' : 'STOPPED'}</span>
       </div>
-      <div style="font-size: 12px; color: #94a3b8; font-family: monospace; margin-bottom: 12px;">${escapeHtml(s.public_address || 'localhost:' + s.port)}</div>
+      <div style="font-size: 11.5px; color: #38bdf8; font-style: italic; margin-bottom: 8px;">
+        ${escapeHtml(motd)}
+      </div>
+      <div style="font-size: 12px; color: #cbd5e1; font-family: monospace; margin-bottom: 12px; background: rgba(0,0,0,0.35); padding: 7px 10px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
+        <span>${escapeHtml(address)}</span>
+        <button class="btn btn-secondary btn-sm" style="padding: 2px 8px; font-size: 10px;" onclick="copyToClipboard('${escapeHtml(address)}')">Copy IP</button>
+      </div>
       <div style="display: flex; gap: 8px;">
-        <button class="btn btn-secondary btn-sm" style="flex: 1;" onclick="openDedicatedServerAppWindow('${s.id}', '${escapeHtml(s.name)}')">Manage Console &amp; Files</button>
+        <button class="btn btn-primary btn-sm" style="flex: 1;" onclick="openDedicatedServerAppWindow('${s.id}', '${escapeHtml(s.name)}')">Manage Console &amp; Files</button>
+        <button class="btn btn-secondary btn-sm" onclick="openServerAccessModal('${s.id}', '${escapeHtml(s.name)}')">Access (${accessUsers.length})</button>
       </div>
     `;
     grid.appendChild(card);
@@ -1974,22 +1989,23 @@ async function openServerAccessModal(serverId, name) {
     const users = res.users || [];
     if (listEl) {
       if (users.length === 0) {
-        listEl.innerHTML = `<div style="font-size: 12px; color: #94a3b8; padding: 12px; background: rgba(255,255,255,0.03); border-radius: 6px; text-align: center;">No additional Discord collaborators added yet. Add a Discord username or tag below.</div>`;
+        listEl.innerHTML = `<div style="font-size: 12px; color: #94a3b8; padding: 14px; background: rgba(255,255,255,0.03); border-radius: 6px; text-align: center;">No additional Discord collaborators added yet. Add a Discord username, User ID, or Divine name above.</div>`;
       } else {
         listEl.innerHTML = "";
         users.forEach(u => {
           const row = document.createElement("div");
-          row.style.cssText = "display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px;";
-          const permsStr = (u.permissions || ["admin"]).join(", ");
+          row.style.cssText = "display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px;";
+          const perms = u.permissions || ["admin"];
+          const permBadges = perms.map(p => `<span style="display:inline-block; padding: 1px 5px; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.35); color: #38bdf8; border-radius: 3px; font-size: 10px; font-weight: 700; text-transform: uppercase;">${escapeHtml(p)}</span>`).join(" ");
           row.innerHTML = `
             <div style="display: flex; align-items: center; gap: 10px;">
-              <img src="https://minotar.net/helm/${encodeURIComponent(u.username)}/32.png" onerror="this.onerror=null;this.src='/assets/ui_account.png';" style="width: 28px; height: 28px; border-radius: 50%;">
+              <img src="https://mc-heads.net/avatar/${encodeURIComponent(u.username)}/28" onerror="this.onerror=null;this.src='/assets/ui_account.png';" style="width: 28px; height: 28px; border-radius: 4px;">
               <div>
-                <div style="font-size: 13.5px; font-weight: 800; color: #ffffff;">${escapeHtml(u.username)}</div>
-                <div style="font-size: 10.5px; color: #94a3b8;">Perms: ${escapeHtml(permsStr)}</div>
+                <div style="font-size: 13.5px; font-weight: 800; color: #ffffff;">${escapeHtml(u.username)}${u.discord_id ? ` <span style="font-size: 11px; color: #94a3b8; font-weight: 400;">(${escapeHtml(u.discord_id)})</span>` : ''}</div>
+                <div style="font-size: 10.5px; color: #94a3b8; margin-top: 3px; display: flex; gap: 4px; flex-wrap: wrap;">${permBadges}</div>
               </div>
             </div>
-            <button class="btn btn-secondary btn-sm" style="padding: 3px 10px; color: #ef4444;" onclick="removeServerAccessDirect('${escapeHtml(u.username)}')">Revoke</button>
+            <button class="btn btn-secondary btn-sm" style="padding: 4px 10px; color: #ef4444; border-color: rgba(239,68,68,0.3);" onclick="removeServerAccessDirect('${escapeHtml(u.username)}')">Revoke</button>
           `;
           listEl.appendChild(row);
         });
@@ -2004,13 +2020,21 @@ async function submitGrantServerAccess() {
   const input = document.getElementById("server-access-username-input");
   const username = input?.value.trim();
   if (!username || !currentAccessServerId) {
-    showToast("Please enter a Discord username or tag.", "error");
+    showToast("Please enter a Discord username, User ID, or Divine name.", "error");
     input?.focus();
     return;
   }
 
+  const permissions = [];
+  if (document.getElementById("server-perm-power")?.checked) permissions.push("power");
+  if (document.getElementById("server-perm-console")?.checked) permissions.push("console");
+  if (document.getElementById("server-perm-files")?.checked) permissions.push("files");
+  if (document.getElementById("server-perm-players")?.checked) permissions.push("players");
+  if (document.getElementById("server-perm-settings")?.checked) permissions.push("settings");
+  if (document.getElementById("server-perm-network")?.checked) permissions.push("network");
+
   try {
-    const res = await API.addServerSubUser(currentAccessServerId, username, ["power", "console", "files", "players"]);
+    const res = await API.addServerSubUser(currentAccessServerId, username, permissions);
     if (res.success) {
       showToast(`Server access granted to ${username}!`, "success");
       if (input) input.value = "";

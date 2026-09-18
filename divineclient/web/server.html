@@ -1055,19 +1055,20 @@
         <div class="generic-panel-wrap">
           <div class="panel-card">
             <div class="panel-header-title">Collaborators &amp; Sub-Users</div>
-            <div class="panel-header-desc">Grant access to other Divine players or friends with granular control.</div>
+            <div class="panel-header-desc">Grant access to other Divine players or friends with granular permissions (Power, Console, Files, Players, Settings, Network).</div>
 
             <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-              <input type="text" class="input-field" id="input-subuser-name" placeholder="Divine Player Username" style="flex: 1; min-width: 220px;">
+              <input type="text" class="input-field" id="input-subuser-name" placeholder="Discord Username, User ID, or Divine Name" style="flex: 1; min-width: 220px;">
               <button class="btn btn-primary" onclick="addSubUser()">Grant Access</button>
             </div>
 
-            <div style="display: flex; gap: 14px; flex-wrap: wrap; background: rgba(0,0,0,0.25); padding: 10px 14px; border-radius: var(--radius-sm);">
-              <label style="font-size: 12px; display: flex; align-items: center; gap: 6px;"><input type="checkbox" id="perm-power" checked> Power Actions</label>
-              <label style="font-size: 12px; display: flex; align-items: center; gap: 6px;"><input type="checkbox" id="perm-console" checked> Terminal Console</label>
-              <label style="font-size: 12px; display: flex; align-items: center; gap: 6px;"><input type="checkbox" id="perm-files" checked> File Manager</label>
-              <label style="font-size: 12px; display: flex; align-items: center; gap: 6px;"><input type="checkbox" id="perm-players" checked> Player Control</label>
-              <label style="font-size: 12px; display: flex; align-items: center; gap: 6px;"><input type="checkbox" id="perm-network" checked> Network Config</label>
+            <div style="display: flex; gap: 14px; flex-wrap: wrap; background: rgba(0,0,0,0.25); padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-card);">
+              <label style="font-size: 12px; display: flex; align-items: center; gap: 6px; cursor: pointer;"><input type="checkbox" id="perm-power" checked> Power Actions</label>
+              <label style="font-size: 12px; display: flex; align-items: center; gap: 6px; cursor: pointer;"><input type="checkbox" id="perm-console" checked> Terminal Console</label>
+              <label style="font-size: 12px; display: flex; align-items: center; gap: 6px; cursor: pointer;"><input type="checkbox" id="perm-files" checked> File Manager</label>
+              <label style="font-size: 12px; display: flex; align-items: center; gap: 6px; cursor: pointer;"><input type="checkbox" id="perm-players" checked> Player Control</label>
+              <label style="font-size: 12px; display: flex; align-items: center; gap: 6px; cursor: pointer;"><input type="checkbox" id="perm-settings" checked> Server Settings</label>
+              <label style="font-size: 12px; display: flex; align-items: center; gap: 6px; cursor: pointer;"><input type="checkbox" id="perm-network" checked> Network Config</label>
             </div>
 
             <div id="subusers-list" style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px;"></div>
@@ -1971,21 +1972,25 @@
       const list = data.users || [];
       const el = document.getElementById("subusers-list");
       if (list.length === 0) {
-        el.innerHTML = `<div style="color: var(--text-muted); font-size: 12px; text-align: center; padding: 12px;">No sub-users added.</div>`;
+        el.innerHTML = `<div style="color: var(--text-muted); font-size: 12px; text-align: center; padding: 14px; background: rgba(0,0,0,0.2); border-radius: var(--radius-sm);">No collaborators added yet. Enter a Discord username or ID above to grant panel access.</div>`;
         return;
       }
-      el.innerHTML = list.map(u => `
-        <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.25); padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-card);">
-          <div style="display: flex; align-items: center; gap: 10px;">
-            <img src="https://mc-heads.net/avatar/${encodeURIComponent(u.username)}/28" style="width: 28px; height: 28px; border-radius: 4px;" onerror="this.src='/assets/ui_account.png'">
+      el.innerHTML = list.map(u => {
+        const perms = u.permissions || [];
+        const permBadges = perms.map(p => `<span style="display:inline-block; padding: 2px 7px; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.35); color: #38bdf8; border-radius: 4px; font-size: 10.5px; font-weight: 700; text-transform: uppercase;">${escapeHtml(p)}</span>`).join(" ");
+        return `
+        <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.25); padding: 12px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-card);">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <img src="https://mc-heads.net/avatar/${encodeURIComponent(u.username)}/32" style="width: 32px; height: 32px; border-radius: 6px;" onerror="this.onerror=null;this.src='/assets/ui_account.png'">
             <div>
-              <div style="font-weight: 800; font-size: 13.5px;">${escapeHtml(u.username)}</div>
-              <div style="font-size: 11px; color: var(--accent-cyan); margin-top: 2px;">Permissions: ${(u.permissions || []).join(", ")}</div>
+              <div style="font-weight: 800; font-size: 14px; color: #ffffff;">${escapeHtml(u.username)}${u.discord_id ? ` <span style="font-size: 11px; color: #94a3b8; font-weight: 400;">(${escapeHtml(u.discord_id)})</span>` : ''}</div>
+              <div style="font-size: 11px; margin-top: 4px; display: flex; gap: 4px; flex-wrap: wrap;">${permBadges || '<span style="color: var(--text-muted);">No permissions</span>'}</div>
+              ${u.added_at ? `<div style="font-size: 10px; color: var(--text-dim); margin-top: 3px;">Added ${escapeHtml(u.added_at)}</div>` : ''}
             </div>
           </div>
           <button class="btn btn-danger btn-sm" onclick="revokeSubUser('${escapeHtml(u.username)}')">Revoke Access</button>
         </div>
-      `).join("");
+      `}).join("");
     }
 
     async function addSubUser() {
@@ -1998,6 +2003,7 @@
       if (document.getElementById("perm-console")?.checked) permissions.push("console");
       if (document.getElementById("perm-files")?.checked) permissions.push("files");
       if (document.getElementById("perm-players")?.checked) permissions.push("players");
+      if (document.getElementById("perm-settings")?.checked) permissions.push("settings");
       if (document.getElementById("perm-network")?.checked) permissions.push("network");
 
       showToast(`Granting panel access to ${username}...`, "info");

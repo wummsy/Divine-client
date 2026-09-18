@@ -11,6 +11,7 @@ file is ready under gunicorn as well as `python app.py`):
   game_servers - hosted servers published for friends, keyed by join code
   server_invites - pending join requests for those servers
 """
+import json
 import os
 import secrets
 import sqlite3
@@ -128,6 +129,15 @@ def init_db():
             to_id TEXT,
             created INTEGER,
             PRIMARY KEY (code, to_id)
+        );
+        CREATE TABLE IF NOT EXISTS server_collaborators (
+            code TEXT,
+            user_id TEXT,
+            username TEXT,
+            permissions TEXT,
+            created INTEGER,
+            updated INTEGER,
+            PRIMARY KEY (code, user_id)
         );
         CREATE TABLE IF NOT EXISTS messages (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -510,6 +520,137 @@ def clear_invite(code, to_id):
     get_conn().commit()
 
 
+def add_server_collaborator(code, user_id, username=None, permissions=None):
+    """Add or update collaborator access permissions for a game server."""
+    c = get_conn()
+    now = int(time.time())
+    if permissions is None:
+        perms_str = json.dumps(["power", "console", "files", "players", "settings", "network"])
+    elif isinstance(permissions, list):
+        perms_str = json.dumps(permissions)
+    else:
+        perms_str = str(permissions)
+
+    if not username and user_id:
+        u = get_user(user_id)
+        if u:
+            username = u.get("username")
+
+    c.execute(
+        "INSERT INTO server_collaborators (code, user_id, username, permissions, created, updated) "
+        "VALUES (?, ?, ?, ?, ?, ?) "
+        "ON CONFLICT(code, user_id) DO UPDATE SET username=excluded.username, permissions=excluded.permissions, updated=excluded.updated",
+        (code.upper(), str(user_id), username or str(user_id), perms_str, now, now)
+    )
+    c.commit()
+    return True
+
+
+def remove_server_collaborator(code, user_id):
+    """Revoke a user's collaborator permissions for a game server."""
+    c = get_conn()
+    c.execute(
+        "DELETE FROM server_collaborators WHERE code=? AND (user_id=? OR username=?)",
+        (code.upper(), str(user_id), str(user_id))
+    )
+    c.commit()
+    return True
+
+
+def get_server_collaborators(code):
+    """Return all collaborators and permissions for a given server code."""
+    c = get_conn()
+    rows = c.execute(
+        "SELECT c.*, u.avatar_url, u.presence FROM server_collaborators c "
+        "LEFT JOIN users u ON u.id = c.user_id "
+        "WHERE c.code=? ORDER BY c.created ASC",
+        (code.upper(),)
+    ).fetchall()
+    out = []
+    for r in rows:
+        perms = []
+        try:
+            perms = json.loads(r["permissions"]) if r["permissions"] else []
+        except Exception:
+            perms = ["power", "console", "files", "players"]
+        out.append({
+            "code": r["code"],
+            "user_id": r["user_id"],
+            "username": r["username"],
+            "permissions": perms,
+            "avatar_url": r["avatar_url"],
+            "presence": r["presence"] or "offline",
+            "created": r["created"],
+            "updated": r["updated"],
+        })
+    return out
+
+
+def get_shared_servers_for_user(user_id, online_only=False):
+    """Return all servers where the given user has collaborator permissions."""
+    c = get_conn()
+    query = (
+        "SELECT s.*, c.permissions, u.username as host_name "
+        "FROM server_collaborators c "
+        "JOIN game_servers s ON s.code = c.code "
+        "LEFT JOIN users u ON u.id = s.host_id "
+        "WHERE (c.user_id=? OR c.username=?) "
+    )
+    params = [str(user_id), str(user_id)]
+    if online_only:
+        query += " AND s.status = 'online'"
+    query += " ORDER BY s.updated DESC"
+    rows = c.execute(query, params).fetchall()
+    out = []
+    for r in rows:
+        perms = []
+        try:
+            perms = json.loads(r["permissions"]) if r["permissions"] else []
+        except Exception:
+            perms = []
+        out.append({
+            "code": r["code"],
+            "name": r["name"],
+            "host_id": r["host_id"],
+            "host_name": r["host_name"] or "Server Owner",
+            "address": r["address"],
+            "mc_version": r["mc_version"],
+            "loader": r["loader"],
+            "status": r["status"],
+            "permissions": perms,
+            "created": r["created"],
+            "updated": r["updated"]
+        })
+    return out
+
+
+def check_server_permission(code, user_id, required_perm=None):
+    """Check if user is owner or has the required permission for the server."""
+    srv = get_server(code)
+    if not srv:
+        return False, "Server not found"
+    if str(srv.get("host_id")) == str(user_id):
+        return True, "owner"
+
+    c = get_conn()
+    row = c.execute(
+        "SELECT permissions FROM server_collaborators WHERE code=? AND (user_id=? OR username=?)",
+        (code.upper(), str(user_id), str(user_id))
+    ).fetchone()
+    if not row:
+        return False, "No collaborator access"
+
+    try:
+        perms = json.loads(row["permissions"]) if row["permissions"] else []
+    except Exception:
+        perms = []
+
+    if required_perm and required_perm not in perms and "admin" not in perms:
+        return False, f"Missing required permission: {required_perm}"
+
+    return True, perms
+
+
 def list_all_game_servers(host_id=None, online_only=False):
     """Return all hosted / dedicated game servers in the network."""
     c = get_conn()
@@ -529,8 +670,10 @@ def list_all_game_servers(host_id=None, online_only=False):
 
 
 def clear_user_servers(host_id):
-    """Delete all hosted servers and invites associated with a user."""
+    """Delete all hosted servers, invites, and collaborator records associated with a user."""
     c = get_conn()
+    c.execute("DELETE FROM server_collaborators WHERE code IN (SELECT code FROM game_servers WHERE host_id=?)", (str(host_id),))
+    c.execute("DELETE FROM server_collaborators WHERE user_id=?", (str(host_id),))
     c.execute("DELETE FROM server_invites WHERE code IN (SELECT code FROM game_servers WHERE host_id=?)", (str(host_id),))
     c.execute("DELETE FROM game_servers WHERE host_id=?", (str(host_id),))
     c.commit()
@@ -538,8 +681,9 @@ def clear_user_servers(host_id):
 
 
 def clear_all_servers():
-    """Wipe all hosted game servers and invites across the database."""
+    """Wipe all hosted game servers, invites, and collaborator records across the database."""
     c = get_conn()
+    c.execute("DELETE FROM server_collaborators")
     c.execute("DELETE FROM server_invites")
     c.execute("DELETE FROM game_servers")
     c.commit()

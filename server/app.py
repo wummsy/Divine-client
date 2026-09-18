@@ -47,6 +47,8 @@ from db import (init_db, get_conn, upsert_user, issue_token, user_for_token,
                 add_announcement, list_announcements, delete_announcement,
                 create_server, update_server, get_server, close_server,
                 add_invite, invites_for, clear_invite, get_user,
+                add_server_collaborator, remove_server_collaborator,
+                get_server_collaborators, get_shared_servers_for_user, check_server_permission,
                 set_presence, PRESENCE_STATES, PRESENCE_TTL,
                 send_message, messages_for, post_room, room_messages,
                 resolve_user, online_server_for, is_banned, ban_device, ban_user, unban, list_bans, record_device_activity,
@@ -771,6 +773,84 @@ def api_server_invite_dismiss():
     code = ((request.get_json(silent=True) or {}).get("code") or "").upper()
     clear_invite(code, uid)
     return jsonify({"ok": True})
+
+
+@app.route("/api/server/collaborators", methods=["GET"])
+def api_server_collaborators():
+    uid = _auth_user()
+    code = (request.args.get("code") or "").upper()
+    srv = get_server(code)
+    if not srv:
+        return jsonify({"error": "No server with that code."}), 404
+    # Check if requester is owner or has collaborator access
+    can_view, _ = check_server_permission(code, uid)
+    if not can_view:
+        return jsonify({"error": "You do not have access to this server."}), 403
+    collabs = get_server_collaborators(code)
+    return jsonify({"ok": True, "code": code, "collaborators": collabs, "is_owner": str(srv.get("host_id")) == str(uid)})
+
+
+@app.route("/api/server/collaborators/add", methods=["POST"])
+def api_server_collaborators_add():
+    uid = _auth_user()
+    data = request.get_json(silent=True) or {}
+    code = (data.get("code") or "").upper()
+    target = (data.get("target") or data.get("username") or data.get("user_id") or "").strip()
+    permissions = data.get("permissions", ["power", "console", "files", "players", "settings", "network"])
+
+    if not code or not target:
+        return jsonify({"error": "Server code and target user/Discord ID are required."}), 400
+
+    srv = get_server(code)
+    if not srv or str(srv.get("host_id")) != str(uid):
+        return jsonify({"error": "Only the server owner can grant collaborator permissions."}), 403
+
+    # Try resolving target to user record
+    target_uid = target
+    target_name = target
+    user_record = resolve_user(target)
+    if user_record:
+        target_uid = user_record.get("id") or target
+        target_name = user_record.get("username") or target
+
+    add_server_collaborator(code, target_uid, target_name, permissions)
+    return jsonify({
+        "ok": True,
+        "message": f"Granted collaborator access to {target_name}.",
+        "collaborators": get_server_collaborators(code)
+    })
+
+
+@app.route("/api/server/collaborators/remove", methods=["POST"])
+def api_server_collaborators_remove():
+    uid = _auth_user()
+    data = request.get_json(silent=True) or {}
+    code = (data.get("code") or "").upper()
+    target = (data.get("target") or data.get("username") or data.get("user_id") or "").strip()
+
+    if not code or not target:
+        return jsonify({"error": "Server code and target are required."}), 400
+
+    srv = get_server(code)
+    if not srv or str(srv.get("host_id")) != str(uid):
+        return jsonify({"error": "Only the server owner can revoke collaborator permissions."}), 403
+
+    user_record = resolve_user(target)
+    target_uid = user_record.get("id") if user_record else target
+
+    remove_server_collaborator(code, target_uid)
+    return jsonify({
+        "ok": True,
+        "message": f"Revoked collaborator access for {target}.",
+        "collaborators": get_server_collaborators(code)
+    })
+
+
+@app.route("/api/server/shared", methods=["GET"])
+def api_server_shared():
+    uid = _auth_user()
+    servers = get_shared_servers_for_user(uid)
+    return jsonify({"ok": True, "servers": servers})
 
 
 # ---- news / announcements ---------------------------------------------------
