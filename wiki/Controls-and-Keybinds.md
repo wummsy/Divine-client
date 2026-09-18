@@ -9,7 +9,7 @@ Divine Client provides modern, customizable controls and hotkeys for in-game HUD
 | Keybind | Function | Category |
 | :--- | :--- | :--- |
 | <kbd>Right Shift</kbd> | Open Divine Client Mod Configuration Menu | Divine Client UI |
-| <kbd>C</kbd> | Smooth OptiFine-Style Camera Zoom | Camera & View |
+| <kbd>C</kbd> | Smooth Cinematic Camera Zoom | Camera & View |
 | <kbd>F6</kbd> | Toggle Divine Freelook (360° Perspective) | Camera & View |
 | <kbd>F7</kbd> | Open Wardrobe & Cosmetics Selector | Cosmetics |
 | <kbd>F8</kbd> | Toggle HUD Overlays Visibility (CPS, Keystrokes, Armor) | HUD System |

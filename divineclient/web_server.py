@@ -1253,7 +1253,7 @@ def modrinth_install():
             mods_dir = os.path.join(inst.game_dir, "mods")
             os.makedirs(mods_dir, exist_ok=True)
             existing_mods = [f.lower() for f in os.listdir(mods_dir)]
-            has_shader_mod = any("iris" in f or "oculus" in f or "optifine" in f for f in existing_mods)
+            has_shader_mod = any("iris" in f or "oculus" in f  for f in existing_mods)
             if not has_shader_mod:
                 try:
                     iris_ver = modrinth._best_version_for_project("iris", inst.mc_version, inst.loader or "fabric")

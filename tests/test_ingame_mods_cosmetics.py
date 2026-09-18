@@ -139,7 +139,7 @@ class TestInGameModBridgeAndCosmetics(unittest.TestCase):
         self.assertEqual(res4.status_code, 400)
 
     def test_nametag_badge_lookup(self):
-        # DivinePlayer must return verified with Divine sun badge (like Lunar in img 2)
+        # DivinePlayer must return verified with Divine sun badge (verified players)
         r = self.app.get("/api/ingame/badge-lookup?username=DivinePlayer")
         self.assertEqual(r.status_code, 200)
         self.assertTrue(r.json["verified"])

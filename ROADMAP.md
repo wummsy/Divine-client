@@ -7,7 +7,7 @@ This roadmap outlines the planned development milestones, feature expansions, an
 ## 🎯 Current Milestone: v4.0.x (Stability & Core Polish)
 - [x] High-performance launcher rewrite with sub-second instance launching.
 - [x] Dedicated Divine Mode dashboard segregated from custom instance carousel.
-- [x] Integrated Fabric 1.21.11 client mod with custom Lunar-style 2D title screen.
+- [x] Integrated Fabric 1.21.11 client mod with custom Divine-style 2D title screen.
 - [x] In-game HUD suite: FPS, Coordinates, Keystrokes, Sprint Toggle, Fullbright, Zoom.
 - [x] Automated Java 21 LTS runtime health check & missing DLL auto-repair.
 - [x] Discord OAuth2 web portal (`/link?code=XXXX`) and DivineBot synchronization.
@@ -29,7 +29,7 @@ This roadmap outlines the planned development milestones, feature expansions, an
 - [ ] **Real-Time Cosmetic Sync** &mdash; Native client-side rendering for animated celestial cloaks, wings, bandanas, and pet companions.
 - [ ] **Creator Wardrobe Studio** &mdash; In-game color picker, emissive glow slider, and previewer for claimed cosmetics.
 - [ ] **Gift Code Generation System** &mdash; Web dashboard and Discord bot commands for server owners to generate single-use and multi-use redeem codes.
-- [ ] **Custom Capes Pipeline** &mdash; Support for OptiFine capes, Minecraft capes, and Divine animated cloaks with physics simulation.
+- [ ] **Custom Capes Pipeline** &mdash; Support for custom HD capes, Minecraft capes, and Divine animated cloaks with physics simulation.
 
 ---
 

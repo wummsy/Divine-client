@@ -89,7 +89,7 @@ public class DivineTitleScreen {
                 drawCenteredText(drawContext, textMethod, "High-Performance Client Edition 1.21.11", cx, logoY + 14, 0xFF94A3B8);
             }
 
-            // 3. Render Custom Clean Lunar-Style Main Buttons
+            // 3. Render Custom Clean Divine-Style Main Buttons
             int btnW = 200;
             int btnH = 26;
             int startY = height / 2 - 25;

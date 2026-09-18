@@ -1064,7 +1064,7 @@ _CRASH_SIGNS = [
       "requires any client environment", "incompatible environment",
       "Mod '"),
      "A mod in this instance can't run on a server, or two mods disagree. Remove "
-     "client-only mods (OptiFine, sodium-ish performance mods that are client "
+     "client-only mods (client rendering, sodium-ish performance mods that are client "
      "side) from the instance's mods folder and try again."),
     (("UnknownHostException", "Connection refused", "Connection timed out", "SSLHandshakeException", "Network is unreachable"),
      "The first start of a Fabric server downloads Minecraft's server files, and "

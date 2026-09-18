@@ -307,7 +307,7 @@ class DivineApp(ctk.CTk):
         """The right-hand side of the window: a title bar, the pages, one status line.
 
         Every surface here is a solid colour or its own wash, and nothing depends on a
-        background showing through it. That is a look decision (Lunar-like: flat panels, one
+        background showing through it. That is a look decision (Modern-style: flat panels, one
         accent, no wallpaper) and a correctness one at the same time: Tk repaints what it
         knows is dirty, so a transparent container over a painted surface is where stale
         pixels survive - which is exactly what a "glitch on maximize" is.

@@ -959,7 +959,7 @@ async function openModpackViewModal(projectId, title, desc, iconUrl, author) {
           deps.map(d => `<div style="background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 4px; font-family: monospace;">${escapeHtml(d.project_id || d.version_id || 'Mod Dependency')}</div>`).join('') +
           `</div>`;
       } else {
-        modsList.innerHTML = `<div style="color: #cbd5e1;">This modpack includes curated performance mods, shaders, OptiFine/Iris parity, and pre-tuned configuration overrides.</div>`;
+        modsList.innerHTML = `<div style="color: #cbd5e1;">This modpack includes curated performance mods, shaders, shader support, and pre-tuned configuration overrides.</div>`;
       }
     } else {
       modsList.innerHTML = `<div style="color: #cbd5e1;">Includes complete game configuration, shaders, and fabric optimization suite.</div>`;

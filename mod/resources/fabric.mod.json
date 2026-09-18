@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "divineclient",
+  "version": "1.0.0",
+  "name": "Divine Client",
+  "description": "High-Performance Next-Gen Fabric Client Suite for Minecraft 1.21.11 with custom HUD, title screen, cosmetics, and builder integration.",
+  "authors": [
+    "wummsy",
+    "Divine Development Team"
+  ],
+  "contact": {
+    "homepage": "https://github.com/wummsy/Divine-client",
+    "sources": "https://github.com/wummsy/Divine-client"
+  },
+  "license": "Proprietary",
+  "icon": "assets/divineclient/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "com.divine.client.DivineClient"
+    ]
+  },
+  "mixins": [
+    "divineclient.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.15.0",
+    "minecraft": ">=1.21"
+  }
+}

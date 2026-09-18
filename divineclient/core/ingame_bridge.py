@@ -5,7 +5,7 @@ Manages:
      Scoreboard Customizer, Block Overlay, Armor Warning, Chat Tweaks, Memory HUD, Attack Cooldown, Item Counter).
   2. Cosmetics Closet (Cloaks, Wings, Halos, Auras, Badges) linked to the user's Divine/Discord profile.
   3. Dynamic Promo Code Generation & Verification Engine (linked to Discord /generatecode).
-  4. Divine Network Verified Player Database & Nametag Badge lookup (like Lunar/Badlion).
+  4. Divine Network Verified Player Database & Nametag Badge lookup.
   5. In-game friends list sync with Divine account verification enforcement.
 """
 import json
@@ -62,7 +62,7 @@ DEFAULT_MODS_CONFIG = {
         "id": "cinematic_zoom",
         "name": "Cinematic Zoom",
         "category": "qol",
-        "description": "OptiFine/OkZoomer style smooth magnification with mouse scroll wheel zoom.",
+        "description": "Smooth cinematic magnification with mouse scroll wheel zoom.",
         "icon": "search",
         "enabled": True,
         "options": {
@@ -423,7 +423,7 @@ DEFAULT_MODS_CONFIG = {
         "id": "divine_nametags",
         "name": "Divine Nametag Badges",
         "category": "visuals",
-        "description": "Renders official pure white Divine Sun emblems next to player names in-game (like Lunar Client).",
+        "description": "Renders official pure white Divine Sun emblems next to player names in-game.",
         "icon": "badge",
         "enabled": True,
         "options": {

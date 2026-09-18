@@ -282,7 +282,7 @@ class HomePage(PageFrame):
         right.grid_rowconfigure(1, weight=1)
 
         # one card for "what am I launching" - the art on top, the picker and the button
-        # underneath, in the same panel, the way Lunar puts one Play block on its home screen
+        # underneath, in the same panel, clean centered Play block on its home screen
         self.play_card = Card(left, fg_color=theme.COL["bg2"], corner_radius=18)
         self.play_card.grid(row=0, column=0, sticky="ew")
         self.play_card.grid_columnconfigure(0, weight=1)

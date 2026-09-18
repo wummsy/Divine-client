@@ -16,7 +16,7 @@
 
 ## What is Divine Client?
 
-Divine Client is a lightweight Minecraft launcher and custom Fabric mod suite designed to give you an out-of-the-box competitive edge without clutter. It pairs sub-second launch speeds and automated Java runtime self-healing with an integrated Lunar-style in-game HUD, custom 2D main menu, creator builder tools, and built-in server hosting.
+Divine Client is a lightweight Minecraft launcher and custom Fabric mod suite designed to give you an out-of-the-box competitive edge without clutter. It pairs sub-second launch speeds and automated Java runtime self-healing with an integrated Divine in-game HUD, custom 2D main menu, creator builder tools, and built-in server hosting.
 
 ---
 
@@ -27,7 +27,7 @@ Access everything instantly in-game by pressing **`Right Shift`** or **`M`**:
 - **Dynamic Keystrokes & CPS Counter**: Real-time WASD and click-rate tracking with a sliding window buffer.
 - **Armor & Equipment Status**: Live durability health bars and percentage counters.
 - **Potion Effect Timers**: Active status effects with remaining duration timers.
-- **Cinematic Smooth Zoom (`C`)**: Fluid camera zoom without needing extra OptiFine setups.
+- **Cinematic Smooth Zoom (`C`)**: Fluid camera zoom without needing third-party mods.
 - **Toggle Sprint & Fullbright (`G`)**: Built-in sprint locking and clean gamma boost.
 - **FPS & Coordinate HUD**: Real-time FPS metrics and XYZ coordinates with Nether conversion.
 

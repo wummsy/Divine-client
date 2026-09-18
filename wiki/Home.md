@@ -23,7 +23,7 @@ Welcome to the official documentation and knowledge base for **Divine Client (v4
 Divine Client is engineered from the ground up for competitive players, world builders, and server administrators:
 
 1. **Ultra-Fast Modern Launcher**: Powered by an asynchronous Python backend and a responsive dark-themed Web UI with animated UI components.
-2. **Fabric 1.21.11 Native Client Mod**: Custom Java mod featuring clean Lunar-inspired title screens, in-game mod menu (`Right Shift`), cosmetic rendering, FPS counters, CPS meters, Keystrokes, and Armor status HUDs.
+2. **Fabric 1.21.11 Native Client Mod**: Custom Java mod featuring clean custom Divine title screens, in-game mod menu (`Right Shift`), cosmetic rendering, FPS counters, CPS meters, Keystrokes, and Armor status HUDs.
 3. **Builder Studio**: Pre-configured environment bundled with Axiom, WorldEdit, and Flashback recording tools.
 4. **Automated Java Runtime Management**: Auto-detects system architecture and downloads verified Eclipse Temurin OpenJDK 21 binaries on demand.
 5. **Discord Ecosystem**: Integrated Discord Bot (`/link`, `/profile`, `/cosmetics`) and rich presence showing current gameplay, gamemode, and builder status.

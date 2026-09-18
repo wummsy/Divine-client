@@ -1822,7 +1822,7 @@ input:checked + .toggle-slider:before {
   overflow-y: auto;
 }
 
-/* Mod Grid & Individual Cards (Lunar / Badlion Image-1 Style) */
+/* Mod Grid & Individual Cards (Divine Clean Style) */
 .modmenu-cards-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));

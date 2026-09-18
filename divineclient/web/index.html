@@ -452,7 +452,7 @@
             <!-- Sub-Pane 3: Shader Packs -->
             <div class="editor-subpane" id="editor-subpane-shaders">
               <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
-                <span style="font-size: 13px; font-weight: 800; color: #ffffff;">Installed Iris / OptiFine Shaders</span>
+                <span style="font-size: 13px; font-weight: 800; color: #ffffff;">Installed Shaders</span>
                 <button class="btn btn-secondary btn-sm" onclick="openShaderSearchModal()">+ Add Shader Pack</button>
               </div>
               <div class="editor-mods-table" id="editor-shaders-table-body"></div>
@@ -893,7 +893,7 @@
   <div class="modal-backdrop" id="modal-add-shader">
     <div class="modal-window" style="max-width: 680px;">
       <div class="modal-header">
-        <div class="modal-title">Add Iris / OptiFine Shaders</div>
+        <div class="modal-title">Add Shaders</div>
         <button class="icon-btn" onclick="closeModal('modal-add-shader')">&times;</button>
       </div>
       <div class="modal-body" style="display: flex; flex-direction: column; gap: 14px;">
@@ -1543,7 +1543,7 @@
           <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 12px;">
             <div>
               <div style="font-size: 13px; font-weight: 800; color: #ffffff;">Divine Nametag Badges</div>
-              <div style="font-size: 11px; color: #94a3b8;">Render pure white sun badge next to Divine Client players (like Lunar in img 2)</div>
+              <div style="font-size: 11px; color: #94a3b8;">Render pure white sun badge next to Divine Client players (verified players)</div>
             </div>
             <label class="toggle-switch">
               <input type="checkbox" id="settings-nametag-toggle" checked onchange="toggleNametagBadges(this.checked)">
