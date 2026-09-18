@@ -428,69 +428,8 @@ function cycleHeroBackground() {
 }
 
 // -----------------------------------------------------------------------------
-// QUICK PLAY CONTROLLER (5 MINI ICONS IN THE MIDDLE ON TOP OF LAUNCH CARD)
-// -----------------------------------------------------------------------------
-async function quickPlayAction(type) {
-  const instances = AppState.instances || [];
-  window.soundEngine?.playClick?.();
-
-  let targetIdx = -1;
-
-  if (type === "fabric") {
-    targetIdx = instances.findIndex(i => i.id === "default-fabric-opt" || (i.name || "").toLowerCase().includes("fabric") || (i.name || "").toLowerCase().includes("ultra performance"));
-    if (targetIdx === -1) targetIdx = 0;
-    if (instances[targetIdx]) {
-      AppState.sliderIndex = targetIdx;
-      renderHomeSlider("next");
-      showToast(`Selected ${instances[targetIdx].name} (48 Optimization Mods)`, "info");
-    }
-  } else if (type === "builder" || type === "creative") {
-    targetIdx = instances.findIndex(i => i.id === "default-builder-studio" || (i.name || "").toLowerCase().includes("builder") || (i.name || "").toLowerCase().includes("cinematic") || (i.name || "").toLowerCase().includes("axiom"));
-    if (targetIdx === -1 && instances.length > 1) targetIdx = 1;
-    if (instances[targetIdx]) {
-      AppState.sliderIndex = targetIdx;
-      renderHomeSlider("next");
-      showToast(`Selected ${instances[targetIdx].name} (WorldEdit + Axiom Studio)`, "info");
-    }
-  } else if (type === "bedwars" || type === "pvp") {
-    targetIdx = instances.findIndex(i => i.id === "default-bedwars-pvp" || (i.name || "").toLowerCase().includes("bedwars") || (i.name || "").toLowerCase().includes("pvp") || (i.mc_version || "").includes("1.8.9"));
-    if (targetIdx === -1 && instances.length > 2) targetIdx = 2;
-    if (instances[targetIdx]) {
-      AppState.sliderIndex = targetIdx;
-      renderHomeSlider("next");
-      showToast(`Selected ${instances[targetIdx].name} (Forge 1.8.9 Bedwars PvP)`, "info");
-    }
-  } else if (type === "survival") {
-    targetIdx = instances.findIndex(i => i.id === "default-vanilla-survival" || (i.name || "").toLowerCase().includes("vanilla") || (i.name || "").toLowerCase().includes("survival"));
-    if (targetIdx === -1 && instances.length > 3) targetIdx = 3;
-    if (instances[targetIdx]) {
-      AppState.sliderIndex = targetIdx;
-      renderHomeSlider("next");
-      showToast(`Selected ${instances[targetIdx].name} (Vanilla 1.21.4)`, "info");
-    }
-  } else if (type === "smp" || type === "multiplayer" || type === "servers") {
-    targetIdx = instances.findIndex(i => i.id === "default-multiplayer-smp" || (i.name || "").toLowerCase().includes("smp") || (i.name || "").toLowerCase().includes("multiplayer"));
-    if (targetIdx === -1 && instances.length > 4) targetIdx = 4;
-    if (instances[targetIdx]) {
-      AppState.sliderIndex = targetIdx;
-      renderHomeSlider("next");
-      showToast(`Selected ${instances[targetIdx].name} (Multiplayer SMP 1.21.4)`, "info");
-    }
-  }
-}
-
-// -----------------------------------------------------------------------------
-// HOME VIEW: ANIMATED INSTANCE SLIDER & PLAY / STOP BUTTON
-// -----------------------------------------------------------------------------
 function getFilteredSliderInstances() {
-  const all = AppState.instances || [];
-  if (launcherMenuMode === "divine") {
-    const d = all.filter(i => i.is_divine_exclusive || i.id.includes("divine-fabric") || i.id.includes("divine-client"));
-    return d.length > 0 ? d : all;
-  } else {
-    const custom = all.filter(i => !i.is_divine_exclusive && !i.id.includes("divine-fabric-ultra"));
-    return custom.length > 0 ? custom : all;
-  }
+  return AppState.instances || [];
 }
 
 function renderHomeSlider(slideDir = "") {
@@ -502,14 +441,19 @@ function renderHomeSlider(slideDir = "") {
   const ramEl = document.getElementById("hero-slider-ram");
   const dotsEl = document.getElementById("hero-slider-dots");
   const infoBox = document.getElementById("hero-slider-info-box");
+  const playText = document.getElementById("hero-launch-text");
 
   if (instances.length === 0) {
+    AppState.activeInstanceId = null;
     if (nameEl) nameEl.textContent = "No Instances Created";
-    if (verEl) verEl.textContent = "1.21.1";
-    if (loaderEl) loaderEl.textContent = "VANILLA";
+    if (verEl) verEl.textContent = "Create an Instance";
+    if (loaderEl) loaderEl.textContent = "READY";
     if (modsEl) modsEl.textContent = "0 Mods";
     if (ramEl) ramEl.textContent = "4096 MB RAM";
     if (dotsEl) dotsEl.innerHTML = "";
+    if (playText && !AppState.isGameRunning) {
+      playText.textContent = "+ CREATE INSTANCE";
+    }
     return;
   }
 
@@ -528,10 +472,13 @@ function renderHomeSlider(slideDir = "") {
   }
 
   if (nameEl) nameEl.textContent = current.name || "Minecraft Instance";
-  if (verEl) verEl.textContent = current.mc_version || "1.21.1";
-  if (loaderEl) loaderEl.textContent = (current.loader || "fabric").toUpperCase();
+  if (verEl) verEl.textContent = current.mc_version || "1.21.11";
+  if (loaderEl) loaderEl.textContent = (current.loader || "vanilla").toUpperCase();
   if (modsEl) modsEl.textContent = `${current.mods_count || 0} Mods`;
   if (ramEl) ramEl.textContent = `${current.ram_mb || 4096} MB RAM`;
+  if (playText && !AppState.isGameRunning) {
+    playText.textContent = "PLAY MINECRAFT";
+  }
 
   // Render Indicator Dots
   if (dotsEl) {
@@ -605,12 +552,9 @@ async function handleHeroPlayButtonClick() {
     return;
   }
 
-  if (!AppState.activeInstanceId) {
-    if (AppState.instances.length === 0) {
-      switchTab("modpacks");
-      return;
-    }
-    AppState.activeInstanceId = AppState.instances[0].id;
+  if (!AppState.activeInstanceId || (AppState.instances || []).length === 0) {
+    openCreateInstanceModal();
+    return;
   }
 
   updatePlayButtonVisuals(false, true);

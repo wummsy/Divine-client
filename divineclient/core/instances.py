@@ -2,8 +2,8 @@
 
 An *instance* is a named, isolated Minecraft configuration: its own game
 directory (saves, resource packs, mods, options.txt), tied to a specific
-Minecraft version and loader (vanilla or Fabric). Multiple instances can run
-at the same time.
+Minecraft version and loader (vanilla, Fabric, Forge, or Quilt).
+Instances are entirely user-created and managed.
 """
 import json
 import os
@@ -40,7 +40,6 @@ class Instance:
 
     @property
     def loader_version(self):
-        # The actual launchable version id (e.g. "fabric-loader-0.15.7-1.20.4")
         return self.data.get("loader_version") or self.data["mc_version"]
 
     @property
@@ -74,7 +73,6 @@ class InstanceManager:
 
     @property
     def index_file(self):
-        # Resolved on demand so it follows the chosen game-files location.
         return os.path.join(paths.INSTANCES_DIR, "instances.json")
 
     def load(self):
@@ -85,70 +83,7 @@ class InstanceManager:
                 self.instances = [Instance(d) for d in raw.get("instances", [])]
             except (json.JSONDecodeError, OSError):
                 self.instances = []
-        if not self.instances:
-            self._ensure_defaults()
         return self
-
-    def _ensure_defaults(self):
-        paths.ensure_dirs()
-        default_defs = [
-            {
-                "id": "divine-fabric-ultra-1-21-11",
-                "name": "Divine Client 1.21.11 (Ultra Performance)",
-                "mc_version": "1.21.11",
-                "loader": "fabric",
-                "loader_version": "0.16.10",
-                "ram_mb": 4096,
-                "icon": "lightning",
-                "mods_count": 48,
-                "is_divine_exclusive": True
-            },
-            {
-                "id": "divine-builder-cinematic-studio",
-                "name": "Builder Studio 1.21.11 (Axiom + WorldEdit + Flashback)",
-                "mc_version": "1.21.11",
-                "loader": "fabric",
-                "loader_version": "0.16.10",
-                "ram_mb": 6144,
-                "icon": "cube",
-                "mods_count": 5
-            },
-            {
-                "id": "divine-bedwars-pvp-1-8-9",
-                "name": "Divine Bedwars PvP 1.8.9",
-                "mc_version": "1.8.9",
-                "loader": "forge",
-                "loader_version": "11.15.1.2318",
-                "ram_mb": 2048,
-                "icon": "sword",
-                "mods_count": 16
-            },
-            {
-                "id": "divine-vanilla-survival",
-                "name": "Divine Vanilla Survival 1.21.4",
-                "mc_version": "1.21.4",
-                "loader": "vanilla",
-                "loader_version": None,
-                "ram_mb": 3072,
-                "icon": "grass",
-                "mods_count": 0
-            },
-            {
-                "id": "divine-multiplayer-smp",
-                "name": "Divine Multiplayer SMP 1.21.4",
-                "mc_version": "1.21.4",
-                "loader": "fabric",
-                "loader_version": "0.16.9",
-                "ram_mb": 4096,
-                "icon": "server",
-                "mods_count": 8
-            }
-        ]
-        self.instances = [Instance(d) for d in default_defs]
-        try:
-            self.save()
-        except Exception:
-            pass
 
     def save(self):
         paths.ensure_dirs()
@@ -180,34 +115,19 @@ class InstanceManager:
             "loader_version": loader_version,
             "icon": icon,
         }
-        # Anything else a caller knows - where a modpack came from, what the pack's own
-        # version was - rides along in instances.json. The launcher ignores what it does not
-        # understand, so an import never has to throw information away.
         if extra:
             data.update(extra)
         inst = Instance(data)
         self.instances.append(inst)
         self.save()
-
-        # If creating a Fabric instance, auto-install DivineClientMod-1.0.0.jar
-        if loader == "fabric":
-            try:
-                from . import mods as mods_mod
-                mods_mod.ensure_divine_client_mod(os.path.join(inst.game_dir, "mods"))
-            except Exception:
-                pass
-
         return inst
 
     # ------------------------------------------------------------------ import
-    #: what makes a folder "a Minecraft instance" enough to be worth offering
     MARKERS = ("mods", "saves", "resourcepacks", "options.txt", "version.json",
                "instance.json", "instance.cfg", "pack.toml")
-    #: things that live in the launcher, not in the instance - copying them wastes minutes
     SKIP_TOP = ("versions", "runtime", "logs", "launcher_profiles.json", ".cache")
 
     def looks_like_instance(self, folder):
-        """True when ``folder`` has anything a Minecraft instance keeps."""
         if not folder or not os.path.isdir(folder):
             return False
         try:
@@ -217,13 +137,6 @@ class InstanceManager:
         return bool(names & set(self.MARKERS))
 
     def detect(self, folder):
-        """``{"name", "mc_version", "loader", "loader_version"}`` read from the folder.
-
-        MultiMC/Prism writes ``instance.cfg``, AtLauncher writes ``instance.json``; a bare
-        ``.minecraft``-style folder has neither, so the name falls back to the folder and the
-        version is whatever ``versions/`` holds. Anything undetected comes back empty and the
-        UI asks for it rather than guessing a version that will not launch.
-        """
         out = {"name": os.path.basename(os.path.normpath(folder)) or "Imported",
                "mc_version": "", "loader": "", "loader_version": ""}
         cfg = os.path.join(folder, "instance.cfg")
@@ -284,12 +197,6 @@ class InstanceManager:
 
     def import_from(self, source, name=None, mc_version=None, loader=None,
                     loader_version=None, move=False, progress=None):
-        """Register an existing folder (or a zip of one) as an instance.
-
-        Returns ``(instance, notes)``. A zip is unpacked into a scratch folder first, so a
-        pack of the ``DivineClient/``-wrapped shape people zip by hand works the same as a
-        folder. Nothing is deleted from ``source`` unless ``move`` is asked for explicitly.
-        """
         from .. import paths
         source = os.path.abspath(str(source or ""))
         if not os.path.exists(source):
@@ -305,7 +212,6 @@ class InstanceManager:
             tree = os.path.join(scratch, "tree")
             safe_extract(source, tree, progress=progress and
                          (lambda i, n, rel: progress(i, n, rel)))
-            # a zip of a folder keeps one level: "MyInstance/" wrapping everything
             folder = tree
             try:
                 kids = [k for k in os.listdir(tree) if not k.startswith(".")]
@@ -315,7 +221,6 @@ class InstanceManager:
                 pass
         if not self.looks_like_instance(folder) and not os.path.isdir(
                 os.path.join(folder, "mods")):
-            # one level down: people zip the parent of the instance more often than not
             try:
                 kids = [os.path.join(folder, k) for k in sorted(os.listdir(folder))]
             except OSError:
@@ -346,7 +251,7 @@ class InstanceManager:
         notes = {"copied": 0, "skipped": 0, "failed": []}
         src_mods = os.path.join(folder, "mods")
         if os.path.isdir(src_mods) and os.path.isdir(dest):
-            pass   # copied below with everything else
+            pass
         for entry in sorted(_top_level(folder)):
             if entry in self.SKIP_TOP or entry.startswith("."):
                 notes["skipped"] += 1
@@ -377,12 +282,8 @@ class InstanceManager:
                 pass
         return inst, notes
 
-
-
     def update(self, instance_id, name=None, mc_version=None, loader=None,
                loader_version=None, custom_game_dir=None):
-        """Change an existing instance's editable fields. The id (and thus the
-        game directory) is kept stable so saves and mods are never orphaned."""
         inst = self.get(instance_id)
         if not inst:
             return None
@@ -394,8 +295,6 @@ class InstanceManager:
             inst.data["custom_game_dir"] = custom_game_dir if custom_game_dir.strip() else None
         if loader is not None:
             inst.data["loader"] = loader
-            # loader_version is derived from the mc_version for our loaders, so
-            # clear any stale pin when the loader or version changes.
             inst.data["loader_version"] = loader_version
         elif loader_version is not None:
             inst.data["loader_version"] = loader_version

@@ -1,9 +1,8 @@
 """Launch engine.
 
-Handles the whole chain of getting a version onto disk and starting it:
-downloading Minecraft, making sure a working Java is available, installing
-Fabric, Forge, or Quilt when asked, dropping in instance-specific mods,
-then building and running the actual java command with per-instance isolation.
+Handles downloading Minecraft, ensuring a working Java runtime, installing
+loaders (Fabric, Forge, Quilt) when configured, and launching the instance
+with its own isolated game directory and mods.
 """
 import os
 import subprocess
@@ -12,7 +11,6 @@ import sys
 import minecraft_launcher_lib as mll
 
 from .. import paths
-from . import mods as mods_module
 from . import java_runtime
 from . import system_info
 
@@ -98,7 +96,7 @@ def is_version_installed(version_id):
 
 
 def _find_fabric_version_id(mc_version, requested_loader_ver=None):
-    """Find the newest or requested installed Fabric loader version directory."""
+    """Find installed Fabric loader version directory."""
     versions_dir = os.path.join(paths.MINECRAFT_DIR, "versions")
     candidates = []
     if os.path.isdir(versions_dir):
@@ -154,7 +152,7 @@ def _find_loader_version_id(mc_version, loader="vanilla"):
 
 
 def install_instance(instance, config, progress):
-    """Ensure base Minecraft and instance mod loader are installed and prepared."""
+    """Ensure base Minecraft and instance mod loader are installed."""
     paths.ensure_dirs()
     mc_version = instance.mc_version
     loader = (instance.loader or "vanilla").lower()
@@ -177,7 +175,6 @@ def install_instance(instance, config, progress):
         if not fabric_id or not is_version_installed(fabric_id):
             progress.set_status(f"Installing Fabric Loader for Minecraft {mc_version}...")
             java_for_install = ensure_java(mc_version, progress, config.get("custom_java_path", ""))
-            
             clean_loader = req_loader if req_loader and req_loader.count(".") >= 1 and not req_loader.startswith("fabric") else None
             try:
                 mll.fabric.install_fabric(
@@ -195,29 +192,6 @@ def install_instance(instance, config, progress):
             instance.data["loader_version"] = launch_version_id
         else:
             launch_version_id = mc_version
-
-        # 3. Instance-specific Mods & Addons
-        mods_dir = os.path.join(instance.game_dir, "mods")
-        os.makedirs(mods_dir, exist_ok=True)
-
-        if "builder" in instance.id.lower() or "builder" in instance.name.lower():
-            progress.set_status("Deploying Axiom, WorldEdit, and Flashback builder tools...")
-            mods_module.ensure_builder_suite(mods_dir, mc_version)
-        elif getattr(instance, "is_divine_exclusive", False) or "divine" in instance.id.lower():
-            progress.set_status("Deploying Divine Client Fabric mod suite...")
-            mods_module.ensure_divine_client_mod(mods_dir)
-
-        if config.get("auto_performance_mods", True) and not getattr(instance, "_perf_installed", False):
-            def modprog(text, frac):
-                progress.set_status(text)
-                progress.set_max(100)
-                progress.set_progress(int(frac * 100))
-
-            mods_module.install_performance_pack(
-                mc_version, mods_dir,
-                loader="fabric", progress=modprog,
-            )
-            instance._perf_installed = True
 
     elif loader == "forge":
         forge_id = _find_forge_version_id(mc_version)
@@ -262,6 +236,12 @@ def install_instance(instance, config, progress):
             instance.data["loader_version"] = launch_version_id
         else:
             launch_version_id = mc_version
+
+    # Ensure instance directory structure exists
+    os.makedirs(os.path.join(instance.game_dir, "mods"), exist_ok=True)
+    os.makedirs(os.path.join(instance.game_dir, "saves"), exist_ok=True)
+    os.makedirs(os.path.join(instance.game_dir, "resourcepacks"), exist_ok=True)
+    os.makedirs(os.path.join(instance.game_dir, "shaderpacks"), exist_ok=True)
 
     progress.set_status(f"Ready to launch ({launch_version_id})")
     return launch_version_id
@@ -356,7 +336,6 @@ def launch(instance, config, account_store, progress):
     """Install anything missing, then start the game as its own process."""
     command = build_command(instance, config, account_store, progress)
 
-    # Pre-flight: make sure the JVM can actually start with these memory args.
     java_exe, jvm_args = _extract_java_and_jvm(command)
     progress.set_status("Checking the game can start...")
     ok, err = _jvm_starts_ok(java_exe, jvm_args)

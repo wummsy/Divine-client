@@ -202,7 +202,7 @@ class ServerManager:
         if not os.path.isfile(sp_path):
             with open(sp_path, "w", encoding="utf-8") as f:
                 f.write(
-                    f"motd={name}\n"
+                    "motd=created by Divine client servers\n"
                     f"server-port={port}\n"
                     "max-players=20\n"
                     "gamemode=survival\n"

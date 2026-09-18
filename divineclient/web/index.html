@@ -190,52 +190,18 @@
           <div class="home-hero-container" id="home-hero-container">
             <div class="home-hero-header">
               <div>
-                <h1 class="home-hero-title" id="home-main-title">Divine Client 1.21.11</h1>
-                <p class="home-hero-subtitle" id="home-main-subtitle">High-performance PvP &amp; visual QoL client with built-in cloaks and Discord RPC.</p>
+                <h1 class="home-hero-title" id="home-main-title">Divine Launcher</h1>
+                <p class="home-hero-subtitle" id="home-main-subtitle">Launch and manage your custom Minecraft instances.</p>
               </div>
               <div style="display: flex; align-items: center; gap: 8px;">
-                <!-- 2 Main Menus Mode Switcher -->
-                <div class="mode-toggle-group" style="display: flex; background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 2px;">
-                  <button class="btn btn-sm btn-primary" id="mode-btn-divine" onclick="setLauncherMenuMode('divine')" style="padding: 4px 12px; font-size: 12px; font-weight: 800;">Divine Client (1.21.11)</button>
-                  <button class="btn btn-sm btn-secondary" id="mode-btn-custom" onclick="setLauncherMenuMode('custom')" style="padding: 4px 12px; font-size: 12px; font-weight: 800; border: none; background: transparent;">All Instances</button>
-                </div>
+                <button class="btn btn-primary btn-sm" onclick="openCreateInstanceModal()" style="font-weight: 800; padding: 6px 14px; gap: 6px;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+                  <span>Create Instance</span>
+                </button>
                 <button class="btn btn-secondary btn-sm" onclick="cycleHeroBackground()" title="Switch Wallpaper">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
                   <span id="hero-wallpaper-name">Wallpaper</span>
                 </button>
-              </div>
-            </div>
-
-            <!-- Quick Play Bar: 5 mini icons centered directly on top of the launching card -->
-            <div class="quick-play-wrapper">
-              <div class="quick-play-card">
-                <div class="quick-play-title-tag">QUICK PLAY</div>
-                <div class="quick-play-icons-bar">
-                  <!-- 1. Fabric 1.21.11 (Ultra Performance) -->
-                  <button class="quick-play-btn" onclick="quickPlayAction('fabric')" data-tooltip="Fabric 1.21.11 (Ultra Performance)" title="Fabric 1.21.11 (Ultra Performance)">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                  </button>
-
-                  <!-- 2. Builder & Cinematic Studio -->
-                  <button class="quick-play-btn" onclick="quickPlayAction('builder')" data-tooltip="Builder Studio (Axiom + WorldEdit)" title="Builder Studio (Axiom + WorldEdit)">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
-                  </button>
-
-                  <!-- 3. Bedwars PvP 1.8.9 (Forge) -->
-                  <button class="quick-play-btn" onclick="quickPlayAction('bedwars')" data-tooltip="Bedwars PvP 1.8.9 (Forge)" title="Bedwars PvP 1.8.9 (Forge)">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 17.5L3 6V3h3l11.5 11.5"/><path d="M13 19l6-6"/><path d="M16 16l4 4"/><path d="M19 21l2-2"/></svg>
-                  </button>
-
-                  <!-- 4. Vanilla Survival 1.21.4 -->
-                  <button class="quick-play-btn" onclick="quickPlayAction('survival')" data-tooltip="Vanilla Survival 1.21.4" title="Vanilla Survival 1.21.4">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                  </button>
-
-                  <!-- 5. Multiplayer SMP 1.21.4 -->
-                  <button class="quick-play-btn" onclick="quickPlayAction('smp')" data-tooltip="Multiplayer SMP 1.21.4" title="Multiplayer SMP 1.21.4">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10z"/></svg>
-                  </button>
-                </div>
               </div>
             </div>
 

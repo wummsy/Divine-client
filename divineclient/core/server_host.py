@@ -963,7 +963,7 @@ def ensure_free_port(instance, status=None):
 
 def default_properties(instance):
     return {
-        "motd": "Divine Client - " + instance.name,
+        "motd": "created by Divine client servers",
         "server-port": str(pick_default_port(instance)),
         "max-players": "10",
         "gamemode": "survival",
