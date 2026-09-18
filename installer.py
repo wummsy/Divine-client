@@ -49,7 +49,7 @@ def fetch_latest_release_info(candidates=None, timeout=12):
     if candidates is None:
         candidates = list(SITE_CANDIDATES)
 
-    headers = {"User-Agent": "DivineClient-Installer/4.0.0"}
+    headers = {"User-Agent": "DivineClient-Installer/5.0.0"}
     last_err = None
 
     for base in candidates:
@@ -61,7 +61,7 @@ def fetch_latest_release_info(candidates=None, timeout=12):
                     data = json.loads(resp.read().decode("utf-8"))
                     if isinstance(data, dict) and data.get("version"):
                         return {
-                            "version": str(data.get("version") or "4.0.0"),
+                            "version": str(data.get("version") or "5.0.0"),
                             "url": str(data.get("url") or "").strip(),
                             "sha256": str(data.get("sha256") or "").strip().lower(),
                             "size": int(data.get("size") or 0),
@@ -216,7 +216,7 @@ class InstallerEngine:
         url = self.release_info.get("url")
         if not url:
             # Check for local fallback packages in the current working directory
-            for candidate in ("DivineClient-v4.0.0.zip", "DivineClient-v4.0.zip", "DivineClient-v4.0.0.zip", "DivineClient-v4.0.zip", "DivineClient-v3.0.zip", "client.zip"):
+            for candidate in ("DivineClient-v5.0.0.zip", "DivineClient-v5.0.zip", "DivineClient-v4.0.0.zip", "client.zip"):
                 if os.path.isfile(candidate):
                     self.downloaded_archive = os.path.abspath(candidate)
                     if progress_cb:
@@ -235,7 +235,7 @@ class InstallerEngine:
         if progress_cb:
             progress_cb(0.0, f"Connecting to {url}...")
 
-        headers = {"User-Agent": "DivineClient-Installer/4.0.0"}
+        headers = {"User-Agent": "DivineClient-Installer/5.0.0"}
         req = urllib.request.Request(url, headers=headers)
 
         start_time = time.time()
@@ -460,7 +460,7 @@ def run_gui_installer():
     )
     title_label.pack(anchor="w")
 
-    ver_text = f"Version {engine.release_info.get('version', '4.0.0')} — Next-Gen Minecraft Launcher & Server Hub"
+    ver_text = f"Version {engine.release_info.get('version', '5.0.0')} — Next-Gen Minecraft Launcher & Server Hub"
     sub_label = tk.Label(
         hdr_frame,
         text=ver_text,
@@ -748,7 +748,7 @@ def run_cli_installer(args=None):
 
     target_dir = parsed.dir or get_default_install_dir()
     print(f"[*] Target Directory: {target_dir}")
-    print(f"[*] Release Version : {info.get('version', '4.0.0')}")
+    print(f"[*] Release Version : {info.get('version', '5.0.0')}")
 
     if not parsed.silent:
         try:

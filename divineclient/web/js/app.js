@@ -31,12 +31,34 @@ async function loadLauncherData() {
   await initClientData();
 }
 
+async function launchSpecificInstance(instanceId) {
+  if (!instanceId) return;
+  AppState.activeInstanceId = instanceId;
+  const idx = (AppState.instances || []).findIndex(i => i.id === instanceId);
+  if (idx >= 0) {
+    AppState.sliderIndex = idx;
+    renderHomeSlider();
+  }
+  await handleHeroPlayButtonClick();
+}
+
+async function launchEditorCurrentInstance() {
+  const iid = AppState.currentEditorInstanceId || AppState.activeInstanceId;
+  if (!iid) {
+    showToast("No instance selected to launch.", "error");
+    return;
+  }
+  await launchSpecificInstance(iid);
+}
+
 window.renderHeroSlider = renderHomeSlider;
 window.fetchAndRenderInstances = fetchAndRenderInstances;
 window.loadLauncherData = loadLauncherData;
+window.launchSpecificInstance = launchSpecificInstance;
+window.launchEditorCurrentInstance = launchEditorCurrentInstance;
 
 /**
- * Divine Client v4.0.0 - Next-Gen Minecraft Launcher Frontend
+ * Divine Client v5.0.0 - Next-Gen Minecraft Launcher Frontend
  * Clean White & Obsidian Theme • Modpack Store • Instance Slider • Dedicated Editor
  */
 
@@ -687,8 +709,8 @@ function renderAnnouncements() {
   if (news.length === 0) {
     grid.innerHTML = `
       <div class="news-card">
-        <div style="font-size: 13.5px; font-weight: 800; color: #ffffff; margin-bottom: 4px;">Divine Client v4.0.0 Release</div>
-        <div style="font-size: 12px; color: #94a3b8; line-height: 1.5;">Welcome to the high-performance obsidian edition with Modrinth modpack installer and dedicated server tunneling.</div>
+        <div style="font-size: 13.5px; font-weight: 800; color: #ffffff; margin-bottom: 4px;">Divine Client v5.0.0 Release</div>
+        <div style="font-size: 12px; color: #94a3b8; line-height: 1.5;">Welcome to the high-performance obsidian edition with Modrinth modpack installer, dedicated server tunneling, and collaborator access control.</div>
       </div>
     `;
     return;

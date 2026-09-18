@@ -3562,7 +3562,7 @@ def update_rpc_endpoint():
     data = request.json or {}
     details = data.get("details", "Divine Client")
     state = data.get("state", "In Game")
-    large_text = data.get("large_text", "Divine Client v4.0.0")
+    large_text = data.get("large_text", "Divine Client v5.0.0")
     discord_presence.update(details=details, state=state, large_text=large_text)
     return jsonify({"success": True, "details": details, "state": state})
 

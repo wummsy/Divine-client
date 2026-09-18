@@ -25,7 +25,7 @@ Getting started with Divine Client is fast and straightforward.
 4. Click **Install**. The installer will download all required libraries, assets, and configure launch shortcuts.
 
 ### 2. Portable Launcher Package
-1. Download `DivineClient-v4.0.0.zip`.
+1. Download `DivineClient-v5.0.0.zip`.
 2. Extract the folder to any directory.
 3. On Windows, double-click `start.bat`.
 4. On Linux / macOS, open a terminal and run:

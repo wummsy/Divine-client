@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Divine Client v4.0.0</title>
+  <title>Divine Client v5.0.0</title>
   <link rel="icon" type="image/png" href="/assets/divine_icon.png">
   <link rel="shortcut icon" href="/assets/icon.ico">
   <link rel="stylesheet" href="/css/theme.css">
@@ -378,6 +378,7 @@
                 <select class="select-field" id="editor-instance-select" style="width: 200px;" onchange="loadInstanceIntoEditor(this.value)"></select>
                 <button class="btn btn-secondary btn-sm" onclick="openCreateInstanceModal()">+ New Instance</button>
                 <button class="btn btn-primary btn-sm" onclick="saveCurrentEditorInstance()">Save Changes</button>
+                <button class="btn btn-primary btn-sm" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-color: #10b981; font-weight: 800;" onclick="launchEditorCurrentInstance()">▶ Launch</button>
                 <button class="btn btn-danger btn-sm" onclick="deleteCurrentEditorInstance()">Delete</button>
               </div>
             </div>
@@ -603,7 +604,7 @@
                 <button class="btn btn-secondary btn-sm" onclick="window.open('https://discord.gg/ER2haQtach', '_blank')">Join Discord</button>
               </div>
               <div style="display: flex; align-items: center; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 10px; font-size: 11.5px; color: #64748b;">
-                <span>Divine Client v4.0.0</span>
+                <span>Divine Client v5.0.0</span>
                 <div style="display: flex; gap: 14px;">
                   <a href="/terms" target="_blank" style="color: #94a3b8; text-decoration: none; font-weight: 600;">Terms of Service</a>
                   <a href="/privacy" target="_blank" style="color: #94a3b8; text-decoration: none; font-weight: 600;">Privacy Policy</a>

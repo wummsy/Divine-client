@@ -95,13 +95,37 @@ def is_version_installed(version_id):
     return os.path.isfile(vjson) and os.path.getsize(vjson) > 0
 
 
+def _resolve_minecraft_version(mc_version):
+    """Normalize or map non-standard version strings to a valid Mojang version."""
+    if not mc_version:
+        return "1.21.4"
+    clean = str(mc_version).strip()
+    if is_version_installed(clean):
+        return clean
+    try:
+        ver_list = mll.utils.get_version_list()
+        valid_ids = {v["id"] for v in ver_list}
+        if clean in valid_ids:
+            return clean
+        if clean.startswith("1.21"):
+            return "1.21.4" if "1.21.4" in valid_ids else ("1.21.1" if "1.21.1" in valid_ids else "1.21")
+        if clean.startswith("1.20"):
+            return "1.20.4" if "1.20.4" in valid_ids else "1.20.1"
+        if clean.startswith("1.19"):
+            return "1.19.4" if "1.19.4" in valid_ids else "1.19.2"
+    except Exception:
+        pass
+    return clean
+
+
 def _find_fabric_version_id(mc_version, requested_loader_ver=None):
     """Find installed Fabric loader version directory."""
+    clean_mc = _resolve_minecraft_version(mc_version)
     versions_dir = os.path.join(paths.MINECRAFT_DIR, "versions")
     candidates = []
     if os.path.isdir(versions_dir):
         for name in os.listdir(versions_dir):
-            if name.startswith("fabric-loader-") and name.endswith("-" + mc_version):
+            if name.startswith("fabric-loader-") and (name.endswith("-" + mc_version) or name.endswith("-" + clean_mc)):
                 if requested_loader_ver and requested_loader_ver in name:
                     return name
                 candidates.append(name)
@@ -113,11 +137,12 @@ def _find_fabric_version_id(mc_version, requested_loader_ver=None):
 
 def _find_forge_version_id(mc_version):
     """Find installed Forge version directory for this Minecraft version."""
+    clean_mc = _resolve_minecraft_version(mc_version)
     versions_dir = os.path.join(paths.MINECRAFT_DIR, "versions")
     candidates = []
     if os.path.isdir(versions_dir):
         for name in os.listdir(versions_dir):
-            if "forge" in name.lower() and mc_version in name:
+            if "forge" in name.lower() and (mc_version in name or clean_mc in name):
                 candidates.append(name)
     if candidates:
         candidates.sort()
@@ -127,11 +152,12 @@ def _find_forge_version_id(mc_version):
 
 def _find_quilt_version_id(mc_version):
     """Find installed Quilt loader version directory for this Minecraft version."""
+    clean_mc = _resolve_minecraft_version(mc_version)
     versions_dir = os.path.join(paths.MINECRAFT_DIR, "versions")
     candidates = []
     if os.path.isdir(versions_dir):
         for name in os.listdir(versions_dir):
-            if name.startswith("quilt-loader-") and name.endswith("-" + mc_version):
+            if name.startswith("quilt-loader-") and (name.endswith("-" + mc_version) or name.endswith("-" + clean_mc)):
                 candidates.append(name)
     if candidates:
         candidates.sort()
@@ -143,18 +169,18 @@ def _find_loader_version_id(mc_version, loader="vanilla"):
     """Find the specific loader version ID for an instance, fallback to mc_version."""
     loader = (loader or "vanilla").lower()
     if loader == "fabric":
-        return _find_fabric_version_id(mc_version) or mc_version
-    elif loader == "forge":
-        return _find_forge_version_id(mc_version) or mc_version
+        return _find_fabric_version_id(mc_version) or _resolve_minecraft_version(mc_version)
+    elif loader in ("forge", "neoforge"):
+        return _find_forge_version_id(mc_version) or _resolve_minecraft_version(mc_version)
     elif loader == "quilt":
-        return _find_quilt_version_id(mc_version) or mc_version
-    return mc_version
+        return _find_quilt_version_id(mc_version) or _resolve_minecraft_version(mc_version)
+    return _resolve_minecraft_version(mc_version)
 
 
 def install_instance(instance, config, progress):
     """Ensure base Minecraft and instance mod loader are installed."""
     paths.ensure_dirs()
-    mc_version = instance.mc_version
+    mc_version = _resolve_minecraft_version(instance.mc_version)
     loader = (instance.loader or "vanilla").lower()
     inst_data = getattr(instance, "data", {}) or {}
 
@@ -193,7 +219,7 @@ def install_instance(instance, config, progress):
         else:
             launch_version_id = mc_version
 
-    elif loader == "forge":
+    elif loader in ("forge", "neoforge"):
         forge_id = _find_forge_version_id(mc_version)
         if not forge_id or not is_version_installed(forge_id):
             progress.set_status(f"Installing Forge Loader for Minecraft {mc_version}...")
@@ -284,7 +310,7 @@ def build_command(instance, config, account_store, progress):
         "token": auth["token"],
         "jvmArguments": jvm_args,
         "launcherName": "DivineClient",
-        "launcherVersion": "4.0.0",
+        "launcherVersion": "5.0.0",
         "gameDirectory": instance.game_dir,
     }
     if java_path:
@@ -374,8 +400,9 @@ def launch(instance, config, account_store, progress):
 
 def _rebuild_with_safe_memory(instance, config, account_store, progress):
     """Build the launch command again forcing a conservative heap."""
-    launch_version_id = _find_loader_version_id(instance.mc_version, instance.loader)
-    java_path = ensure_java(instance.mc_version, progress, config.get("custom_java_path", ""))
+    clean_mc = _resolve_minecraft_version(instance.mc_version)
+    launch_version_id = _find_loader_version_id(clean_mc, instance.loader)
+    java_path = ensure_java(clean_mc, progress, config.get("custom_java_path", ""))
 
     account = account_store.get_active() or account_store.add_offline("Player")
     auth = account_store.launch_options(account)
@@ -390,7 +417,7 @@ def _rebuild_with_safe_memory(instance, config, account_store, progress):
         "token": auth["token"],
         "jvmArguments": jvm_args,
         "launcherName": "DivineClient",
-        "launcherVersion": "4.0.0",
+        "launcherVersion": "5.0.0",
         "gameDirectory": instance.game_dir,
     }
     if java_path:

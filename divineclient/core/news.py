@@ -13,7 +13,7 @@ _CACHE_TTL = 300  # seconds
 # Shown when the server can't be reached. Kept short and factual.
 _BUILTIN = [
     {
-        "title": "Divine Client v4.0.0 Release",
+        "title": "Divine Client v5.0.0 Release",
         "tag": "Release",
         "body": "High-performance Minecraft launcher featuring full version support from 1.0 to 26.2, dynamic instance management, dedicated server controls, and sub-user collaboration.",
     },

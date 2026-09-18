@@ -137,13 +137,38 @@ def _acceptable(java_exe, required_major):
 
 def _runtime_info(mc_version_id):
     """Return (component_name, java_major) for a Minecraft version."""
+    clean_ver = str(mc_version_id or "").strip()
+    if "-" in clean_ver:
+        # e.g. "fabric-loader-0.16.10-1.21.4"
+        parts = clean_ver.split("-")
+        for part in reversed(parts):
+            if part.count(".") >= 1 and part.replace(".", "").isdigit():
+                clean_ver = part
+                break
+
     try:
-        info = mll.runtime.get_version_runtime_information(mc_version_id, paths.MINECRAFT_DIR)
-        if info:
-            return info.get("name", "jre-legacy"), int(info.get("javaMajorVersion", 8))
+        info = mll.runtime.get_version_runtime_information(clean_ver, paths.MINECRAFT_DIR)
+        if info and "javaMajorVersion" in info:
+            return info.get("name", "java-runtime-delta"), int(info.get("javaMajorVersion", 21))
     except Exception:
         pass
-    return "jre-legacy", 8
+
+    # Dynamic fallback based on Minecraft version
+    import re
+    m = re.search(r"1\.(\d+)(?:\.(\d+))?", clean_ver)
+    if m:
+        minor = int(m.group(1))
+        patch = int(m.group(2)) if m.group(2) else 0
+        if minor >= 21 or (minor == 20 and patch >= 5):
+            return "java-runtime-delta", 21
+        elif minor >= 18 or (minor == 20 and patch < 5):
+            return "java-runtime-gamma", 17
+        elif minor == 17:
+            return "java-runtime-alpha", 17
+        elif minor <= 16:
+            return "jre-legacy", 8
+
+    return "java-runtime-delta", 21
 
 
 def required_component(mc_version_id):

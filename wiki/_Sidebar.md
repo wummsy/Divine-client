@@ -9,5 +9,5 @@
 - [Troubleshooting & FAQ](Troubleshooting-and-FAQ)
 
 ---
-**Divine Client v4.0.0**
+**Divine Client v5.0.0**
 Minecraft 1.21.11 Fabric

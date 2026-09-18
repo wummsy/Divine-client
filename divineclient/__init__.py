@@ -1,6 +1,6 @@
-"""Divine Client v4 - a Minecraft launcher by the Divine Dev Team."""
+"""Divine Client v5 - a Minecraft launcher by the Divine Dev Team."""
 
-__version__ = "4.0.0"
+__version__ = "5.0.0"
 __app_name__ = "Divine Client"
 __team__ = "Divine Dev Team"
 
@@ -8,4 +8,4 @@ __team__ = "Divine Dev Team"
 # ``clientversion`` in the server's .env. Separate from __version__ (which is the exe's
 # file version) on purpose: this is the release channel. It changes when the site should
 # start handing out a new build, not when the same code is rebuilt.
-CLIENT_VERSION = "4.0"
+CLIENT_VERSION = "5.0"

@@ -511,7 +511,7 @@ VERIFIED_DIVINE_PLAYERS = {
         "equipped_cloak": "cloak_2026_anniversary",
         "equipped_wings": "wings_divine_archangel",
         "status": "online",
-        "presence_detail": "Testing Divine Client v4.0.0"
+        "presence_detail": "Testing Divine Client v5.0.0"
     },
     "divineplayer": {
         "username": "DivinePlayer",
@@ -975,7 +975,7 @@ def sync_ingame_state(minecraft_username=None):
     
     return {
         "timestamp": time.time(),
-        "client_version": "4.0.0",
+        "client_version": "5.0.0",
         "mods": mods_cfg,
         "cosmetics": cosmetics,
         "player_badge": badge_info,

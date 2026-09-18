@@ -1,6 +1,6 @@
 # Welcome to the Divine Client Wiki
 
-Welcome to the official documentation and knowledge base for **Divine Client (v4.0.0)** — an all-in-one, high-performance Minecraft client, launcher, builder suite, and server management ecosystem for Minecraft 1.21.11.
+Welcome to the official documentation and knowledge base for **Divine Client (v5.0.0)** — an all-in-one, high-performance Minecraft client, launcher, builder suite, and server management ecosystem for Minecraft 1.21.11.
 
 ---
 

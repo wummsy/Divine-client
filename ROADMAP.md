@@ -4,12 +4,12 @@ This roadmap outlines the planned development milestones, feature expansions, an
 
 ---
 
-## 🎯 Current Milestone: v4.0.x (Stability & Core Polish)
-- [x] High-performance launcher rewrite with sub-second instance launching.
-- [x] Dedicated Divine Mode dashboard segregated from custom instance carousel.
-- [x] Integrated Fabric 1.21.11 client mod with custom Divine-style 2D title screen.
-- [x] In-game HUD suite: FPS, Coordinates, Keystrokes, Sprint Toggle, Fullbright, Zoom.
+## 🎯 Current Milestone: v5.0.0 (Unified Instance Launching & Collaborator Permissions)
+- [x] High-performance launcher engine with robust instance launching across Vanilla, Fabric, Forge, and Quilt.
 - [x] Automated Java 21 LTS runtime health check & missing DLL auto-repair.
+- [x] Granular Collaborator Access System for dedicated servers with Discord bot commands.
+- [x] Integrated client mod suite with custom Divine-style 2D title screen.
+- [x] In-game HUD suite: FPS, Coordinates, Keystrokes, Sprint Toggle, Fullbright, Zoom.
 - [x] Discord OAuth2 web portal (`/link?code=XXXX`) and DivineBot synchronization.
 - [x] Hardware device ID moderation engine (`/ban`, `/unban`, `/lookup`).
 
