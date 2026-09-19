@@ -107,21 +107,19 @@ const AppState = {
 // Initialization & Startup Splash Dismissal
 // -----------------------------------------------------------------------------
 window.addEventListener("DOMContentLoaded", async () => {
+  // Dismiss splash overlay immediately so UI is 100% interactive
+  const splash = document.getElementById("startup-gateway-screen");
+  if (splash) {
+    splash.classList.add("fade-out");
+    setTimeout(() => {
+      splash.style.display = "none";
+    }, 200);
+  }
+
   try {
     await initClientData();
   } catch (err) {
     console.error("Initialization error:", err);
-  } finally {
-    // Smoothly fade out the clean windowless white logo animation screen
-    setTimeout(() => {
-      const splash = document.getElementById("startup-gateway-screen");
-      if (splash) {
-        splash.classList.add("fade-out");
-        setTimeout(() => {
-          splash.style.display = "none";
-        }, 500);
-      }
-    }, 1200);
   }
 
   // Periodic telemetry poll
@@ -160,7 +158,7 @@ async function initClientData() {
 
   if (instRes.status === "fulfilled" && instRes.value) {
     AppState.instances = instRes.value.instances || [];
-    const lastId = AppState.status.active_instance?.id || (AppState.instances.length > 0 ? AppState.instances[0].id : null);
+    const lastId = AppState.status?.active_instance?.id || (AppState.instances.length > 0 ? AppState.instances[0].id : null);
     AppState.activeInstanceId = lastId;
     const idx = AppState.instances.findIndex(i => i.id === lastId);
     AppState.sliderIndex = idx >= 0 ? idx : 0;
@@ -193,12 +191,8 @@ async function initClientData() {
   initHeroWallpaper();
   updateNavigationLockState();
 
-  // Enforce Discord Login on client startup
-  if (!AppState.discordLinked) {
-    switchTab("discord");
-  } else {
-    switchTab("overview");
-  }
+  // Always land on Home (Overview) with all features available
+  switchTab("overview");
 }
 
 async function pollSystemStatus() {
@@ -221,25 +215,20 @@ function updateNavigationLockState() {
   const isLinked = !!AppState.discordLinked;
   const navItems = document.querySelectorAll(".sidebar-nav-item");
   navItems.forEach(btn => {
+    btn.style.opacity = "1";
+    btn.style.pointerEvents = "auto";
     const tab = btn.getAttribute("data-tab");
     if (tab === "discord") {
-      btn.style.opacity = "1";
-      btn.title = isLinked ? "Discord Profile & Community" : "Discord Login (Required)";
+      btn.title = isLinked ? `Discord: ${AppState.discordProfile?.username || 'Linked'}` : "Discord Profile & Community";
     } else {
-      if (!isLinked) {
-        btn.style.opacity = "0.4";
-        btn.title = "Discord login required to unlock";
-      } else {
-        btn.style.opacity = "1";
-        btn.title = btn.getAttribute("data-tooltip") || "";
-      }
+      btn.title = btn.getAttribute("data-tooltip") || "";
     }
   });
 
   const topbarLabel = document.getElementById("topbar-discord-label");
   if (topbarLabel) {
-    topbarLabel.textContent = isLinked ? (AppState.discordProfile?.username ? `Discord: ${AppState.discordProfile.username}` : "Discord") : "Login Required";
-    topbarLabel.style.color = isLinked ? "#ffffff" : "#ef4444";
+    topbarLabel.textContent = isLinked ? (AppState.discordProfile?.username ? `Discord: ${AppState.discordProfile.username}` : "Discord Linked") : "Discord Community";
+    topbarLabel.style.color = isLinked ? "#ffffff" : "#94a3b8";
   }
 }
 
@@ -247,12 +236,6 @@ function updateNavigationLockState() {
 // Tab Switching
 // -----------------------------------------------------------------------------
 function switchTab(tabName) {
-  // If user is not linked to Discord, force Discord login tab
-  if (!AppState.discordLinked && tabName !== "discord") {
-    showToast("Please sign in with Discord to access Divine Client.", "error");
-    tabName = "discord";
-  }
-
   AppState.currentTab = tabName;
   window.soundEngine?.playClick?.();
 
@@ -271,7 +254,7 @@ function switchTab(tabName) {
     editor: "INSTANCE EDITOR",
     servers: "DEDICATED SERVERS",
     friends: "FRIENDS & NETWORK",
-    discord: AppState.discordLinked ? "DISCORD ACCOUNT" : "DISCORD AUTHENTICATION REQUIRED"
+    discord: "DISCORD COMMUNITY & ACCOUNT"
   };
   if (crumb) crumb.textContent = tabTitles[tabName] || tabName.toUpperCase();
 
@@ -706,8 +689,25 @@ function renderAnnouncements() {
   if (news.length === 0) {
     grid.innerHTML = `
       <div class="news-card">
-        <div style="font-size: 13.5px; font-weight: 800; color: #ffffff; margin-bottom: 4px;">Divine Client v5.0.0 Release</div>
-        <div style="font-size: 12px; color: #94a3b8; line-height: 1.5;">Welcome to the high-performance obsidian edition with Modrinth modpack installer, dedicated server tunneling, and collaborator access control.</div>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+          <span style="font-size: 13.5px; font-weight: 800; color: #ffffff;">Divine Client v5.0.0 Release</span>
+          <span class="badge-tag">Update</span>
+        </div>
+        <div style="font-size: 12px; color: #94a3b8; line-height: 1.5;">High-performance client with Modrinth modpack store, dedicated server tunneling, and collaborator access control.</div>
+      </div>
+      <div class="news-card">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+          <span style="font-size: 13.5px; font-weight: 800; color: #ffffff;">Dedicated Server Templates</span>
+          <span class="badge-tag">Feature</span>
+        </div>
+        <div style="font-size: 12px; color: #94a3b8; line-height: 1.5;">Survival SMP, Creative World, Lobby Hub, Hardcore Realm, and Fabric server templates are ready to deploy in 1 click.</div>
+      </div>
+      <div class="news-card">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+          <span style="font-size: 13.5px; font-weight: 800; color: #ffffff;">Ultra-High Performance</span>
+          <span class="badge-tag">Optimized</span>
+        </div>
+        <div style="font-size: 12px; color: #94a3b8; line-height: 1.5;">Instant Java auto-detection, zero-lag UI, and memory optimization for smooth gameplay.</div>
       </div>
     `;
     return;
@@ -734,7 +734,12 @@ function renderQuickFriends() {
 
   const friends = AppState.friends || [];
   if (friends.length === 0) {
-    container.innerHTML = `<div style="text-align: center; font-size: 12px; color: #94a3b8; padding: 8px;">No friends added yet.</div>`;
+    container.innerHTML = `
+      <div style="text-align: center; font-size: 12px; color: #94a3b8; padding: 12px 6px;">
+        <div>No friends online right now.</div>
+        <button class="btn btn-secondary btn-sm" onclick="openModal('modal-add-friend')" style="margin-top: 8px; font-size: 11px; padding: 4px 12px;">+ Add Friend</button>
+      </div>
+    `;
     return;
   }
 
