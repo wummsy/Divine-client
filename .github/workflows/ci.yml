@@ -37,30 +37,6 @@ jobs:
         run: |
           python -m unittest discover -s tests -p "test_*.py"
 
-  build-mod:
-    name: Compile Fabric Client Mod
-    runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
 
-      - name: Set up Java 21
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '21'
 
-      - name: Compile Client Mod Sources
-        run: |
-          mkdir -p build/classes
-          find mod/src -name "*.java" > sources.txt
-          javac -d build/classes @sources.txt
-          jar cf build/DivineClientMod-1.0.0.jar -C build/classes .
-          ls -la build/DivineClientMod-1.0.0.jar
-
-      - name: Upload Mod Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: divine-client-fabric-mod
-          path: build/DivineClientMod-1.0.0.jar
