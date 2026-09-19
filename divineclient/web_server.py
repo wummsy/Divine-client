@@ -2969,8 +2969,17 @@ def get_accounts():
         "active_id": acc_store.active_id,
     })
 
-@app.route("/api/accounts/active", methods=["POST"])
+@app.route("/api/accounts/active", methods=["GET", "POST"])
 def set_active_account():
+    if request.method == "GET":
+        acc_store.load()
+        active = acc_store.get_active()
+        return jsonify({
+            "success": True,
+            "active": active.to_dict() if hasattr(active, "to_dict") else active,
+            "active_id": acc_store.active_id
+        })
+
     data = request.json or {}
     acc_id = data.get("account_id")
     if not acc_id:
