@@ -3193,10 +3193,27 @@ def add_friend_route():
     username = (data.get("username") or "").strip()
     if not username:
         return jsonify({"error": "Enter a player username."}), 400
-    
-    # Check verified user database
-    db = _load_player_database()
-    target = db.get(username.lower())
+
+    target = None
+    social_res = None
+    try:
+        social_res = social.add_friend(cfg_store, username)
+        if social_res and isinstance(social_res, dict) and social_res.get("success"):
+            target = {
+                "username": social_res.get("target") or username,
+                "status": "online",
+                "presence_detail": "Online in Divine Client",
+                "avatar_url": f"https://minotar.net/helm/{username}/36.png",
+                "badge": "badge_divine_sun_white",
+                "verified": True
+            }
+    except Exception:
+        pass
+
+    if not target:
+        # Check verified user database
+        db = _load_player_database()
+        target = db.get(username.lower())
     
     # Strictly enforce that target player must have a linked Divine account
     if not target or not target.get("verified", False):
@@ -3251,7 +3268,7 @@ def add_friend_route():
     friends.append(new_friend)
     _save_local_friends(friends)
 
-    if social.is_linked(cfg_store):
+    if social.is_linked(cfg_store) and not social_res:
         try:
             social.add_friend(cfg_store, username)
         except Exception:
@@ -3270,6 +3287,11 @@ def accept_friend_route():
     user_id = (data.get("user_id") or data.get("id") or "").strip()
     username = (data.get("username") or "").strip()
     
+    try:
+        social.accept_friend(cfg_store, user_id or username)
+    except Exception:
+        pass
+
     reqs = _load_friend_requests()
     incoming = reqs.get("incoming", [])
     matched_req = None
@@ -3324,6 +3346,11 @@ def remove_friend_route():
     user_id = (data.get("user_id") or data.get("id") or "").strip()
     if not user_id:
         return jsonify({"error": "User ID is required."}), 400
+
+    try:
+        social.remove_friend(cfg_store, user_id)
+    except Exception:
+        pass
     
     friends = _load_local_friends()
     friends = [f for f in friends if str(f.get("id")) != str(user_id) and str(f.get("username", "")).lower() != str(user_id).lower()]
