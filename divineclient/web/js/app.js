@@ -270,7 +270,6 @@ function switchTab(tabName) {
     modpacks: "MODPACK STORE",
     editor: "INSTANCE EDITOR",
     servers: "DEDICATED SERVERS",
-    cosmetics: "CLOAKS & WARDROBE",
     friends: "FRIENDS & NETWORK",
     discord: AppState.discordLinked ? "DISCORD ACCOUNT" : "DISCORD AUTHENTICATION REQUIRED"
   };
@@ -291,8 +290,6 @@ function switchTab(tabName) {
   } else if (tabName === "friends") {
     renderFriendsView();
     refreshDedicatedServers(true);
-  } else if (tabName === "cosmetics") {
-    loadCosmeticsWardrobe();
   } else if (tabName === "discord") {
     renderDiscordView();
   }
@@ -2175,10 +2172,33 @@ async function submitCreateInstance() {
 
 let cachedPaperVersions = null;
 
+function handleServerTemplateSelection(templateId) {
+  const nameInput = document.getElementById("create-server-name");
+  const loaderSel = document.getElementById("create-server-loader");
+  const tmplMap = {
+    survival: { name: "Survival SMP", loader: "paper" },
+    creative: { name: "Creative World & Plots", loader: "paper" },
+    lobby: { name: "Lobby & Minigames Hub", loader: "paper" },
+    hardcore: { name: "Hardcore Survival Realm", loader: "paper" },
+    fabric: { name: "Fabric Modded Server", loader: "fabric" },
+    custom: { name: "Divine Dedicated Server", loader: "paper" },
+  };
+  const tmpl = tmplMap[templateId] || tmplMap.custom;
+  if (nameInput && (!nameInput.value || Object.values(tmplMap).some(t => t.name === nameInput.value))) {
+    nameInput.value = tmpl.name;
+  }
+  if (loaderSel && tmpl.loader) {
+    loaderSel.value = tmpl.loader;
+  }
+}
+
 async function openCreateServerModal() {
   const modal = document.getElementById("modal-create-server");
   const verSelect = document.getElementById("create-server-version");
   const loaderSelect = document.getElementById("create-server-loader");
+  const tmplSelect = document.getElementById("create-server-template");
+  if (tmplSelect) tmplSelect.value = "survival";
+  handleServerTemplateSelection("survival");
   if (modal) modal.classList.add("active");
 
   if (!cachedPaperVersions) {
@@ -2206,15 +2226,31 @@ async function openCreateServerModal() {
 }
 
 async function submitCreateServer() {
+  const tmplId = document.getElementById("create-server-template")?.value || "custom";
   const name = document.getElementById("create-server-name")?.value.trim() || "Divine Server";
   const loader = document.getElementById("create-server-loader")?.value || "paper";
   const version = document.getElementById("create-server-version")?.value || "1.21.4";
 
-  showToast(`Deploying Paper ${version} dedicated server...`, "info");
+  showToast(`Deploying ${name} dedicated server...`, "info");
   closeModal("modal-create-server");
 
-  // Optimistic placeholder
-  const tempId = "temp_" + Date.now();
+  try {
+    const res = await API.createServerInstance({
+      name,
+      loader,
+      mc_version: version,
+      template_id: tmplId
+    });
+    if (res.success) {
+      showToast(`Server "${name}" deployed successfully!`, "success");
+      await refreshDedicatedServers();
+    } else {
+      showToast(res.error || "Failed to deploy server.", "error");
+    }
+  } catch (err) {
+    showToast("Error deploying server: " + err.message, "error");
+  }
+}
   AppState.servers.unshift({
     id: tempId,
     name: name,

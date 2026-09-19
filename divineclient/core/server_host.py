@@ -961,6 +961,158 @@ def ensure_free_port(instance, status=None):
     return port
 
 
+# --- Dedicated Server Templates System --------------------------------------
+SERVER_TEMPLATES = {
+    "survival": {
+        "id": "survival",
+        "name": "Survival SMP",
+        "category": "Survival",
+        "loader": "paper",
+        "mc_version": "1.21.4",
+        "ram_mb": 4096,
+        "icon": "loader_paper",
+        "description": "Optimized Paper survival server with high tick-rate performance, anti-xray, and anti-lag configurations.",
+        "properties": {
+            "gamemode": "survival",
+            "difficulty": "normal",
+            "hardcore": "false",
+            "pvp": "true",
+            "spawn-protection": "0",
+            "view-distance": "10",
+            "simulation-distance": "8",
+            "motd": "created by Divine client servers"
+        }
+    },
+    "creative": {
+        "id": "creative",
+        "name": "Creative World & Plots",
+        "category": "Creative",
+        "loader": "paper",
+        "mc_version": "1.21.4",
+        "ram_mb": 4096,
+        "icon": "loader_paper",
+        "description": "Creative building sandbox with flat generation, builder permissions, no mob spawning, and full flight.",
+        "properties": {
+            "gamemode": "creative",
+            "difficulty": "peaceful",
+            "hardcore": "false",
+            "pvp": "false",
+            "spawn-monsters": "false",
+            "spawn-animals": "false",
+            "spawn-protection": "0",
+            "allow-flight": "true",
+            "view-distance": "16",
+            "motd": "created by Divine client servers"
+        }
+    },
+    "lobby": {
+        "id": "lobby",
+        "name": "Lobby & Minigames Hub",
+        "category": "Minigames",
+        "loader": "paper",
+        "mc_version": "1.21.4",
+        "ram_mb": 3072,
+        "icon": "loader_paper",
+        "description": "High-responsiveness lobby spawn with invulnerable players, instant join, and hub optimizations.",
+        "properties": {
+            "gamemode": "adventure",
+            "difficulty": "peaceful",
+            "hardcore": "false",
+            "pvp": "false",
+            "spawn-monsters": "false",
+            "spawn-protection": "16",
+            "view-distance": "8",
+            "motd": "created by Divine client servers"
+        }
+    },
+    "hardcore": {
+        "id": "hardcore",
+        "name": "Hardcore Survival Realm",
+        "category": "Hardcore",
+        "loader": "paper",
+        "mc_version": "1.21.4",
+        "ram_mb": 4096,
+        "icon": "loader_paper",
+        "description": "Intense single-life survival realm with hardcore difficulty, player spectate upon death, and natural mob scaling.",
+        "properties": {
+            "gamemode": "survival",
+            "difficulty": "hard",
+            "hardcore": "true",
+            "pvp": "true",
+            "spawn-protection": "0",
+            "view-distance": "12",
+            "motd": "created by Divine client servers"
+        }
+    },
+    "fabric": {
+        "id": "fabric",
+        "name": "Fabric Modded Server",
+        "category": "Modded",
+        "loader": "fabric",
+        "mc_version": "1.21.4",
+        "ram_mb": 6144,
+        "icon": "loader_fabric",
+        "description": "Dedicated Fabric server with support for server-side mods, datapacks, and custom dimensions.",
+        "properties": {
+            "gamemode": "survival",
+            "difficulty": "normal",
+            "hardcore": "false",
+            "pvp": "true",
+            "motd": "created by Divine client servers"
+        }
+    },
+    "custom": {
+        "id": "custom",
+        "name": "Custom Blank Server",
+        "category": "Custom",
+        "loader": "paper",
+        "mc_version": "1.21.4",
+        "ram_mb": 2048,
+        "icon": "loader_paper",
+        "description": "Blank slate dedicated server ready for custom plugin installations, worlds, and configs.",
+        "properties": {
+            "gamemode": "survival",
+            "difficulty": "normal",
+            "hardcore": "false",
+            "pvp": "true",
+            "motd": "created by Divine client servers"
+        }
+    }
+}
+
+
+def get_server_templates():
+    """Return all available server templates."""
+    return list(SERVER_TEMPLATES.values())
+
+
+def get_server_template(template_id):
+    """Retrieve a specific template by ID or fallback to custom."""
+    return SERVER_TEMPLATES.get(str(template_id).lower(), SERVER_TEMPLATES["custom"])
+
+
+def register_server_template(template_dict):
+    """Register or update a server template dynamically."""
+    if not isinstance(template_dict, dict) or not template_dict.get("id"):
+        return False
+    tid = str(template_dict["id"]).lower()
+    SERVER_TEMPLATES[tid] = template_dict
+    return True
+
+
+def apply_server_template(instance, template_id="custom", custom_props=None):
+    """Apply a server template configuration to an instance."""
+    tmpl = get_server_template(template_id)
+    props = default_properties(instance)
+    tmpl_props = tmpl.get("properties", {})
+    props.update(tmpl_props)
+    if custom_props and isinstance(custom_props, dict):
+        props.update(custom_props)
+    props["motd"] = "created by Divine client servers"
+    write_properties(instance, props)
+    return props
+
+
 def default_properties(instance):
     return {
         "motd": "created by Divine client servers",

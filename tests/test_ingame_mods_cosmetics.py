@@ -170,7 +170,7 @@ class TestInGameModBridgeAndCosmetics(unittest.TestCase):
         r = self.app.post("/api/rpc/update", json={
             "details": "Playing Bedwars",
             "state": "In Game • 4v4v4v4",
-            "large_text": "Divine Client v4.0.0"
+            "large_text": "Divine Client v5.0.0"
         })
         self.assertEqual(r.status_code, 200)
         self.assertTrue(r.json["success"])

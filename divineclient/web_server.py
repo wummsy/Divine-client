@@ -501,15 +501,6 @@ def create_instance():
     cfg_store.set("last_instance", inst.id)
     cfg_store.save()
 
-    # Automatically install ultimate optimization pack for Fabric instances when requested
-    if loader == "fabric" and data.get("install_optimization_pack", True):
-        try:
-            mods_dir = os.path.join(inst.game_dir, "mods")
-            os.makedirs(mods_dir, exist_ok=True)
-            mods.install_ultimate_optimization_pack(inst.mc_version, mods_dir, loader="fabric")
-        except Exception as ex:
-            print(f"[*] Note: Fabric optimization pack setup note: {ex}")
-
     return jsonify({"success": True, "instance": _format_instance(inst)})
 
 @app.route("/api/instances/<instance_id>", methods=["GET"])
@@ -1801,6 +1792,21 @@ def get_server_quota():
         "unlocked": bool(cfg_store.get("servers_unlocked", False))
     })
 
+@app.route("/api/servers/templates", methods=["GET"])
+def get_server_templates_api():
+    """Return all pre-configured and custom server templates."""
+    templates = server_host.get_server_templates()
+    return jsonify({"success": True, "templates": templates})
+
+@app.route("/api/servers/templates/register", methods=["POST"])
+def register_server_template_api():
+    """Dynamically register a new server template."""
+    data = request.json or {}
+    ok = server_host.register_server_template(data)
+    if ok:
+        return jsonify({"success": True, "templates": server_host.get_server_templates()})
+    return jsonify({"error": "Invalid template payload", "success": False}), 400
+
 @app.route("/api/servers/create", methods=["POST"])
 def create_server_instance():
     ban_info = social.check_ban(cfg_store)
@@ -1815,10 +1821,13 @@ def create_server_instance():
         }), 400
 
     data = request.json or {}
-    name = (data.get("name") or "Divine Dedicated Server").strip()
-    mc_version = (data.get("mc_version") or "1.21.1").strip()
-    loader = (data.get("loader") or "paper").strip().lower()
-    ram_mb = int(data.get("ram_mb", 2048))
+    template_id = (data.get("template_id") or "custom").strip().lower()
+    tmpl = server_host.get_server_template(template_id)
+
+    name = (data.get("name") or tmpl.get("name") or "Divine Dedicated Server").strip()
+    mc_version = (data.get("mc_version") or tmpl.get("mc_version") or "1.21.4").strip()
+    loader = (data.get("loader") or tmpl.get("loader") or "paper").strip().lower()
+    ram_mb = int(data.get("ram_mb") or tmpl.get("ram_mb") or 2048)
     port = int(data.get("server_port", 25565))
     static_domain = (data.get("static_domain") or "").strip()
     tunnel_provider = (data.get("tunnel_provider") or "bore").strip()
@@ -1832,6 +1841,11 @@ def create_server_instance():
         static_domain=static_domain,
         tunnel_provider=tunnel_provider,
     )
+
+    try:
+        server_host.apply_server_template(srv, template_id=template_id)
+    except Exception:
+        pass
 
     return jsonify({"success": True, "instance": srv.to_dict(), "server": srv.to_dict()})
 

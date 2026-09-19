@@ -120,15 +120,7 @@
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 20h20v-4H2v4zm2-3h2v2H4v-2zM2 4v4h20V4H2zm4 3H4V5h2v2zm-4 7h20v-4H2v4zm2-3h2v2H4v-2z"/></svg>
           </button>
 
-          <!-- 5. Cloaks & Wardrobe -->
-          <button class="sidebar-nav-item" data-tab="cosmetics" onclick="switchTab('cosmetics')" data-tooltip="Cloaks &amp; Wardrobe">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 4a3 3 0 0 1 3 3c0 1.2-.7 2.2-1.7 2.7L21 16H3l7.7-6.3C9.7 9.2 9 8.2 9 7a3 3 0 0 1 3-3z"/>
-              <path d="M4 16v5a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-5"/>
-            </svg>
-          </button>
-
-          <!-- 6. Friends & Social (Clean Native Network) -->
+          <!-- 5. Friends & Social (Clean Native Network) -->
           <button class="sidebar-nav-item" data-tab="friends" onclick="switchTab('friends')" data-tooltip="Friends &amp; Player Network">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
           </button>
@@ -472,55 +464,7 @@
           <div id="servers-cards-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px;"></div>
         </div>
 
-        <!-- VIEW 5: CLOAKS & COSMETICS WARDROBE -->
-        <div class="view-pane" id="view-cosmetics">
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
-            <div>
-              <h1 style="font-size: 24px; font-weight: 900; color: #ffffff;">Cloaks &amp; Wardrobe</h1>
-              <p style="font-size: 13px; color: #94a3b8;">Equip exclusive animated cloaks and nametag badges synced with your Divine account.</p>
-            </div>
-            <div style="display: flex; gap: 8px;">
-              <button class="btn btn-secondary" onclick="openInGameModMenu()">Open In-Game Wardrobe</button>
-              <button class="btn btn-primary" onclick="openCosmeticRedeemModal()">Redeem Promo Code</button>
-            </div>
-          </div>
-
-          <!-- Promo Codes Banner Card -->
-          <div class="card-panel" style="margin-bottom: 24px; background: linear-gradient(135deg, rgba(30, 41, 59, 0.85), rgba(15, 23, 42, 0.95)); border: 1px solid rgba(255,255,255,0.15); padding: 20px; border-radius: 12px;">
-            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
-              <div style="display: flex; align-items: center; gap: 14px;">
-                <div style="width: 44px; height: 44px; border-radius: 10px; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.2);">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v3"/><line x1="12" y1="12" x2="12" y2="16"/></svg>
-                </div>
-                <div>
-                  <div style="font-size: 15px; font-weight: 900; color: #ffffff;">Redeemable Promo Codes &amp; Event Keys</div>
-                  <div style="font-size: 12px; color: #94a3b8;">Enter code <code style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; color: #ffffff;">BOOSTER2026</code> to unlock the Booster Cloak instantly.</div>
-                </div>
-              </div>
-              <div style="display: flex; gap: 8px;">
-                <input type="text" class="input-field" id="cosmetics-quick-code-input" placeholder="ENTER CODE (e.g. BOOSTER2026)" style="width: 240px; text-transform: uppercase; font-weight: 700;">
-                <button class="btn btn-primary" onclick="submitQuickRedeemCode()">Redeem</button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Full Width Wardrobe Grid -->
-          <div>
-            <!-- Subtabs for Categories -->
-            <div class="cosmetics-category-pills" style="display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;">
-              <button class="pill-btn active" onclick="filterCosmeticsCategory('all', this)">All Cosmetics</button>
-              <button class="pill-btn" onclick="filterCosmeticsCategory('cloaks', this)">Cloaks</button>
-              <button class="pill-btn" onclick="filterCosmeticsCategory('wings', this)">Wings</button>
-              <button class="pill-btn" onclick="filterCosmeticsCategory('halos', this)">Halos &amp; Headwear</button>
-              <button class="pill-btn" onclick="filterCosmeticsCategory('badges', this)">Nametag Badges</button>
-            </div>
-
-            <!-- Full Width Cosmetics Grid -->
-            <div id="cosmetics-items-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;"></div>
-          </div>
-        </div>
-
-        <!-- VIEW 6: FRIENDS & PLAYER NETWORK (NO DISCORD • DB-BACKED) -->
+        <!-- VIEW 5: FRIENDS & PLAYER NETWORK (NO DISCORD • DB-BACKED) -->
         <div class="view-pane" id="view-friends">
           <div class="friends-container">
             <div class="friends-topbar-actions">
@@ -1005,6 +949,17 @@
         <button class="icon-btn" onclick="closeModal('modal-create-server')">&times;</button>
       </div>
       <div class="modal-body" style="display: flex; flex-direction: column; gap: 14px;">
+        <div>
+          <label style="font-size: 12px; font-weight: 800; color: #ffffff; display: block; margin-bottom: 4px;">Server Preset / Template</label>
+          <select class="select-field" id="create-server-template" onchange="handleServerTemplateSelection(this.value)">
+            <option value="survival">Survival SMP (Optimized Paper • Survival World)</option>
+            <option value="creative">Creative World (Plots • Flight Enabled • Peaceful)</option>
+            <option value="lobby">Lobby &amp; Minigames Hub (Spawn Protection • Fast Join)</option>
+            <option value="hardcore">Hardcore Survival Realm (Hardcore 1-Life • Hard Difficulty)</option>
+            <option value="fabric">Fabric Modded Server (Server-Side Mods Support)</option>
+            <option value="custom">Custom Server (Blank Slate • Full Control)</option>
+          </select>
+        </div>
         <div>
           <label style="font-size: 12px; font-weight: 800; color: #ffffff; display: block; margin-bottom: 4px;">Server Name</label>
           <input type="text" class="input-field" id="create-server-name" placeholder="e.g. Divine Survival SMP">

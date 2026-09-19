@@ -254,47 +254,10 @@ def install_server_pack(mc_version, mods_dir, progress=None, loader="fabric"):
 
 
 def ensure_divine_client_mod(mods_dir):
-    """Automatically installs DivineClientMod-1.0.0.jar into the instance mods folder."""
-    os.makedirs(mods_dir, exist_ok=True)
-    dest = os.path.join(mods_dir, "DivineClientMod-1.0.0.jar")
-
-    possible_sources = [
-        os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "assets", "mods", "DivineClientMod-1.0.0.jar")),
-        os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "web", "assets", "mods", "DivineClientMod-1.0.0.jar")),
-        "/home/user/DivineClientMod-1.0.0.jar",
-        "/home/user/divineclient-1.0.0.jar"
-    ]
-    for src in possible_sources:
-        if os.path.isfile(src):
-            try:
-                shutil.copy2(src, dest)
-                for old_name in ("DivineClient-Full-1.0.0.jar", "DivineClient-Standalone-1.0.0.jar"):
-                    old_path = os.path.join(mods_dir, old_name)
-                    if os.path.isfile(old_path):
-                        try:
-                            os.remove(old_path)
-                        except OSError:
-                            pass
-                return True
-            except Exception:
-                pass
+    """No-op: custom mod has been removed."""
     return False
 
 
 def ensure_builder_suite(mods_dir, mc_version="1.21.11"):
-    """Ensures Axiom, WorldEdit, Flashback, Fabric API, and DivineClientMod are installed in Builder instance."""
-    os.makedirs(mods_dir, exist_ok=True)
-    ensure_divine_client_mod(mods_dir)
-
-    assets_mods_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "assets", "mods"))
-    if os.path.isdir(assets_mods_dir):
-        for fname in os.listdir(assets_mods_dir):
-            if fname.lower().endswith(".jar"):
-                src = os.path.join(assets_mods_dir, fname)
-                dst = os.path.join(mods_dir, fname)
-                try:
-                    if not os.path.exists(dst):
-                        shutil.copy2(src, dst)
-                except Exception:
-                    pass
-    return True
+    """No-op: custom mod suite has been removed."""
+    return False

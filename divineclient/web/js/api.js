@@ -331,6 +331,11 @@ const API = {
     return res.json();
   },
 
+  async getServerTemplates() {
+    const res = await fetch("/api/servers/templates");
+    return res.json();
+  },
+
   async getServerSessions() {
     const res = await fetch("/api/servers/sessions");
     return res.json();
