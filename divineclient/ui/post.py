@@ -16,7 +16,20 @@ run by the main loop a few dozen times a second.
 """
 import queue
 import threading
-import tkinter as tk
+try:
+    import tkinter as tk
+except ImportError:
+    class _Misc:
+        @staticmethod
+        def after(*a, **k): pass
+        @staticmethod
+        def after_idle(*a, **k): pass
+        @staticmethod
+        def after_cancel(*a, **k): pass
+    class _TK:
+        Misc = _Misc
+        TclError = Exception
+    tk = _TK()
 
 _Q = queue.Queue()
 _TOKENS = {}
