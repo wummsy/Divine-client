@@ -135,20 +135,31 @@ def _ensure_dependencies():
 
 
 def main():
+    args = sys.argv[1:]
+
+    if "-h" in args or "--help" in args:
+        print("Divine Client Launcher (v5.0.0)")
+        print("================================")
+        print("Usage:")
+        print("  python main.py              # Launch modern UI in browser (default)")
+        print("  python main.py --native     # Launch native CustomTkinter desktop GUI")
+        print("  python main.py --port <num> # Custom web UI port")
+        print("  python main.py --web        # Run headless web server")
+        return
+
     _ensure_dependencies()
 
-    payload, wait_pid = _update_mode_args(sys.argv[1:])
+    payload, wait_pid = _update_mode_args(args)
     if payload:
         from divineclient.ui.app import apply_update_and_exit
         sys.exit(apply_update_and_exit(payload, wait_pid))
 
-    args = sys.argv[1:]
-    if "--legacy-gui" in args:
+    if "--legacy-gui" in args or "--native" in args or "--gui" in args:
         from divineclient.ui.app import run
         run()
         return
 
-    port = 8080
+    port = None
     for idx, a in enumerate(args):
         if a == "--port" and idx + 1 < len(args):
             try:
