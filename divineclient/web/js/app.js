@@ -2864,10 +2864,6 @@ function openLauncherRedeemModal() {
   document.getElementById("modal-launcher-redeem")?.classList.add("active");
 }
 
-function openLauncherRedeemModal() {
-  document.getElementById("modal-launcher-redeem")?.classList.add("active");
-}
-
 function openCosmeticRedeemModal() {
   document.getElementById("modal-launcher-redeem")?.classList.add("active");
 }

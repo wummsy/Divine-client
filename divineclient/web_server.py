@@ -3331,6 +3331,15 @@ def remove_friend_route():
 
     return jsonify({"success": True, "message": "Friend removed."})
 
+@app.route("/api/social/discord-sync", methods=["POST"])
+@app.route("/api/friends/discord-sync", methods=["POST"])
+def sync_discord_friends_endpoint():
+    try:
+        data = social.sync_discord_friends(cfg_store)
+        return jsonify({"success": True, "friends": data or _load_local_friends()})
+    except Exception as e:
+        return jsonify({"success": True, "friends": _load_local_friends(), "note": str(e)})
+
 @app.route("/api/social/link", methods=["GET"])
 def get_social_link():
     return jsonify({
