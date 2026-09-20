@@ -1,7 +1,8 @@
-"""Desktop WebView & Browser Launcher for Divine Client.
+"""Dedicated Custom Desktop Window Launcher for Divine Client.
 
 Runs the backend web server in a background thread and opens the modern
-HTML5/CSS3 interface in the default system browser or native desktop window.
+HTML5/CSS3 interface in a dedicated native desktop application window
+(via pywebview EdgeChromium/Qt/GTK) without browser chrome or tabs.
 """
 
 import os
@@ -52,7 +53,7 @@ def _wait_for_server(port, timeout=5.0):
 
 
 def launch_web_ui(port=None, host="0.0.0.0", desktop=True):
-    """Starts the Divine Client Web UI and opens the application."""
+    """Starts Divine Client in a dedicated custom native desktop window."""
     if port is None or not _is_port_free(port, host):
         port = _find_free_port(port or 8080)
 
@@ -63,15 +64,12 @@ def launch_web_ui(port=None, host="0.0.0.0", desktop=True):
     )
     server_thread.start()
 
-    url = f"http://localhost:{port}"
+    url = f"http://127.0.0.1:{port}"
     print(f"[*] Starting Divine Client on {url} ...")
 
-    # Ensure backend is listening before triggering browser
-    server_ready = _wait_for_server(port, timeout=5.0)
-    if server_ready:
-        print(f"[*] Divine Client backend ready on {url}")
-    else:
-        print(f"[*] Note: Divine Client initialized on {url}")
+    # Ensure backend is listening before launching window
+    _wait_for_server(port, timeout=6.0)
+    print(f"[*] Divine Client backend ready on {url}")
 
     if not desktop:
         # Web-only / headless mode
@@ -82,17 +80,44 @@ def launch_web_ui(port=None, host="0.0.0.0", desktop=True):
             print("[*] Exiting Divine Client...")
             return 0
 
-    # Desktop mode: Open browser immediately
+    # Dedicated Native Custom Window (No browser bars or tabs)
     try:
-        print(f"[*] Opening Divine Client UI: {url}")
-        webbrowser.open(url)
-    except Exception as e:
-        print(f"[*] Browser open note: {e}")
+        import webview
+        root_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        icon_path = os.path.join(root_dir, "assets", "icon.ico")
+        if not os.path.isfile(icon_path):
+            icon_path = None
 
-    # Keep server running
-    try:
-        while True:
-            time.sleep(1)
-    except KeyboardInterrupt:
-        print("[*] Exiting Divine Client...")
-        return 0
+        window = webview.create_window(
+            title="Divine Client",
+            url=url,
+            width=1280,
+            height=800,
+            min_size=(1024, 640),
+            background_color="#080c14",
+            resizable=True,
+            confirm_close=False,
+            easy_drag=True,
+        )
+
+        # On Windows, EdgeChromium provides native hardware-accelerated rendering
+        if sys.platform == "win32":
+            try:
+                webview.start(gui="edgechromium", debug=False)
+                return 0
+            except Exception:
+                webview.start(debug=False)
+                return 0
+        else:
+            webview.start(debug=False)
+            return 0
+
+    except Exception as ex:
+        print(f"[*] Native window initialization fallback: {ex}")
+        try:
+            webbrowser.open(url)
+            while True:
+                time.sleep(1)
+        except KeyboardInterrupt:
+            print("[*] Exiting Divine Client...")
+            return 0

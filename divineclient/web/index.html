@@ -26,36 +26,6 @@
 </head>
 <body>
 
-  <!-- Full Windowless Startup Animation (Pure White Divine Sun Logo Only) -->
-  <div id="startup-gateway-screen" class="startup-splash-overlay" onclick="this.classList.add('fade-out'); setTimeout(() => { this.style.display='none'; }, 400);" title="Click anywhere to skip">
-    <div class="startup-stage-container">
-      <svg viewBox="0 0 256 256" class="startup-sun-svg">
-        <g class="spikes-layer">
-          <g transform="rotate(0 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
-          <g transform="rotate(45 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
-          <g transform="rotate(90 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
-          <g transform="rotate(135 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
-          <g transform="rotate(180 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
-          <g transform="rotate(225 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
-          <g transform="rotate(270 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
-          <g transform="rotate(315 128 128)"><path d="M128,14 C144,40 146,72 134,94 Q128,98 124,92 C120,70 122,38 128,14 Z"/></g>
-        </g>
-        <circle class="ring" cx="128" cy="128" r="58"/>
-        <circle class="core" cx="128" cy="128" r="34"/>
-      </svg>
-    </div>
-  </div>
-  <script>
-    // Failsafe auto-dismiss timer in case scripts are slow or interrupted
-    setTimeout(function() {
-      var s = document.getElementById("startup-gateway-screen");
-      if (s && !s.classList.contains("fade-out")) {
-        s.classList.add("fade-out");
-        setTimeout(function() { s.style.display = "none"; }, 500);
-      }
-    }, 2000);
-  </script>
-
   <!-- Background Watermark Logo -->
   <svg class="app-background-watermark" viewBox="0 0 256 256">
     <g fill="#ffffff">
@@ -207,11 +177,11 @@
 
                 <!-- Instance Metadata (Animated Slide Transitions) -->
                 <div class="slider-instance-info" id="hero-slider-info-box">
-                  <div class="slider-instance-name" id="hero-slider-name">Divine Fabulously Optimized</div>
+                  <div class="slider-instance-name" id="hero-slider-name">Divine 1.21.4</div>
                   <div class="slider-tags-row">
-                    <span class="badge-tag version" id="hero-slider-version">1.21.1</span>
+                    <span class="badge-tag version" id="hero-slider-version">1.21.4</span>
                     <span class="badge-tag loader" id="hero-slider-loader">FABRIC</span>
-                    <span class="badge-tag mods" id="hero-slider-mods">48 Mods</span>
+                    <span class="badge-tag mods" id="hero-slider-mods">0 Mods</span>
                     <span class="badge-tag" id="hero-slider-ram">4096 MB RAM</span>
                   </div>
                   <!-- Slider Indicator Dots -->
@@ -242,7 +212,22 @@
                   <p style="font-size: 12px; color: #94a3b8;">Official Divine updates and changelogs.</p>
                 </div>
               </div>
-              <div id="news-grid" style="display: flex; flex-direction: column; gap: 10px;"></div>
+              <div id="news-grid" style="display: flex; flex-direction: column; gap: 10px;">
+                <div class="news-card">
+                  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+                    <span style="font-size: 13.5px; font-weight: 800; color: #ffffff;">Divine Client v5.0.0 Release</span>
+                    <span class="badge-tag">Update</span>
+                  </div>
+                  <div style="font-size: 12px; color: #94a3b8; line-height: 1.5;">High-performance client with Modrinth modpack store, dedicated server tunneling, and collaborator access control.</div>
+                </div>
+                <div class="news-card">
+                  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+                    <span style="font-size: 13.5px; font-weight: 800; color: #ffffff;">Dedicated Server Templates</span>
+                    <span class="badge-tag">Feature</span>
+                  </div>
+                  <div style="font-size: 12px; color: #94a3b8; line-height: 1.5;">Survival SMP, Creative World, Lobby Hub, Hardcore Realm, and Fabric server templates are ready to deploy in 1 click.</div>
+                </div>
+              </div>
             </div>
 
             <!-- Right Column: Online Friends Quick Glance -->
@@ -255,7 +240,18 @@
                 <button class="btn btn-secondary btn-sm" onclick="switchTab('friends')">View All</button>
               </div>
               <div class="card-panel" style="padding: 12px;">
-                <div id="home-quick-friends-list" style="display: flex; flex-direction: column; gap: 8px;"></div>
+                <div id="home-quick-friends-list" style="display: flex; flex-direction: column; gap: 8px;">
+                  <div style="display: flex; align-items: center; justify-content: space-between; padding: 6px 0;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <img src="/assets/ui_account.png" style="width: 24px; height: 24px; border-radius: 50%;">
+                      <span style="font-size: 12.5px; font-weight: 700; color: #ffffff;">Divine Network</span>
+                    </div>
+                    <span style="font-size: 10.5px; color: #22c55e; font-weight: 700;">ONLINE</span>
+                  </div>
+                  <div style="text-align: center; padding-top: 6px; border-top: 1px solid rgba(255, 255, 255, 0.06);">
+                    <button class="btn btn-secondary btn-sm" onclick="openModal('modal-add-friend')" style="font-size: 11px; padding: 4px 12px; width: 100%;">+ Add Friend</button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
